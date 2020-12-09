@@ -25,6 +25,7 @@ options(scipen = 20)
 
 Over the next few days, we'll be engaged in a research project investigating COVID-19 case rates over time and space. The goal is to learn about best practices for handling and using data throughout the data life-cycle, which includes: data acquisition and cleaning, data visualization and analysis, as well as data archiving and dissemination. We'll learn how to programmatically extract COVID-19 data from online sources, wrangle those data into a clean state, visualize the data temporally and spatially, analyze the data using a variety of statistical models, and finally archive our replication package (code and data) into an online data repository.
 
+# (PART) R {-}
 
 # DAY 1: Acquiring and cleaning data
 
@@ -33,6 +34,7 @@ Over the next few days, we'll be engaged in a research project investigating COV
 Often, we want to acquire data that is stored online. Online data sources are stored somewhere on a remote *server* --- a remotely located computer that is optimized to process requests for information. Usually, we make requests using a browser, also known as a *client*, but we can also make requests programmatically. An *Application Programming Interface* (API) is the part of a remote server that receives requests and sends responses. When we make requests programmatically, the responses an API sends are typically data-based, often in some structured format like JSON or XML. 
 
 For the project we'll pursue during DataFest, we're going to access data stored on the Harvard Dataverse. A Dataverse is open source software for repositing research data. Once data is stored in a Dataverse, it can be accessed programmatically using the Dataverse API. We will use the R package `dataverse` as an interface for the Dataverse API.   
+
 Here are three COVID-19 datasets from the Harvard Dataverse:
 
 1. US data on COVID-19 cases and deaths, daily at state-level or county-level: <https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/HIDLTK>
@@ -84,8 +86,6 @@ We can now examine the structure of the data if we uncomment the line with `glim
 ```{r}
 # inspect the data (warning --- the print out is long)
 # glimpse(US_cases) # 50 states plus DC by 314 days
-
-US_cases
 ```
 
 
