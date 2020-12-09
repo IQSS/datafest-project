@@ -84,6 +84,8 @@ We can now examine the structure of the data if we uncomment the line with `glim
 ```{r}
 # inspect the data (warning --- the print out is long)
 # glimpse(US_cases) # 50 states plus DC by 314 days
+
+US_cases
 ```
 
 
