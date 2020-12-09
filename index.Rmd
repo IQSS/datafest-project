@@ -1,5 +1,5 @@
 ---
-title: "DataFest2021 Example Project"
+title: "DataFest2021 Project Example"
 author: ""
 date: "`r format(Sys.Date(), '%B %Y')`"
 description: "An example project using COVID-19 data"

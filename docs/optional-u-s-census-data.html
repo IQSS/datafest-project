@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>OPTIONAL: U.S. Census data | DataFest2021 Example Project</title>
+  <title>OPTIONAL: U.S. Census data | DataFest2021 Project Example</title>
   <meta name="description" content="An example project using COVID-19 data" />
   <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="OPTIONAL: U.S. Census data | DataFest2021 Example Project" />
+  <meta property="og:title" content="OPTIONAL: U.S. Census data | DataFest2021 Project Example" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="IQSS/datafest-project" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="OPTIONAL: U.S. Census data | DataFest2021 Example Project" />
+  <meta name="twitter:title" content="OPTIONAL: U.S. Census data | DataFest2021 Project Example" />
   
   <meta name="twitter:description" content="An example project using COVID-19 data" />
   
@@ -190,7 +190,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">DataFest2021 Example Project</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">DataFest2021 Project Example</a>
           </h1>
         </div>
 
@@ -244,9 +244,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb20-9" data-line-number="9"><span class="kw">glimpse</span>(age)</a></code></pre></div>
 <pre><code>## Rows: 1,664
 ## Columns: 4
-## $ GEOID    &lt;chr&gt; &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, …
+## $ GEOID    &lt;chr&gt; &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;29&quot;, &quot;29&quot;, &quot;30&quot;, &quot;30&quot;, &quot;31&quot;, &quot;31&quot;, …
 ## $ NAME     &lt;chr&gt; &quot;Mississippi&quot;, &quot;Mississippi&quot;, &quot;Mississippi&quot;, &quot;Mississippi&quot;, …
-## $ value    &lt;dbl&gt; 2976149, 183478, 189377, 206282, 201350, 201517, 206989, 186…
+## $ value    &lt;dbl&gt; 2976149.0, 183478.0, 189377.0, 206282.0, 6137428.0, 368080.0…
 ## $ AGEGROUP &lt;fct&gt; All ages, Age 0 to 4 years, Age 5 to 9 years, Age 10 to 14 y…</code></pre>
 <p>Get population estimates by sex:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">sex &lt;-<span class="st"> </span><span class="kw">get_estimates</span>(</a>
