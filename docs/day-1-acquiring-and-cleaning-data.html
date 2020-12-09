@@ -177,6 +177,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="day-3-data-analysis.html"><a href="day-3-data-analysis.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving.html"><a href="day-4-data-archiving.html"><i class="fa fa-check"></i>DAY 4: Data archiving</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -209,7 +210,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li>US data on COVID-19 cases and deaths, daily at metropolitan-level: <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/5B8YM8" class="uri">https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/5B8YM8</a></li>
 <li>World data on COVID-19 cases and deaths, daily at country-level: <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L20LOT" class="uri">https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L20LOT</a></li>
 </ol>
-<p>As an example of how to use the Dataverse API, we’re going to extract daily data on COVID-19 cases from the U.S. at the state-level (from dataset #1 above). These data span the period from January 21st 2020 until November 29th 2020 for each U.S. state (and the District of Columbia).</p>
+<p>As an example of how to use the Dataverse API, we’re going to extract daily data on COVID-19 cases from the U.S. at the state-level (from dataset #1 above). These data span the period from January 21st 2020 until November 29th 2020 for each U.S. state (and the District of Columbia). If you wish, you may choose to use one of the other datasets for your project.</p>
 <p>We can use the <code>dataverse</code> package as an interface for the API. All we need to start is a digital object identifier (DOI) for the dataset — this is the <code>persistentId</code> parameter at the end of the above URLs. We can then use the <code>get_dataset()</code> function to retrieve the metadata for the dataset:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># get the digital object identifier for the Dataverse dataset</span></a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">DOI &lt;-<span class="st"> &quot;doi:10.7910/DVN/HIDLTK&quot;</span></a>

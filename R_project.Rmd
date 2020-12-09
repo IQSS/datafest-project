@@ -18,9 +18,9 @@ Over the next few days, we'll be engaged in a research project investigating COV
 
 # R setup
 
-We'll create an installation guide for R and RStudio (based on this one: <https://iqss.github.io/dss-workshops/Rinstall.html>), together with packages that need to be installed, so that all participants can arrive with working R environments.
+In early January, we'll create an installation guide for R and RStudio (based on this one: <https://iqss.github.io/dss-workshops/Rinstall.html>), together with instructions for installing packages, so that all participants can arrive with working R environments.
 
-Install and load necessary packages:
+For now, we just need to install and load the necessary packages for the current material:
 ```{r}
 ipak <- function(pkg){
     new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
@@ -51,7 +51,7 @@ Here are three COVID-19 datasets from the Harvard Dataverse:
 2. US data on COVID-19 cases and deaths, daily at metropolitan-level: <https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/5B8YM8> 
 3. World data on COVID-19 cases and deaths, daily at country-level: <https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L20LOT>
 
-As an example of how to use the Dataverse API, we're going to extract daily data on COVID-19 cases from the U.S. at the state-level (from dataset #1 above). These data span the period from January 21st 2020 until November 29th 2020 for each U.S. state (and the District of Columbia). 
+As an example of how to use the Dataverse API, we're going to extract daily data on COVID-19 cases from the U.S. at the state-level (from dataset #1 above). These data span the period from January 21st 2020 until November 29th 2020 for each U.S. state (and the District of Columbia). If you wish, you may choose to use one of the other datasets for your project. 
 
 We can use the `dataverse` package as an interface for the API. All we need to start is a digital object identifier (DOI) for the dataset --- this is the `persistentId` parameter at the end of the above URLs. We can then use the `get_dataset()` function to retrieve the metadata for the dataset:
 ```{r}
@@ -151,7 +151,7 @@ glimpse(US_cases_long_week)
 
 # OPTIONAL: U.S. Census data
 
-This section is optional. It provides an example of how to acquire potentially interesting predictors of COVID-19 cases.
+This section is optional. It provides an example of how to acquire potentially interesting predictors of COVID-19 cases from the U.S. Census Bureau.
 
 The COVID-19 dataset we accessed above provides daily COVID-19 case counts for each U.S State, together with population counts from the 2010 Decennial Census. This should be enough information to produce some interesting visualizations. For modeling, however, we really only have one useful predictor in the dataset --- time. This section describes some options for acquiring other potentially interesting predictors of COVID-19 cases.
 
@@ -657,8 +657,11 @@ eff_panel4 <- allEffects(model_panel4)
 plot(eff_panel4, type = "response")
 ```
 
-So far, however, we've only been modeling a linear trend for time. From our visualizations we know this is unrealistic. How could we incorporate non-linear time elements in the model?
+So far, we've only been modeling a linear trend for time. From our visualizations we know that this is unrealistic. How could we incorporate non-linear time elements in the model (e.g., splines, polynomials)?
 
 
+# DAY 4: Data archiving
+
+The data archiving session will probably be a GUI-based overview of using Harvard Dataverse. Though, we could put some demo code out there for how to create and populate a Dataverse entry using the API.
 
 

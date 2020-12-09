@@ -13,7 +13,7 @@ link-citations: yes
 
 # What is this? {-}
 
-The materials in this repository serve as *presenter-facing* example of *one possible* project workflow for DataFest2021. Presenters should feel free to use, modify, or wrangle this material into a form that suits their preferences. Or, they should feel free to ignore the material entirely if there's a particular direction they have in mind for their session. 
+The materials in this repository serve as a **presenter-facing** example of **one possible** project workflow for DataFest2021. Presenters should feel free to use, modify, or wrangle this material into a form that suits their preferences. Or, they should feel free to ignore the material entirely if there is a particular direction they have in mind for their session. 
 
 Untimately, each presenter should create their own R or Python script that they will work through during their session (source code, Rmarkdown, or notebook formats are all fine). The materials should not be shared with participants ahead of time, but we will upload materials to the main `IQSS/datafest` Github repo at the end of each day, so that participants attending only a subset of days can orientate themselves to what has been presented previously.
 
@@ -23,4 +23,4 @@ The 'research project' focuses on investigating COVID-19 case rates over time an
 
 ## Authors {-}
 
-The content was created by Steven Worthington (IQSS) and Jinjie Liu (IQSS).
+The content in this repo was created by Steven Worthington (IQSS) and Jinjie Liu (IQSS).

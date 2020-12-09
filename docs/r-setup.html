@@ -177,6 +177,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="day-3-data-analysis.html"><a href="day-3-data-analysis.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving.html"><a href="day-4-data-archiving.html"><i class="fa fa-check"></i>DAY 4: Data archiving</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -199,8 +200,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="r-setup" class="section level1">
 <h1>R setup</h1>
-<p>We’ll create an installation guide for R and RStudio (based on this one: <a href="https://iqss.github.io/dss-workshops/Rinstall.html" class="uri">https://iqss.github.io/dss-workshops/Rinstall.html</a>), together with packages that need to be installed, so that all participants can arrive with working R environments.</p>
-<p>Install and load necessary packages:</p>
+<p>In early January, we’ll create an installation guide for R and RStudio (based on this one: <a href="https://iqss.github.io/dss-workshops/Rinstall.html" class="uri">https://iqss.github.io/dss-workshops/Rinstall.html</a>), together with instructions for installing packages, so that all participants can arrive with working R environments.</p>
+<p>For now, we just need to install and load the necessary packages for the current material:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">ipak &lt;-<span class="st"> </span><span class="cf">function</span>(pkg){</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">    new.pkg &lt;-<span class="st"> </span>pkg[<span class="op">!</span>(pkg <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>()[, <span class="st">&quot;Package&quot;</span>])]</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="cf">if</span>(<span class="kw">length</span>(new.pkg)) <span class="kw">install.packages</span>(new.pkg, <span class="dt">dependencies =</span> <span class="ot">TRUE</span>)</a>
