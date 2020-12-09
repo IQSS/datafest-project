@@ -1,0 +1,652 @@
+
+```{r setup, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+
+knitr::opts_chunk$set(tidy=FALSE, echo=TRUE, messages=FALSE, warnings=FALSE, cache=FALSE)
+knitr::opts_knit$set(root.dir="~/Dropbox/Work/DataFest/2021")
+options(htmltools.dir.version=FALSE)
+
+ipak <- function(pkg){
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if(length(new.pkg)) install.packages(new.pkg, dependencies = TRUE)
+    sapply(pkg, require, character.only = TRUE)
+}
+
+packages <- c("viridis", "glmmTMB",  "effects", "dataverse", "sf", 
+              "leaflet", "mapview", "htmltools", "htmlwidgets", "tigris",   
+              "lubridate", "DHARMa", "tidycensus", "tidyverse", "tidymodels")
+ipak(packages)
+
+# remotes::install_github("r-spatial/mapview")
+
+options(scipen = 20)
+```
+
+# Project overview
+
+Over the next few days, we'll be engaged in a research project investigating COVID-19 case rates over time and space. The goal is to learn about best practices for handling and using data throughout the data life-cycle, which includes: data acquisition and cleaning, data visualization and analysis, as well as data archiving and dissemination. We'll learn how to programmatically extract COVID-19 data from online sources, wrangle those data into a clean state, visualize the data temporally and spatially, analyze the data using a variety of statistical models, and finally archive our replication package (code and data) into an online data repository.
+
+
+# DAY 1: Acquiring and cleaning data
+
+## Acquiring data from APIs
+
+Often, we want to acquire data that is stored online. Online data sources are stored somewhere on a remote *server* --- a remotely located computer that is optimized to process requests for information. Usually, we make requests using a browser, also known as a *client*, but we can also make requests programmatically. An *Application Programming Interface* (API) is the part of a remote server that receives requests and sends responses. When we make requests programmatically, the responses an API sends are typically data-based, often in some structured format like JSON or XML. 
+
+For the project we'll pursue during DataFest, we're going to access data stored on the Harvard Dataverse. A Dataverse is open source software for repositing research data. Once data is stored in a Dataverse, it can be accessed programmatically using the Dataverse API. We will use the R package `dataverse` as an interface for the Dataverse API.   
+Here are three COVID-19 datasets from the Harvard Dataverse:
+
+1. US data on COVID-19 cases and deaths, daily at state-level or county-level: <https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/HIDLTK>
+2. US data on COVID-19 cases and deaths, daily at metropolitan-level: <https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/5B8YM8> 
+3. World data on COVID-19 cases and deaths, daily at country-level: <https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L20LOT>
+
+As an example of how to use the Dataverse API, we're going to extract daily data on COVID-19 cases from the U.S. at the state-level (from dataset #1 above). These data span the period from January 21st 2020 until November 29th 2020 for each U.S. state (and the District of Columbia). 
+
+We can use the `dataverse` package as an interface for the API. All we need to start is a digital object identifier (DOI) for the dataset --- this is the `persistentId` parameter at the end of the above URLs. We can then use the `get_dataset()` function to retrieve the metadata for the dataset:
+```{r}
+# get the digital object identifier for the Dataverse dataset
+DOI <- "doi:10.7910/DVN/HIDLTK"
+
+# retrieve the contents of the dataset
+covid <- get_dataset(DOI)
+```
+
+The `covid` object is a list of metadata that includes a data frame of all the files stored within this dataset. Let's look at the structure of this object:
+```{r}
+# view contents
+glimpse(covid, max.level = 1)
+```
+
+Let's dig further and display the available files:
+```{r}
+# view available files
+covid$files$filename
+```
+
+For our example project, we're going to use the data on cumulative COVID-19 cases at the state-level contained in the `us_state_confirmed_case.tab` file. We can use the `get_file()` function to extract these data into a raw vector:
+```{r}
+# get data file for COVID-19 cases
+US_cases_file <- get_file("us_state_confirmed_case.tab", dataset = DOI)
+```
+
+To convert the data from the raw vector into a more user friendly data frame, we have to jump through a few hoops:
+```{r}
+# create a temporary file
+tmp <- tempfile(fileext = ".tab")
+
+# write the US_cases_file object to the temporary file
+writeBin(object = US_cases_file, con = tmp)
+
+# read the data from the temporary file into a data frame
+US_cases <- read_csv(tmp)
+```
+
+We can now examine the structure of the data if we uncomment the line with `glimpse(US_cases)` (warning --- the print out is long):
+```{r}
+# inspect the data (warning --- the print out is long)
+# glimpse(US_cases) # 50 states plus DC by 314 days
+```
+
+
+## Cleaning data
+
+### COVID-19 cases data
+
+The COVID-19 cases data are in wide format, with individual columns for each day's case counts. To visualize and analyze the data, it will be much easier to reshape the data so that it is organized in long format, with a single column for case counts and another column indicating the date those counts are associated with. 
+
+In addition, it will be useful to derive some time-related variables (e.g., day of year, week of year) from the dates. Finally, we should transform our cumulative case counts into regular counts and create some rate variables by normalizing by population count.
+
+```{r}
+US_cases_long <- US_cases %>%
+    # select columns of interest
+    select(fips, NAME, POP10, matches("^\\d")) %>% 
+    # rename some columns
+    rename(GEOID = fips, state = NAME, pop_count_2010 = POP10) %>%
+    # reshape to long format for dates
+    pivot_longer(cols = grep("^\\d", colnames(.), value = TRUE), 
+                 names_to = "date", values_to = "cases_cum") %>%
+    # create new derived time variables from dates 
+    mutate(date = ymd(date), # year-month-day format
+           day_of_year = yday(date),
+           week_of_year = week(date),
+           month = month(date)) %>% 
+    group_by(state) %>% 
+           # create cases counts
+    mutate(cases_count = cases_cum - lag(cases_cum, default = 0),
+           # tidy-up negative counts
+           cases_count_pos = ifelse(cases_count < 0, 0, cases_count),
+           # create cases rates
+           cases_rate_100K = (cases_count_pos / pop_count_2010) * 1e5,
+           cases_cum_rate_100K = (cases_cum / pop_count_2010) * 1e5)
+
+glimpse(US_cases_long) # 16014 observations (50 states + 1 DC * 314 days)
+```
+
+### Aggregate data
+
+The cleaned data object `US_cases_long` has 16,014 observations (50 states + 1 DC * 314 days). For visualization, this should be fine in most cases. When we come to build models for these data, they may take a long time to run. If we're mainly interested in longer term trends, we can probably get a good approximation by aggregating the data to the weekly level for modeling:
+```{r}
+# aggregate to weekly level (for later modeling)
+US_cases_long_week <- US_cases_long %>%
+    group_by(GEOID, state, week_of_year) %>%
+    summarize(pop_count_2010 = mean(pop_count_2010),
+              cases_count_pos = sum(cases_count_pos), 
+              cases_rate_100K = sum(cases_rate_100K)) %>% 
+    drop_na()
+
+glimpse(US_cases_long_week)
+```
+
+
+# OPTIONAL: U.S. Census data
+
+This section is optional. It provides an example of how to acquire potentially interesting predictors of COVID-19 cases.
+
+The COVID-19 dataset we accessed above provides daily COVID-19 case counts for each U.S State, together with population counts from the 2010 Decennial Census. This should be enough information to produce some interesting visualizations. For modeling, however, we really only have one useful predictor in the dataset --- time. This section describes some options for acquiring other potentially interesting predictors of COVID-19 cases.
+
+## U.S. Census Bureau API
+
+We may want to use additional demographic information in our visualizations and analysis of the COVID-19 cases. An obvious place to source this information is from the U.S. Census Bureau. There are three U.S. Census Bureau data sources, each with their own API:
+
+1. **Decennial Census:** survey of every household in the U.S. every 10 years --- used to calculate population of U.S. geographic areas.
+2. **American Community Survey:** yearly representative sample of 3.5 million households --- used to calculate population estimates of U.S. geographic areas.
+3. **Population Estimates:** yearly population estimates of U.S. geographic areas.
+
+The COVID-19 data from Dataverse already contains population values from the 2010 decennial census. But, using the Census Bureau's Population Estimates API, we can get updated population data for 2019 as well as population data stratified by age groups, race, and sex.
+
+We're going to use the `tidycensus` package as an interface to the Census Bureau API. A basic usage guide is available --- <https://walker-data.com/tidycensus/articles/basic-usage.html> --- but we'll walk through all the necessary steps.
+
+The first step is to sign-up for an API key: <http://api.census.gov/data/key_signup.html>. Then give the key a name.
+```{r, echo=FALSE}
+# store API key
+API_key <- "77498e49cff2f881427082a66a00f284f0590ba7"
+```
+
+```{r, eval=FALSE}
+# store API key
+API_key <- "your-API-key-here"
+```
+
+We can then set the API key for our current R session using the `census_api_key()` function (or we can include it in an `.Renviron` file for future use): 
+```{r}
+# set API key for current session
+census_api_key(API_key)
+```
+
+Next, we can use the `get_estimates()` function to access the Population Estimates API and extract variables of interest:
+```{r}
+pop <- get_estimates(
+    geography = "state", # we'll select state-level data
+    product = "population", # provides overall population estimates and population densities
+    year = 2019, # the latest year available
+    key = API_key)
+
+glimpse(pop)
+```
+
+Get population estimates by age group: 
+```{r}
+age <- get_estimates(
+    geography = "state", 
+    product = "characteristics", # provides population estimates stratified by the variable specified in `breakdown`
+    breakdown = "AGEGROUP", # population estimates for different age groups
+    breakdown_labels = TRUE, # labels for age groups
+    year = 2019, 
+    key = API_key) 
+
+glimpse(age)
+```
+
+Get population estimates by sex:
+```{r}
+sex <- get_estimates(
+    geography = "state", 
+    product = "characteristics",
+    breakdown = "SEX", # population estimates for different sexes
+    breakdown_labels = TRUE,
+    year = 2019, 
+    key = API_key) 
+
+glimpse(sex)
+```
+
+Get population estimates by race:
+```{r}
+race <- get_estimates(
+    geography = "state", 
+    product = "characteristics",
+    breakdown ="RACE", # population estimates for different races
+    breakdown_labels = TRUE,
+    year = 2019, 
+    key = API_key)
+
+glimpse(race)
+```
+
+
+## Clean U.S. Census data
+
+The Census data we extracted contain population estimates for multiple categories of age, race, and sex. It will be useful to simplify these data by creating some derived variables that may be of interest when visualizing and analyzing the data. For example, for each state, we may want to calculate:
+
+1. Overall population count and density 
+2. Proportion of people that are 65 years and older
+3. Proportion of people that are female (or male)
+4. Proportion of people that are black (or white, or other race)
+
+Overall population estimates:
+```{r}
+pop_wide <- pop %>% 
+    # order by GEOID (same as state FIPS code)
+    arrange(GEOID) %>%
+    # rename state 
+    rename(state = NAME) %>%
+    # exclude Puerto Rico
+    filter(state != "Puerto Rico") %>% 
+    # reshape population variables to wide format
+    pivot_wider(names_from = variable, values_from = value) %>%
+    # rename population variables
+    rename(pop_count_2019 = POP, pop_density_2019 = DENSITY)
+
+glimpse(pop_wide)
+```
+ 
+Population estimates by age group: 
+```{r}
+age_wide <- age %>% 
+    # order by GEOID (same as state FIPS code)
+    arrange(GEOID) %>%
+    # rename state
+    rename(state = NAME) %>%
+    # reshape the age groups to wide format
+    pivot_wider(names_from = AGEGROUP, values_from = value) %>%
+    # create variable for percentortion of people that are 65 years and older
+    mutate(percent_age65over = (`65 years and over` /  `All ages`) * 100) %>%
+    # select columns of interest
+    select(GEOID, state, percent_age65over)
+
+glimpse(age_wide)
+```
+
+Population estimates by sex:
+```{r}
+sex_wide <- sex %>% 
+    # order by GEOID (same as state FIPS code)
+    arrange(GEOID) %>%
+    # rename state
+    rename(state = NAME) %>%
+    # reshape the sex categories to wide format
+    pivot_wider(names_from = SEX, values_from = value) %>%
+    # create variable for percentortion of people that are female
+    mutate(percent_female = (Female / `Both sexes`) * 100) %>%
+    # select columns of interest
+    select(GEOID, state, percent_female)
+
+glimpse(sex_wide)
+```
+
+Population estimates by race:
+```{r}
+race_wide <- race %>% 
+    # order by GEOID (same as state FIPS code)
+    arrange(GEOID) %>%
+    # rename state
+    rename(state = NAME) %>%
+    # reshape the race categories to wide format
+    pivot_wider(names_from = RACE, values_from = value) %>%
+    # create variables for percentortion of people that are black and white
+    mutate(percent_white = (`White alone` /  `All races`) * 100,
+           percent_black = (`Black alone` /  `All races`) * 100) %>%
+    # select columns of interest
+    select(GEOID, state, percent_white, percent_black)
+
+glimpse(race_wide)
+```
+
+We can now merge all the cleaned Census data into one object called `demographics`:
+```{r}
+demographics <- list(pop_wide, age_wide, sex_wide, race_wide) %>% 
+    reduce(left_join, by = c("GEOID", "state"))
+
+glimpse(demographics)
+```
+
+## Combine Census and COVID-19 data
+
+Merge the COVID-19 cases data with Census demographic data:
+```{r}
+# merge COVID-19 cases with demographics
+US_cases_long_demogr <- US_cases_long %>% 
+    left_join(demographics, by = c("GEOID", "state")) 
+
+# update the death rate variables to use population estimates from 2019
+US_cases_long_demogr <- US_cases_long_demogr %>%
+    mutate(cases_cum_rate_100K = (cases_cum / pop_count_2019) * 1e5,
+           cases_rate_100K = (cases_count_pos / pop_count_2019) * 1e5)
+
+glimpse(US_cases_long_demogr)
+```
+
+## Aggregate to weekly-level
+
+Once again, for the purposes of modeling, it may be useful to aggregate to the weekly-level:
+```{r}
+# COVID-19 data and demographic data
+US_cases_long_demogr_week <- US_cases_long_demogr %>%
+    group_by(state, week_of_year) %>%
+    summarize(pop_count_2019 = mean(pop_count_2019),
+              percent_age65over = mean(percent_age65over), 
+              percent_female = mean(percent_female), 
+              percent_white = mean(percent_white), 
+              percent_black = mean(percent_black),
+              cases_count_pos = sum(cases_count_pos), 
+              cases_rate_100K = sum(cases_rate_100K)) %>%
+    drop_na()
+```
+
+Let's store the data frame in a binary R file so that we can easily access it later:
+```{r}
+save(US_cases_long_demogr_week, file = "US_cases_long_demogr_week.Rdata")
+```
+
+
+# DAY 2: Data visualization
+
+The COVID-19 cases data we have are inherently temporal and spatial. Let's explore the space and time dimensions of the case data through visualization.
+
+## Non-spatial graphs
+
+We can easily create a wide range of non-spatial (and spatial) graphs using the `ggplot()` function from the `ggplot2` package. If you need a refresher on this package, both IQSS and HBS collaborate on delivering a workshop devoted to `ggplot2` each semester and the workshop materials can be accessed here: <https://iqss.github.io/dss-workshops/Rgraphics.html>.
+
+We can start with a very simple line graph of the COVID-19 cases rates over time:
+```{r, fig.height=5, fig.width=7}
+# line graph of covid cases rates    
+ggplot(US_cases_long, aes(x = date, y = cases_rate_100K)) +
+    geom_line() +
+    theme_classic()
+```
+
+This gives us an overall sense that the rate of cases has increased over time and has become particularly prevalent in the fall of 2020. But, because the lines for each state are not discernible, we can't see if some states have a different trajectory of case rates than other states. We could try making each state's line a different color, but with 50 states plus D.C., we won't be able to easily identify which color hue is associated with which state. A better solution is to use faceting to produce mini-plots for each state.
+
+Let's create a new line graph of COVID-19 cases rates over time, this time with a separate mini-plot for each state:
+```{r, fig.height=8, fig.width=9}
+# line graphs of covid cases rates for each state    
+ggplot(US_cases_long, aes(x = date, y = cases_rate_100K)) +
+    geom_line() +
+    facet_wrap(~ state, scales = "free_y") + # make the y-axis independent for each state
+    theme_classic()
+```
+
+We can try the same strategy for cumulative COVID-19 case rates over time. First, in a graph that jumbles together all the states:
+```{r, fig.height=5, fig.width=7}
+# line graph of cumulative covid cases rates    
+ggplot(US_cases_long, aes(x = date, y = cases_cum_rate_100K)) +
+    geom_line() +
+    theme_classic()
+```
+
+Again, we get a sense of the overall trend here, but we can get a much better picture of state-level differences by faceting. So, let's create a new line graph of COVID-19 cumulative cases rates over time, this time with a separate mini-plot for each state:
+```{r, fig.height=8, fig.width=9}
+# line graphs of cumulative covid cases rates for each state
+ggplot(US_cases_long, aes(x = date, y = cases_cum_rate_100K)) +
+    geom_line() +
+    facet_wrap(~ state, scales = "free_y") +
+    theme_classic()
+```
+
+## Static Maps
+
+A great way to visualize spatial relationships in data is to superimpose variables onto a map. For some datasets, this could involve superimposing points or lines. For our state-level data, this will involve coloring state polygons in proportion to a variable of interest that represents an aggregate summary of a geographic characteristic within each state. Such a graph is often referred to as a choropleth map. To create a choropleth map we first need to acquire *shapefiles* that contain spatial data about U.S. state-level geographies.
+
+We can use the `tigris` package to get Census Tiger shapefiles for census geographies. In particular, we can use the `states()` function to get state-level geographies, and coastal boundaries can be gathered with the argument `cb = TRUE`:
+```{r message=FALSE, results="hide"}
+# download state-level census geographies
+us_state_geo <- tigris::states(class = "sf", cb = TRUE) %>% 
+    # rename `NAME` variable to `state`
+    rename(state = NAME)
+```
+
+```{r}
+glimpse(us_state_geo)
+```
+
+We can now merge the spatial data with our weekly COVID-19 cases data, keeping only the contiguous 48 states (plus D.C.):
+```{r}
+# merge weekly COVID-19 cases with spatial data
+US_cases_long_week_spatial <- us_state_geo %>% 
+    left_join(US_cases_long_week, by = c("GEOID", "state")) %>% 
+    filter(GEOID < 60 & state != "Alaska" & state != "Hawaii") 
+
+glimpse(US_cases_long_week_spatial)
+```
+
+Let's create a choropleth map for the latest week's COVID-19 cases using `ggplot()`:
+```{r, fig.height=6, fig.width=9}
+US_cases_long_week_spatial %>% 
+  # subset data for only latest week
+  filter(week_of_year == max(week_of_year, na.rm = TRUE)) %>% 
+  # map starts here
+  ggplot(aes(fill = cases_rate_100K, color = cases_rate_100K)) +
+  geom_sf() +
+  coord_sf(crs = 5070, datum = NA) +
+  scale_fill_viridis(direction = -1) + 
+  scale_color_viridis(direction = -1) +
+  labs(title = "COVID-19 cases for last week",
+       caption = "Data Source: U.S. Census Bureau; 2019")
+```
+
+## Interactive Maps
+
+Static maps are great for publications. Interactive maps, which can be viewed in a browser, can potentially provide a much richer source of information. A good overview of the mapping functionality in R is provided here: <https://map-rfun.library.duke.edu/index.html>. 
+
+In this section, we'll focus on building a simple interactive map using the `mapview` package, which is a data-driven API for the `leaflet` package.
+```{r, fig.height=6, fig.width=9}
+# set some options for the graph
+mapviewOptions(fgb = FALSE, # set to FALSE to embed data directly into the HTML
+               leafletWidth = 800,
+               legend.pos = "bottomright")
+
+# create map
+USmap <- US_cases_long_week_spatial %>% 
+  # subset data for only latest week
+  filter(week_of_year == max(week_of_year, na.rm = TRUE)) %>%
+  # map starts here
+  mapview(zcol = "cases_rate_100K", layer.name = "Cases (rate per 100K)")
+
+# print map
+USmap@map
+```
+
+
+# DAY 3: Data analysis
+
+In this section, we will be exploring the relationships between COVID-19 cases and demographic data from the Census Bureau. If you did not complete the optional Census data section, you can still access these data by loading the following file:
+```{r}
+load("US_cases_long_demogr_week.Rdata")
+
+glimpse(US_cases_long_demogr_week)
+```
+
+## Descriptives
+
+It's always a good idea to start data analysis by looking at some descriptive statistics of the sample data. Here, we can inspect the demographic data we accessed through the Census API:
+```{r}
+US_cases_long_demogr_week %>% 
+  group_by(state) %>% 
+  summarize_at(vars(percent_age65over, percent_female, 
+                    percent_white, percent_black), .funs = mean) %>% 
+  mutate_if(is.numeric, round, 1)
+```
+
+## Modeling
+
+The data we have consists of counts of COVID-19 cases over time for each of 50 U.S. states and D.C. These data will be challenging to model, since we will have to deal with the following issues:
+
+1. The response consists of counts with a huge number of zeros and an extended right tail. Typically, to model counts we'd use a poisson model. Here, the extended right tail suggests the data are overdispersed (i.e., the variance is greater than the mean), which would mean the restrictive assumptions of the poisson distribution are not met and may push us towards a quasi-poisson or negative binomial model. In addition, we may need some machinery in the model to deal with the excess of zeros (a zero-inflation component), since this is atypical for a poisson or negative binomial model. Let's inspect the response variable:
+   ```{r, fig.height=3.2, fig.width=6}
+   # response summary
+   summary(US_cases_long_demogr_week$cases_count_pos)
+
+   # marginal response distribution (truncated to counts < 1000)
+   ggplot(US_cases_long_demogr_week %>% filter(cases_count_pos < 1000), aes(x = cases_count_pos)) +
+     geom_histogram(bins = 1e3) +
+     theme_classic()
+   ```
+
+2. The data are inherently spatial in nature --- in this case, at the state-level.
+3. The data are inherently temporal in nature --- in this case, at the daily- or weekly-level.
+
+
+### Cross-sectional models
+
+Let's start with something at the simpler end of the scale. We can reduce complexity by initially modeling a single time point (for example, the most recent week of case data), with a subset of states, and just a single predictor --- the intercept --- to estimate the average number of cases.
+```{r, fig.height=4, fig.width=6}
+# filter the most recent week's data
+US_cases_latest_week <- US_cases_long_demogr_week %>% 
+  filter(week_of_year == max(week_of_year))
+
+glimpse(US_cases_latest_week)
+```
+
+Now let's inspect the response variable for just this last week of data:
+```{r}
+# histogram of last week's counts
+ggplot(US_cases_latest_week, aes(x = cases_count_pos)) +
+  geom_histogram(bins = 50) +
+  theme_classic()
+
+# number of cases in sample
+summary(US_cases_latest_week$cases_count_pos)
+```
+
+Usually with count data, we'd fit a model designed to deal with the idiosyncrasies of counts --- which are integer-only, lower bounded at zero, and generally heavily right skewed --- such as a poisson, quasi-poisson, or negative binomial model. Here, however, the average number of counts is high and we don't have any observations near the theoretical lower boundary of zero, so we can try a basic linear model since in this situation the Gaussian family of distributions approximates the poisson. 
+```{r, fig.height=5, fig.width=8}
+# fit intercept-only OLS model
+model_last_week1 <- lm(cases_count_pos ~ 1, 
+                       data = US_cases_latest_week)
+
+# inference
+summary(model_last_week1)
+confint(model_last_week1)
+
+# model diagnostics - simulate residuals using the DHARMa package
+model_last_week1_simres <- simulateResiduals(model_last_week1)
+plot(model_last_week1_simres, quantreg = TRUE)
+```
+
+We recovered the average number of cases for the latest week, pooled over all the states. Now we can try adding some of our explanatory variables.
+```{r, fig.height=5, fig.width=8}
+# fit OLS model
+model_last_week2 <- lm(cases_count_pos ~ 1 + percent_age65over + percent_female + percent_black, 
+                       data = US_cases_latest_week)
+
+# inference
+summary(model_last_week2)
+
+# model diagnostics - simulate residuals using the DHARMa package
+model_last_week2_simres <- simulateResiduals(model_last_week2)
+plot(model_last_week2_simres, quantreg = TRUE)
+```
+
+We're not able to detect any effects of interest here --- perhaps because we're only using one week of data. We actually have a year's worth of data, so let's try modeling this as a panel (a longitudinal dataset).
+
+### Panel models
+
+We have case count data for each state, tracked at the weekly-level for a year. This means that the data are clustered at the state-level (i.e., observations within states are likely to be correlated with one another more than observations between different states). We could deal with this clustering in several different ways, but using a multi-level model with random intercepts grouped by state is a good, flexible option. Let's start with a linear model.
+```{r, fig.height=5, fig.width=8}
+model_panel1 <- glmmTMB(cases_count_pos ~ 1 + week_of_year + percent_age65over + 
+                                          percent_female + percent_black + (1 | state),
+                        family = gaussian(link = "identity"),
+                        data = US_cases_long_demogr_week)
+
+# inference
+summary(model_panel1)
+
+# model diagnostics - simulate residuals using the DHARMa package
+model_panel1_simres <- simulateResiduals(model_panel1)
+par(mfrow = c(1, 1))
+plot(model_panel1_simres, quantreg = TRUE)
+```
+
+Aside from the convergence warning, the model diagnostics look terrible here --- why do you think that is? Now that we have a full year's worth of data, for many states the earlier part of that year consisted of a very small number of cases --- often zero cases. 
+```{r}
+summary(US_cases_long_demogr_week$cases_count_pos)
+
+table(US_cases_long_demogr_week$cases_count_pos == 0)
+```
+
+About 15\% of the data are zeros. This makes the linear model a poor fit for these data. Let's try a model designed specifically for count data:
+```{r, fig.height=5, fig.width=8}
+model_panel2 <- glmmTMB(cases_count_pos ~ 1 + week_of_year + percent_age65over + 
+                                          percent_female + percent_black + (1 | state),
+                        family = poisson(link = "log"),
+                        data = US_cases_long_demogr_week)
+
+# inference
+summary(model_panel2)
+
+# model diagnostics - simulate residuals using the DHARMa package
+model_panel2_simres <- simulateResiduals(model_panel2)
+plot(model_panel2_simres, quantreg = TRUE)
+```
+
+This looks better. But there are several issues we're not yet dealing with. Chief among these are: 1) the fact that states have different population levels, but our model is unaware of this, and 2) we have a huge number of zeros in the data, which poisson models are ill-equipped to handle. Let's fit a more sophisticated model that can account for these issues. We can include an exposure term using the `offset()` function to get counts per population unit, as well as a separate binomial model to account for the excess of zeros (the zero-inflation component):
+```{r, fig.height=5, fig.width=8}
+model_panel3 <- glmmTMB(cases_count_pos ~ 1 + offset(log(pop_count_2019)) + week_of_year + 
+                                          percent_age65over + percent_female + percent_black + 
+                                          (1 | state),
+                        family = poisson(link = "log"),
+                        ziformula = ~ week_of_year,
+                        data = US_cases_long_demogr_week)
+
+# inference
+summary(model_panel3)
+
+# model diagnostics - simulate residuals using the DHARMa package
+model_panel3_simres <- simulateResiduals(model_panel3)
+plot(model_panel3_simres, quantreg = TRUE)
+```
+
+This is looking better. Let's compare our last two models:
+```{r}
+# use likelihood ratio test to compare models with and without 
+# population exposure and zero-inflation component
+anova(model_panel2, model_panel3)
+```
+
+Our `model_panel3` does a much better job of capturing the idiosyncrasies of our data. We can go further, however. The data may not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean), in which case one option is to fit a negative binomial model that can account for this over- or under-dispersion. We can also include a more flexible random effects structure, to allow each state to have different case count trajectories over time:
+```{r, fig.height=5, fig.width=8}
+model_panel4 <- glmmTMB(cases_count_pos ~ 1 + offset(log(pop_count_2019)) + week_of_year + 
+                                          percent_age65over + percent_female + percent_black + 
+                                          (1 + week_of_year | state),
+                        family = nbinom2(link = "log"),
+                        ziformula = ~ week_of_year,
+                        data = US_cases_long_demogr_week)
+
+# inference                
+summary(model_panel4) 
+
+# model diagnostics - simulate residuals using the DHARMa package
+model_panel4_simres <- simulateResiduals(model_panel4)
+plot(model_panel4_simres, quantreg = TRUE)
+```
+
+This looks like our best model yet. We can't compare our previous poisson model and this negative binomial model directly, but we can update our `model_panel3` model to use the negative binomial distribution, so that we can determine whether the random slope for time improve the model fit:
+```{r}
+# update poisson model to use negative binomial family
+model_panel3 <- update(model_panel3, family = nbinom2)
+
+# use likelihood ratio test to compare model with and without random slopes for time
+anova(model_panel3, model_panel4)
+```
+
+The random slope is a useful addition. Let's look at some visualizations of the effects from the model:
+```{r, fig.height=7, fig.width=7, message=FALSE}
+# plot marginal effects for all explanatory variables
+eff_panel4 <- allEffects(model_panel4)
+plot(eff_panel4, type = "response")
+```
+
+So far, however, we've only been modeling a linear trend for time. From our visualizations we know this is unrealistic. How could we incorporate non-linear time elements in the model?
+
+
+
+

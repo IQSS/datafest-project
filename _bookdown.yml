@@ -1,12 +1,12 @@
-book_filename: 'template'
+book_filename: 'DataFest2021_project'
 
 output_dir: docs
 
-repo: https://github.com/IQSS/dss-template
+repo: https://github.com/IQSS/datafest_project
 
 rmd_files:
   - "index.Rmd"
-  - "01_chapter.Rmd"
+  - "R_project.Rmd"
 
 delete_merged_file: true
 
