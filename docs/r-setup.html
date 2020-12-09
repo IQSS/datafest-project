@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>DataFest2021 Example Project</title>
+  <title>R setup | DataFest2021 Example Project</title>
   <meta name="description" content="An example project using COVID-19 data" />
   <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="DataFest2021 Example Project" />
+  <meta property="og:title" content="R setup | DataFest2021 Example Project" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="IQSS/datafest-project" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="DataFest2021 Example Project" />
+  <meta name="twitter:title" content="R setup | DataFest2021 Example Project" />
   
   <meta name="twitter:description" content="An example project using COVID-19 data" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="project-overview.html"/>
+<link rel="prev" href="project-overview.html"/>
+<link rel="next" href="day-1-acquiring-and-cleaning-data.html"/>
 <script src="libs/jquery/jquery.min.js"></script>
 <link href="libs/gitbook/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
@@ -197,31 +197,36 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">DataFest2021 Example Project</h1>
-<p class="date"><em>December 2020</em></p>
-</div>
-<div id="what-is-this" class="section level1 unnumbered">
-<h1>What is this?</h1>
-<p>The materials in this repository serve as <em>presenter-facing</em> example of <em>one possible</em> project workflow for DataFest2021. Presenters should feel free to use, modify, or wrangle this material into a form that suits their preferences. Or, they should feel free to ignore the material entirely if there’s a particular direction they have in mind for their session.</p>
-<p>Untimately, each presenter should create their own R or Python script that they will work through during their session (source code, Rmarkdown, or notebook formats are all fine). The materials should not be shared with participants ahead of time, but we will upload materials to the main <code>IQSS/datafest</code> Github repo at the end of each day, so that participants attending only a subset of days can orientate themselves to what has been presented previously.</p>
-<div id="project-summary" class="section level2 unnumbered">
-<h2>Project summary</h2>
-<p>The ‘research project’ focuses on investigating COVID-19 case rates over time and space. The goal is for participants to learn about best practices for handling and using data throughout the data life-cycle, which includes: data acquisition and cleaning, data visualization and analysis, as well as data archiving and dissemination. They will learn how to programmatically extract COVID-19 data from online sources using APIs, wrangle those data into a clean state, visualize the data temporally and spatially, analyze the data using a variety of statistical models, and finally archive the project replication files (code and data) into an online data repository (Harvard Dataverse).</p>
-</div>
-<div id="authors" class="section level2 unnumbered">
-<h2>Authors</h2>
-<p>The content was created by Steven Worthington (IQSS) and Jinjie Liu (IQSS).</p>
-
-</div>
+<div id="r-setup" class="section level1">
+<h1>R setup</h1>
+<p>We’ll create an installation guide for R and RStudio (based on this one: <a href="https://iqss.github.io/dss-workshops/Rinstall.html" class="uri">https://iqss.github.io/dss-workshops/Rinstall.html</a>), together with packages that need to be installed, so that all participants can arrive with working R environments.</p>
+<p>Install and load necessary packages:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">ipak &lt;-<span class="st"> </span><span class="cf">function</span>(pkg){</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">    new.pkg &lt;-<span class="st"> </span>pkg[<span class="op">!</span>(pkg <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>()[, <span class="st">&quot;Package&quot;</span>])]</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="cf">if</span>(<span class="kw">length</span>(new.pkg)) <span class="kw">install.packages</span>(new.pkg, <span class="dt">dependencies =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">    <span class="kw">sapply</span>(pkg, require, <span class="dt">character.only =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">packages &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;viridis&quot;</span>, <span class="st">&quot;glmmTMB&quot;</span>,  <span class="st">&quot;effects&quot;</span>, <span class="st">&quot;dataverse&quot;</span>, <span class="st">&quot;sf&quot;</span>, <span class="st">&quot;remotes&quot;</span>,</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">              <span class="st">&quot;leaflet&quot;</span>, <span class="st">&quot;mapview&quot;</span>, <span class="st">&quot;htmltools&quot;</span>, <span class="st">&quot;htmlwidgets&quot;</span>, <span class="st">&quot;tigris&quot;</span>,   </a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">              <span class="st">&quot;lubridate&quot;</span>, <span class="st">&quot;DHARMa&quot;</span>, <span class="st">&quot;tidycensus&quot;</span>, <span class="st">&quot;tidyverse&quot;</span>, <span class="st">&quot;tidymodels&quot;</span>)</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="kw">ipak</span>(packages)</a></code></pre></div>
+<pre><code>##     viridis     glmmTMB     effects   dataverse          sf     remotes 
+##        TRUE        TRUE        TRUE        TRUE        TRUE        TRUE 
+##     leaflet     mapview   htmltools htmlwidgets      tigris   lubridate 
+##        TRUE        TRUE        TRUE        TRUE        TRUE        TRUE 
+##      DHARMa  tidycensus   tidyverse  tidymodels 
+##        TRUE        TRUE        TRUE        TRUE</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># mapview may need to be installed from Github</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># remotes::install_github(&quot;r-spatial/mapview&quot;)</span></a></code></pre></div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="project-overview.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="project-overview.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="day-1-acquiring-and-cleaning-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook/js/app.min.js"></script>
@@ -252,7 +257,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/IQSS/datafest-project/edit/master/index.Rmd",
+"link": "https://github.com/IQSS/datafest-project/edit/master/R_project.Rmd",
 "text": "Edit"
 },
 "history": {

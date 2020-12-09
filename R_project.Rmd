@@ -1,31 +1,41 @@
 
-```{r setup, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+```{r, setup, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
 
-knitr::opts_chunk$set(tidy=FALSE, echo=TRUE, messages=FALSE, warnings=FALSE, cache=FALSE)
-knitr::opts_knit$set(root.dir="~/Dropbox/Work/DataFest/2021")
-options(htmltools.dir.version=FALSE)
+options(max.print=100,
+        scipen = 20,
+        htmltools.dir.version=FALSE)
 
+knitr::opts_knit$set(root.dir="~/Documents/IQSS/datafest-project")
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, cache=FALSE, error=FALSE, fig.path="figures/")
+```
+
+# Project overview
+
+Over the next few days, we'll be engaged in a research project investigating COVID-19 case rates over time and space. The goal is to learn about best practices for handling and using data throughout the data life-cycle, which includes: data acquisition and cleaning, data visualization and analysis, as well as data archiving and dissemination. We'll learn how to programmatically extract COVID-19 data from online sources, wrangle those data into a clean state, visualize the data temporally and spatially, analyze the data using a variety of statistical models, and finally archive the project replication files (code and data) into an online data repository.
+
+
+# (PART) R {-}
+
+# R setup
+
+We'll create an installation guide for R and RStudio (based on this one: <https://iqss.github.io/dss-workshops/Rinstall.html>), together with packages that need to be installed, so that all participants can arrive with working R environments.
+
+Install and load necessary packages:
+```{r}
 ipak <- function(pkg){
     new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
     if(length(new.pkg)) install.packages(new.pkg, dependencies = TRUE)
     sapply(pkg, require, character.only = TRUE)
 }
 
-packages <- c("viridis", "glmmTMB",  "effects", "dataverse", "sf", 
+packages <- c("viridis", "glmmTMB",  "effects", "dataverse", "sf", "remotes",
               "leaflet", "mapview", "htmltools", "htmlwidgets", "tigris",   
               "lubridate", "DHARMa", "tidycensus", "tidyverse", "tidymodels")
 ipak(packages)
 
+# mapview may need to be installed from Github
 # remotes::install_github("r-spatial/mapview")
-
-options(scipen = 20)
 ```
-
-# Project overview
-
-Over the next few days, we'll be engaged in a research project investigating COVID-19 case rates over time and space. The goal is to learn about best practices for handling and using data throughout the data life-cycle, which includes: data acquisition and cleaning, data visualization and analysis, as well as data archiving and dissemination. We'll learn how to programmatically extract COVID-19 data from online sources, wrangle those data into a clean state, visualize the data temporally and spatially, analyze the data using a variety of statistical models, and finally archive our replication package (code and data) into an online data repository.
-
-# (PART) R {-}
 
 # DAY 1: Acquiring and cleaning data
 

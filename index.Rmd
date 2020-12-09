@@ -11,17 +11,16 @@ biblio-style: apalike
 link-citations: yes
 ---
 
-# Introduction {-}
+# What is this? {-}
 
-The materials in this repository serve as an example of one possible project framework for DataFest2021. 
+The materials in this repository serve as *presenter-facing* example of *one possible* project workflow for DataFest2021. Presenters should feel free to use, modify, or wrangle this material into a form that suits their preferences. Or, they should feel free to ignore the material entirely if there's a particular direction they have in mind for their session. 
 
-## Table of Contents {-}
+Untimately, each presenter should create their own R or Python script that they will work through during their session (source code, Rmarkdown, or notebook formats are all fine). The materials should not be shared with participants ahead of time, but we will upload materials to the main `IQSS/datafest` Github repo at the end of each day, so that participants attending only a subset of days can orientate themselves to what has been presented previously.
 
-This example project is organized into two parts.
+## Project summary {-}
 
-1. R-based project
-2. Python-based project
+The 'research project' focuses on investigating COVID-19 case rates over time and space. The goal is for participants to learn about best practices for handling and using data throughout the data life-cycle, which includes: data acquisition and cleaning, data visualization and analysis, as well as data archiving and dissemination. They will learn how to programmatically extract COVID-19 data from online sources using APIs, wrangle those data into a clean state, visualize the data temporally and spatially, analyze the data using a variety of statistical models, and finally archive the project replication files (code and data) into an online data repository (Harvard Dataverse).
 
-## Authors and Sources {-}
+## Authors {-}
 
 The content was created by Steven Worthington (IQSS) and Jinjie Liu (IQSS).
