@@ -329,7 +329,7 @@ Merge the COVID-19 cases data with Census demographic data:
 US_cases_long_demogr <- US_cases_long %>% 
     left_join(demographics, by = c("GEOID", "state")) 
 
-# update the death rate variables to use population estimates from 2019
+# update the case rate variables to use population estimates from 2019
 US_cases_long_demogr <- US_cases_long_demogr %>%
     mutate(cases_cum_rate_100K = (cases_cum / pop_count_2019) * 1e5,
            cases_rate_100K = (cases_count_pos / pop_count_2019) * 1e5)
@@ -439,10 +439,10 @@ US_cases_long_week_spatial %>%
   ggplot(aes(fill = cases_rate_100K, color = cases_rate_100K)) +
   geom_sf() +
   coord_sf(crs = 5070, datum = NA) +
-  scale_fill_viridis(direction = -1) + 
-  scale_color_viridis(direction = -1) +
-  labs(title = "COVID-19 cases for last week",
-       caption = "Data Source: U.S. Census Bureau; 2019")
+  scale_fill_viridis(direction = -1, name = "Case rate\n(per 100K population)") + 
+  scale_color_viridis(direction = -1, name = "Case rate\n(per 100K population)") +
+  labs(title = "COVID-19 case rates for last week",
+       caption = "Data Sources: Harvard Dataverse, 2020; U.S. Census Bureau, 2019")
 ```
 
 ## Interactive Maps
@@ -461,7 +461,7 @@ USmap <- US_cases_long_week_spatial %>%
   # subset data for only latest week
   filter(week_of_year == max(week_of_year, na.rm = TRUE)) %>%
   # map starts here
-  mapview(zcol = "cases_rate_100K", layer.name = "Cases (rate per 100K)")
+  mapview(zcol = "cases_rate_100K", layer.name = "Case rates\n(per 100K population)")
 
 # print map
 USmap@map
@@ -525,7 +525,7 @@ ggplot(US_cases_latest_week, aes(x = cases_count_pos)) +
   geom_histogram(bins = 50) +
   theme_classic()
 
-# number of cases in sample
+# distribution of cases in sample
 summary(US_cases_latest_week$cases_count_pos)
 ```
 
