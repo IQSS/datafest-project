@@ -461,7 +461,7 @@ USmap <- US_cases_long_week_spatial %>%
   # subset data for only latest week
   filter(week_of_year == max(week_of_year, na.rm = TRUE)) %>%
   # map starts here
-  mapview(zcol = "cases_rate_100K", layer.name = "Case rates\n(per 100K population)")
+  mapview(zcol = "cases_rate_100K", layer.name = "Case rates (per 100K)")
 
 # print map
 USmap@map
