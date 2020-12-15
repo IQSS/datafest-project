@@ -529,7 +529,7 @@ print(US_cases_long_week_spatial.head(20))
 
 Let's create a choropleth map for the latest week's COVID-19 cases using the `Matplotlib` module:
 ```{python, fig.height=6, fig.width=9}
-# set the value column that will be visualized
+# set the value column that will be visualised
 variable = 'cases_rate_100K'
 # set the range for the choropleth values
 vmin, vmax = 0, 600
@@ -540,17 +540,20 @@ ax.axis('off')
 # add a title and annotation
 ax.set_title('COVID-19 cases rates for last week', fontdict={'fontsize': '15', 'fontweight' : '3'})
 ax.annotate('Data Sources: Harvard Dataverse, 2020; U.S. Census Bureau, 2019', xy=(0.6, .05), xycoords='figure fraction', fontsize=12, color='#555555')
+
 # create an axes on the right side of ax. The width of cax will be 3% of ax and the padding between cax and ax will be fixed at 0.05 inch.
 divider = make_axes_locatable(ax)
 cax = divider.append_axes("right", size="3%", pad=0.05)
-# create colorbar legend
+
+# Create colorbar legend
 legend = plt.cm.ScalarMappable(cmap='Greens', norm=plt.Normalize(vmin=vmin, vmax=vmax))
 # empty array for the data range
-legend.set_array([]) # or alternatively legend._A = []. Not sure why this step is necessary, but many recommend it
+legend.set_array([]) # or alternatively sm._A = []. Not sure why this step is necessary, but many recommends it
 # add the colorbar to the figure
-fig.colorbar(legend)
+fig.colorbar(legend, cax=cax)
+#fig.colorbar(legend)
 # create map
-US_cases_long_week_spatial.plot(column=variable, cmap='Greens', linewidth=0.8, ax=ax, edgecolor='1.0')
+US_cases_long_week_spatial.plot(column=variable, cmap='Greens', linewidth=0.8, ax=ax, cax=cax, edgecolor='1.0')
 
 plt.show()
 ```

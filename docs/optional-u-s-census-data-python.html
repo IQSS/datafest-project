@@ -308,27 +308,27 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb116-4" data-line-number="4">sex_df <span class="op">=</span> pd.DataFrame(sex_data[<span class="dv">1</span>:], columns<span class="op">=</span>sex_data[<span class="dv">0</span>]).rename(columns<span class="op">=</span>{<span class="st">&#39;NAME&#39;</span>:<span class="st">&#39;state&#39;</span>, <span class="st">&#39;state&#39;</span>:<span class="st">&#39;GEOID&#39;</span>})</a>
 <a class="sourceLine" id="cb116-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb116-6" data-line-number="6"><span class="bu">print</span>(sex_df.head(<span class="dv">20</span>))</a></code></pre></div>
-<pre><code>##             state SEX       POP GEOID
-## 0     Mississippi   0   2976149    28
-## 1     Mississippi   1   1442292    28
-## 2     Mississippi   2   1533857    28
-## 3        Missouri   0   6137428    29
-## 4        Missouri   1   3012662    29
-## 5        Missouri   2   3124766    29
-## 6         Montana   0   1068778    30
-## 7         Montana   1    538066    30
-## 8         Montana   2    530712    30
-## 9        Nebraska   0   1934408    31
-## 10       Nebraska   1    966449    31
-## 11         Nevada   0   3080156    32
-## 12         Nevada   1   1544827    32
-## 13  New Hampshire   0   1359711    33
-## 14  New Hampshire   1    673793    33
-## 15     New Jersey   0   8882190    34
-## 16     New Jersey   1   4340587    34
-## 17     New Mexico   0   2096829    35
-## 18     New Mexico   1   1037432    35
-## 19       New York   0  19453561    36</code></pre>
+<pre><code>##             state SEX      POP GEOID
+## 0     Mississippi   0  2976149    28
+## 1     Mississippi   1  1442292    28
+## 2     Mississippi   2  1533857    28
+## 3        Missouri   0  6137428    29
+## 4        Missouri   1  3012662    29
+## 5        Missouri   2  3124766    29
+## 6         Montana   0  1068778    30
+## 7         Montana   1   538066    30
+## 8         Montana   2   530712    30
+## 9        Nebraska   0  1934408    31
+## 10       Nebraska   1   966449    31
+## 11       Nebraska   2   967959    31
+## 12         Nevada   0  3080156    32
+## 13         Nevada   1  1544827    32
+## 14         Nevada   2  1535329    32
+## 15  New Hampshire   0  1359711    33
+## 16  New Hampshire   1   673793    33
+## 17     New Jersey   0  8882190    34
+## 18     New Jersey   1  4340587    34
+## 19     New Mexico   0  2096829    35</code></pre>
 <p>Get population estimates by race:</p>
 <div class="sourceCode" id="cb118"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb118-1" data-line-number="1">race_url <span class="op">=</span> <span class="ss">f&#39;https://api.census.gov/data/2019/pep/charagegroups?get=NAME,RACE,POP&amp;for=state:*&amp;key=</span><span class="sc">{</span>API_key<span class="sc">}</span><span class="ss">&#39;</span></a>
 <a class="sourceLine" id="cb118-2" data-line-number="2">response <span class="op">=</span> requests.get(race_url)</a>
