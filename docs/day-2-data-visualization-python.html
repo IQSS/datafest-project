@@ -307,17 +307,23 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <div id="static-maps" class="section level2">
 <h2>Static Maps</h2>
 <p>A great way to visualize spatial relationships in data is to superimpose variables onto a map. For some datasets, this could involve superimposing points or lines. For our state-level data, this will involve coloring state polygons in proportion to a variable of interest that represents an aggregate summary of a geographic characteristic within each state. Such a graph is often referred to as a choropleth map. To create a choropleth map we first need to acquire <em>shapefiles</em> that contain spatial data about U.S. state-level geographies.</p>
-<p>We can use the Census Tiger shape files for census geographies. We want state-level geographies, which we can download by putting the following URL into our browser: <a href="https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip" class="uri">https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip</a>. We then need to unzip the folder to gain access to the shape file named <code>tl_2019_us_state.shp</code>. Alternatively, we can do this programmatically using the bash shell, either using <code>wget</code> or, in this example, <code>curl</code>:</p>
-<div class="sourceCode" id="cb140"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb140-1" data-line-number="1"><span class="fu">mkdir</span> shapefiles</a>
-<a class="sourceLine" id="cb140-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb140-3" data-line-number="3"><span class="bu">cd</span> shapefiles</a>
-<a class="sourceLine" id="cb140-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb140-5" data-line-number="5"><span class="ex">curl</span> -sS https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip <span class="op">&gt;</span> file.zip</a>
+<p>We can use the Census Tiger shape files for census geographies. We want state-level geographies, which we can download by putting the following URL into our browser: <a href="https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip" class="uri">https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip</a>. We then need to unzip the directory to gain access to the shapefile named <code>tl_2019_us_state.shp</code>.</p>
+<p>Alternatively, we can do this programmatically using the UNIX bash shell, either using <code>wget</code> or, in this example, <code>curl</code>:</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb140-1" data-line-number="1"><span class="co"># make a new directory for the shapefiles</span></a>
+<a class="sourceLine" id="cb140-2" data-line-number="2"><span class="fu">mkdir</span> shapefiles</a>
+<a class="sourceLine" id="cb140-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb140-4" data-line-number="4"><span class="co"># move to the new directory</span></a>
+<a class="sourceLine" id="cb140-5" data-line-number="5"><span class="bu">cd</span> shapefiles</a>
 <a class="sourceLine" id="cb140-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb140-7" data-line-number="7"><span class="fu">unzip</span> file.zip</a>
-<a class="sourceLine" id="cb140-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb140-9" data-line-number="9"><span class="fu">rm</span> file.zip</a></code></pre></div>
-<p>Let’s read the shapefile and clean it a little:</p>
+<a class="sourceLine" id="cb140-7" data-line-number="7"><span class="co"># download the zipped shapefiles</span></a>
+<a class="sourceLine" id="cb140-8" data-line-number="8"><span class="ex">curl</span> -sS https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip <span class="op">&gt;</span> file.zip</a>
+<a class="sourceLine" id="cb140-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb140-10" data-line-number="10"><span class="co"># unzip the shapefiles</span></a>
+<a class="sourceLine" id="cb140-11" data-line-number="11"><span class="fu">unzip</span> file.zip</a>
+<a class="sourceLine" id="cb140-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb140-13" data-line-number="13"><span class="co"># remove the zipped directory</span></a>
+<a class="sourceLine" id="cb140-14" data-line-number="14"><span class="fu">rm</span> file.zip</a></code></pre></div>
+<p>Let’s read the shapefile and clean it:</p>
 <div class="sourceCode" id="cb141"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb141-1" data-line-number="1"><span class="co"># read the shapefile</span></a>
 <a class="sourceLine" id="cb141-2" data-line-number="2">us_state_geo <span class="op">=</span> geopandas.read_file(<span class="st">&#39;shapefiles/tl_2019_us_state.shp&#39;</span>)</a>
 <a class="sourceLine" id="cb141-3" data-line-number="3"><span class="co"># rename `NAME` variable to `state`</span></a>
@@ -399,14 +405,17 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## (0.0, 1.0, 0.0, 1.0)</code></pre>
 <div class="sourceCode" id="cb148"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb148-1" data-line-number="1">ax.set_title(<span class="st">&#39;COVID-19 cases rates for last week&#39;</span>, fontdict<span class="op">=</span>{<span class="st">&#39;fontsize&#39;</span>: <span class="st">&#39;15&#39;</span>, <span class="st">&#39;fontweight&#39;</span> : <span class="st">&#39;3&#39;</span>})</a>
 <a class="sourceLine" id="cb148-2" data-line-number="2">ax.annotate(<span class="st">&#39;Data Sources: Harvard Dataverse, 2020; U.S. Census Bureau, 2019&#39;</span>, xy<span class="op">=</span>(<span class="fl">0.6</span>, <span class="fl">.05</span>), xycoords<span class="op">=</span><span class="st">&#39;figure fraction&#39;</span>, fontsize<span class="op">=</span><span class="dv">12</span>, color<span class="op">=</span><span class="st">&#39;#555555&#39;</span>)</a>
-<a class="sourceLine" id="cb148-3" data-line-number="3"><span class="co"># create colorbar legend</span></a>
-<a class="sourceLine" id="cb148-4" data-line-number="4">legend <span class="op">=</span> plt.cm.ScalarMappable(cmap<span class="op">=</span><span class="st">&#39;Greens&#39;</span>, norm<span class="op">=</span>plt.Normalize(vmin<span class="op">=</span>vmin, vmax<span class="op">=</span>vmax))</a>
-<a class="sourceLine" id="cb148-5" data-line-number="5"><span class="co"># empty array for the data range</span></a>
-<a class="sourceLine" id="cb148-6" data-line-number="6">legend.set_array([]) <span class="co"># or alternatively legend._A = []. Not sure why this step is necessary, but many recommend it</span></a>
-<a class="sourceLine" id="cb148-7" data-line-number="7"><span class="co"># add the colorbar to the figure</span></a>
-<a class="sourceLine" id="cb148-8" data-line-number="8">fig.colorbar(legend)</a>
-<a class="sourceLine" id="cb148-9" data-line-number="9"><span class="co"># create map</span></a></code></pre></div>
-<pre><code>## &lt;matplotlib.colorbar.Colorbar object at 0x17e044c50&gt;</code></pre>
+<a class="sourceLine" id="cb148-3" data-line-number="3"><span class="co"># create an axes on the right side of ax. The width of cax will be 3% of ax and the padding between cax and ax will be fixed at 0.05 inch.</span></a>
+<a class="sourceLine" id="cb148-4" data-line-number="4">divider <span class="op">=</span> make_axes_locatable(ax)</a>
+<a class="sourceLine" id="cb148-5" data-line-number="5">cax <span class="op">=</span> divider.append_axes(<span class="st">&quot;right&quot;</span>, size<span class="op">=</span><span class="st">&quot;3%&quot;</span>, pad<span class="op">=</span><span class="fl">0.05</span>)</a>
+<a class="sourceLine" id="cb148-6" data-line-number="6"><span class="co"># create colorbar legend</span></a>
+<a class="sourceLine" id="cb148-7" data-line-number="7">legend <span class="op">=</span> plt.cm.ScalarMappable(cmap<span class="op">=</span><span class="st">&#39;Greens&#39;</span>, norm<span class="op">=</span>plt.Normalize(vmin<span class="op">=</span>vmin, vmax<span class="op">=</span>vmax))</a>
+<a class="sourceLine" id="cb148-8" data-line-number="8"><span class="co"># empty array for the data range</span></a>
+<a class="sourceLine" id="cb148-9" data-line-number="9">legend.set_array([]) <span class="co"># or alternatively legend._A = []. Not sure why this step is necessary, but many recommend it</span></a>
+<a class="sourceLine" id="cb148-10" data-line-number="10"><span class="co"># add the colorbar to the figure</span></a>
+<a class="sourceLine" id="cb148-11" data-line-number="11">fig.colorbar(legend)</a>
+<a class="sourceLine" id="cb148-12" data-line-number="12"><span class="co"># create map</span></a></code></pre></div>
+<pre><code>## &lt;matplotlib.colorbar.Colorbar object at 0x18e610f50&gt;</code></pre>
 <div class="sourceCode" id="cb150"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb150-1" data-line-number="1">US_cases_long_week_spatial.plot(column<span class="op">=</span>variable, cmap<span class="op">=</span><span class="st">&#39;Greens&#39;</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, ax<span class="op">=</span>ax, edgecolor<span class="op">=</span><span class="st">&#39;1.0&#39;</span>)</a>
 <a class="sourceLine" id="cb150-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb150-3" data-line-number="3">plt.show()</a></code></pre></div>
@@ -490,8 +499,8 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb157-8" data-line-number="8"><span class="co"># add this new tool into our current map</span></a>
 <a class="sourceLine" id="cb157-9" data-line-number="9">p.add_tools(my_hover)</a>
 <a class="sourceLine" id="cb157-10" data-line-number="10"><span class="co"># save the map</span></a>
-<a class="sourceLine" id="cb157-11" data-line-number="11">outfp <span class="op">=</span> <span class="vs">r&quot;data_py/covid-19_map_hover.html&quot;</span></a>
-<a class="sourceLine" id="cb157-12" data-line-number="12">save(p, outfp)</a>
+<a class="sourceLine" id="cb157-11" data-line-number="11">output_file(<span class="st">&quot;data_py/covid-19_map_hover.html&quot;</span>)</a>
+<a class="sourceLine" id="cb157-12" data-line-number="12">save(p)</a>
 <a class="sourceLine" id="cb157-13" data-line-number="13"><span class="co"># show the map</span></a></code></pre></div>
 <pre><code>## &#39;/Users/sworthin/Documents/IQSS/datafest-project/data_py/covid-19_map_hover.html&#39;</code></pre>
 <div class="sourceCode" id="cb159"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb159-1" data-line-number="1">show(p)</a></code></pre></div>
