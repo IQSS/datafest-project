@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>OPTIONAL: U.S. Census data (Python) | DataFest2021 Project Example</title>
+  <meta name="description" content="An example project using COVID-19 data" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="OPTIONAL: U.S. Census data (Python) | DataFest2021 Project Example" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An example project using COVID-19 data" />
+  <meta name="github-repo" content="IQSS/datafest-project" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="OPTIONAL: U.S. Census data (Python) | DataFest2021 Project Example" />
+  
+  <meta name="twitter:description" content="An example project using COVID-19 data" />
+  
+
+<meta name="author" content="" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="day-1-acquiring-and-cleaning-data-python.html"/>
+<link rel="next" href="day-2-data-visualization-python.html"/>
+<script src="libs/jquery/jquery.min.js"></script>
+<link href="libs/gitbook/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<link href="libs/leaflet/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet/leaflet.js"></script>
+<link href="libs/leafletfix/leafletfix.css" rel="stylesheet" />
+<script src="libs/Proj4Leaflet/proj4-compressed.js"></script>
+<script src="libs/Proj4Leaflet/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding/leaflet.js"></script>
+<script src="libs/leaflet-providers/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton/home-button.js"></script>
+<script src="libs/HomeButton/easy-button-src.min.js"></script>
+<script src="libs/clipboard/setClipboardText.js"></script>
+<link href="libs/mapviewCSS/mapview-popup.css" rel="stylesheet" />
+<link href="libs/mapviewCSS/mapview.css" rel="stylesheet" />
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">DataFest2021 Example Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>What is this?</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#project-summary"><i class="fa fa-check"></i>Project summary</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#authors"><i class="fa fa-check"></i>Authors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="project-overview.html"><a href="project-overview.html"><i class="fa fa-check"></i>Project overview</a></li>
+<li class="part"><span><b>I R</b></span></li>
+<li class="chapter" data-level="" data-path="r-setup.html"><a href="r-setup.html"><i class="fa fa-check"></i>R setup</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html"><i class="fa fa-check"></i>DAY 1: Acquiring and cleaning data (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#acquiring-data-from-apis"><i class="fa fa-check"></i>Acquiring data from APIs</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#cleaning-data"><i class="fa fa-check"></i>Cleaning data</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#covid-19-cases-data"><i class="fa fa-check"></i>COVID-19 cases data</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#aggregate-data"><i class="fa fa-check"></i>Aggregate data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html"><i class="fa fa-check"></i>OPTIONAL: U.S. Census data (R)</a><ul>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#u.s.-census-bureau-api"><i class="fa fa-check"></i>U.S. Census Bureau API</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#clean-u.s.-census-data"><i class="fa fa-check"></i>Clean U.S. Census data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#combine-census-and-covid-19-data"><i class="fa fa-check"></i>Combine Census and COVID-19 data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#aggregate-to-weekly-level"><i class="fa fa-check"></i>Aggregate to weekly-level</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html"><i class="fa fa-check"></i>DAY 2: Data visualization (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#non-spatial-graphs"><i class="fa fa-check"></i>Non-spatial graphs</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#static-maps"><i class="fa fa-check"></i>Static Maps</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#interactive-maps"><i class="fa fa-check"></i>Interactive Maps</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html"><i class="fa fa-check"></i>DAY 3: Data analysis (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#descriptives"><i class="fa fa-check"></i>Descriptives</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#modeling"><i class="fa fa-check"></i>Modeling</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#cross-sectional-models"><i class="fa fa-check"></i>Cross-sectional models</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving-r.html"><a href="day-4-data-archiving-r.html"><i class="fa fa-check"></i>DAY 4: Data archiving (R)</a></li>
+<li class="part"><span><b>II Python</b></span></li>
+<li class="chapter" data-level="" data-path="python-setup.html"><a href="python-setup.html"><i class="fa fa-check"></i>Python setup</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-python.html"><a href="day-1-acquiring-and-cleaning-data-python.html"><i class="fa fa-check"></i>DAY 1: Acquiring and cleaning data (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#acquiring-data-from-apis"><i class="fa fa-check"></i>Acquiring data from APIs</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#cleaning-data"><i class="fa fa-check"></i>Cleaning data</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#covid-19-cases-data"><i class="fa fa-check"></i>COVID-19 cases data</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#aggregate-data"><i class="fa fa-check"></i>Aggregate data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-python.html"><a href="optional-u-s-census-data-python.html"><i class="fa fa-check"></i>OPTIONAL: U.S. Census data (Python)</a><ul>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#u.s.-census-bureau-api"><i class="fa fa-check"></i>U.S. Census Bureau API</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#clean-u.s.-census-data"><i class="fa fa-check"></i>Clean U.S. Census data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#combine-census-and-covid-19-data"><i class="fa fa-check"></i>Combine Census and COVID-19 data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#aggregate-to-weekly-level"><i class="fa fa-check"></i>Aggregate to weekly-level</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-python.html"><a href="day-2-data-visualization-python.html"><i class="fa fa-check"></i>DAY 2: Data visualization (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#non-spatial-graphs"><i class="fa fa-check"></i>Non-spatial graphs</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#static-maps"><i class="fa fa-check"></i>Static Maps</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#interactive-maps"><i class="fa fa-check"></i>Interactive Maps</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-python.html"><a href="day-3-data-analysis-python.html"><i class="fa fa-check"></i>DAY 3: Data analysis (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#descriptives"><i class="fa fa-check"></i>Descriptives</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#modeling"><i class="fa fa-check"></i>Modeling</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#cross-sectional-models"><i class="fa fa-check"></i>Cross-sectional models</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving-python.html"><a href="day-4-data-archiving-python.html"><i class="fa fa-check"></i>DAY 4: Data archiving (Python)</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">DataFest2021 Project Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="optional-u.s.-census-data-python" class="section level1">
+<h1>OPTIONAL: U.S. Census data (Python)</h1>
+<p>This section is optional. It provides an example of how to acquire potentially interesting predictors of COVID-19 cases from the U.S. Census Bureau.</p>
+<p>The COVID-19 dataset we accessed above provides daily COVID-19 case counts for each U.S State, together with population counts from the 2010 Decennial Census. This should be enough information to produce some interesting visualizations. For modeling, however, we really only have one useful predictor in the dataset — time. This section describes some options for acquiring other potentially interesting predictors of COVID-19 cases.</p>
+<div id="u.s.-census-bureau-api" class="section level2">
+<h2>U.S. Census Bureau API</h2>
+<p>We may want to use additional demographic information in our visualizations and analysis of the COVID-19 cases. An obvious place to source this information is from the U.S. Census Bureau. There are three U.S. Census Bureau data sources, each with their own API:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Decennial Census:</strong> survey of every household in the U.S. every 10 years — used to calculate population of U.S. geographic areas.</li>
+<li><strong>American Community Survey:</strong> yearly representative sample of 3.5 million households — used to calculate population estimates of U.S. geographic areas.</li>
+<li><strong>Population Estimates:</strong> yearly population estimates of U.S. geographic areas.</li>
+</ol>
+<p>The COVID-19 data from Dataverse already contains population values from the 2010 decennial census. But, using the Census Bureau’s Population Estimates API, we can get updated population data for 2019 as well as population data stratified by age groups, race, and sex.</p>
+<p>We’re going to use the <code>requests</code> package as an interface to the Census Bureau API.</p>
+<p>The first step is to sign-up for an API key: <a href="http://api.census.gov/data/key_signup.html" class="uri">http://api.census.gov/data/key_signup.html</a>. Then give the key a name.</p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb111-1" data-line-number="1"><span class="co"># store API key</span></a>
+<a class="sourceLine" id="cb111-2" data-line-number="2">API_key <span class="op">=</span> <span class="st">&quot;your-API-key-here&quot;</span></a></code></pre></div>
+<p>Next, we can use the <code>.get()</code> method to access the Population Estimates API and extract variables of interest into a pandas data frame:</p>
+<div class="sourceCode" id="cb112"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb112-1" data-line-number="1"><span class="co"># access the Population Estimates API and extract variables of interest</span></a>
+<a class="sourceLine" id="cb112-2" data-line-number="2"><span class="co"># provides overall population estimates and population densities</span></a>
+<a class="sourceLine" id="cb112-3" data-line-number="3">pop_url <span class="op">=</span> <span class="ss">f&#39;https://api.census.gov/data/2019/pep/population?get=NAME,POP,DENSITY&amp;for=state:*&amp;key=</span><span class="sc">{</span>API_key<span class="sc">}</span><span class="ss">&#39;</span></a>
+<a class="sourceLine" id="cb112-4" data-line-number="4">response <span class="op">=</span> requests.get(pop_url)</a>
+<a class="sourceLine" id="cb112-5" data-line-number="5">pop_data <span class="op">=</span> response.json()</a>
+<a class="sourceLine" id="cb112-6" data-line-number="6">pop_df <span class="op">=</span> pd.DataFrame(pop_data[<span class="dv">1</span>:], columns<span class="op">=</span>pop_data[<span class="dv">0</span>]).rename(columns<span class="op">=</span>{<span class="st">&#39;NAME&#39;</span>:<span class="st">&#39;state&#39;</span>, <span class="st">&#39;state&#39;</span>:<span class="st">&#39;GEOID&#39;</span>})</a>
+<a class="sourceLine" id="cb112-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb112-8" data-line-number="8"><span class="bu">print</span>(pop_df.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##              state       POP              DENSITY GEOID
+## 0      Mississippi   2976149    63.42279731700000    28
+## 1         Missouri   6137428    89.27757816400000    29
+## 2          Montana   1068778     7.34314521650000    30
+## 3         Nebraska   1934408    25.18219543000000    31
+## 4           Nevada   3080156    28.03700636500000    32
+## 5    New Hampshire   1359711   151.86532690000000    33
+## 6       New Jersey   8882190  1207.67221710000000    34
+## 7       New Mexico   2096829    17.28456209900000    35
+## 8         New York  19453561   412.81842864000000    36
+## 9   North Carolina  10488084   215.71420423000000    37
+## 10    North Dakota    762062    11.04521346200000    38
+## 11            Ohio  11689100   286.08552119000000    39
+## 12        Oklahoma   3956971    57.68520257700000    40
+## 13          Oregon   4217737    43.94025129200000    41
+## 14    Pennsylvania  12801989   286.13105806000000    42
+## 15    Rhode Island   1059361  1024.62672880000000    44
+## 16  South Carolina   5148714   171.26007636000000    45
+## 17    South Dakota    884659    11.66947080600000    46
+## 18       Tennessee   6829174   165.60404231000000    47
+## 19           Texas  28995881   110.98346670000000    48</code></pre>
+<p>Get population estimates by age group:</p>
+<div class="sourceCode" id="cb114"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb114-1" data-line-number="1">age_url <span class="op">=</span> <span class="ss">f&#39;https://api.census.gov/data/2019/pep/charagegroups?get=NAME,AGEGROUP,POP&amp;for=state:*&amp;key=</span><span class="sc">{</span>API_key<span class="sc">}</span><span class="ss">&#39;</span></a>
+<a class="sourceLine" id="cb114-2" data-line-number="2">response <span class="op">=</span> requests.get(age_url)</a>
+<a class="sourceLine" id="cb114-3" data-line-number="3">age_data <span class="op">=</span> response.json()</a>
+<a class="sourceLine" id="cb114-4" data-line-number="4">age_df <span class="op">=</span> pd.DataFrame(age_data[<span class="dv">1</span>:], columns<span class="op">=</span>age_data[<span class="dv">0</span>]).rename(columns<span class="op">=</span>{<span class="st">&#39;NAME&#39;</span>:<span class="st">&#39;state&#39;</span>, <span class="st">&#39;state&#39;</span>:<span class="st">&#39;GEOID&#39;</span>})</a>
+<a class="sourceLine" id="cb114-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb114-6" data-line-number="6"><span class="bu">print</span>(age_df.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##           state AGEGROUP      POP GEOID
+## 0   Mississippi        0  2976149    28
+## 1   Mississippi        1   183478    28
+## 2   Mississippi        2   189377    28
+## 3   Mississippi        3   206282    28
+## 4   Mississippi        4   201350    28
+## 5   Mississippi        5   201517    28
+## 6   Mississippi        6   206989    28
+## 7   Mississippi        7   186758    28
+## 8   Mississippi        8   189068    28
+## 9   Mississippi        9   176686    28
+## 10  Mississippi       10   181833    28
+## 11  Mississippi       11   180207    28
+## 12  Mississippi       12   197314    28
+## 13  Mississippi       13   188597    28
+## 14  Mississippi       14   160611    28
+## 15  Mississippi       15   128344    28
+## 16  Mississippi       16    87629    28
+## 17  Mississippi       17    57811    28
+## 18  Mississippi       18    52298    28
+## 19  Mississippi       19   698583    28</code></pre>
+<p>Get population estimates by sex:</p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb116-1" data-line-number="1">sex_url <span class="op">=</span> <span class="ss">f&#39;https://api.census.gov/data/2019/pep/charagegroups?get=NAME,SEX,POP&amp;for=state:*&amp;key=</span><span class="sc">{</span>API_key<span class="sc">}</span><span class="ss">&#39;</span></a>
+<a class="sourceLine" id="cb116-2" data-line-number="2">response <span class="op">=</span> requests.get(sex_url)</a>
+<a class="sourceLine" id="cb116-3" data-line-number="3">sex_data <span class="op">=</span> response.json()</a>
+<a class="sourceLine" id="cb116-4" data-line-number="4">sex_df <span class="op">=</span> pd.DataFrame(sex_data[<span class="dv">1</span>:], columns<span class="op">=</span>sex_data[<span class="dv">0</span>]).rename(columns<span class="op">=</span>{<span class="st">&#39;NAME&#39;</span>:<span class="st">&#39;state&#39;</span>, <span class="st">&#39;state&#39;</span>:<span class="st">&#39;GEOID&#39;</span>})</a>
+<a class="sourceLine" id="cb116-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb116-6" data-line-number="6"><span class="bu">print</span>(sex_df.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##             state SEX      POP GEOID
+## 0     Mississippi   0  2976149    28
+## 1     Mississippi   1  1442292    28
+## 2     Mississippi   2  1533857    28
+## 3        Missouri   0  6137428    29
+## 4        Missouri   1  3012662    29
+## 5        Missouri   2  3124766    29
+## 6         Montana   0  1068778    30
+## 7         Montana   1   538066    30
+## 8         Montana   2   530712    30
+## 9        Nebraska   0  1934408    31
+## 10       Nebraska   1   966449    31
+## 11       Nebraska   2   967959    31
+## 12         Nevada   0  3080156    32
+## 13         Nevada   1  1544827    32
+## 14         Nevada   2  1535329    32
+## 15  New Hampshire   0  1359711    33
+## 16  New Hampshire   1   673793    33
+## 17  New Hampshire   2   685918    33
+## 18     New Jersey   0  8882190    34
+## 19     New Jersey   1  4340587    34</code></pre>
+<p>Get population estimates by race:</p>
+<div class="sourceCode" id="cb118"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb118-1" data-line-number="1">race_url <span class="op">=</span> <span class="ss">f&#39;https://api.census.gov/data/2019/pep/charagegroups?get=NAME,RACE,POP&amp;for=state:*&amp;key=</span><span class="sc">{</span>API_key<span class="sc">}</span><span class="ss">&#39;</span></a>
+<a class="sourceLine" id="cb118-2" data-line-number="2">response <span class="op">=</span> requests.get(race_url)</a>
+<a class="sourceLine" id="cb118-3" data-line-number="3">race_data <span class="op">=</span> response.json()</a>
+<a class="sourceLine" id="cb118-4" data-line-number="4">race_df <span class="op">=</span> pd.DataFrame(race_data[<span class="dv">1</span>:], columns<span class="op">=</span>race_data[<span class="dv">0</span>]).rename(columns<span class="op">=</span>{<span class="st">&#39;NAME&#39;</span>:<span class="st">&#39;state&#39;</span>, <span class="st">&#39;state&#39;</span>:<span class="st">&#39;GEOID&#39;</span>})</a>
+<a class="sourceLine" id="cb118-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb118-6" data-line-number="6"><span class="bu">print</span>(race_df.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##           state RACE      POP GEOID
+## 0   Mississippi    0  2976149    28
+## 1   Mississippi    1  1758081    28
+## 2   Mississippi    2  1124559    28
+## 3   Mississippi    3    18705    28
+## 4   Mississippi    4    33032    28
+## 5   Mississippi    5     1806    28
+## 6   Mississippi    6    39966    28
+## 7   Mississippi    7  1792535    28
+## 8   Mississippi    8  1148593    28
+## 9   Mississippi    9    31669    28
+## 10  Mississippi   10    42550    28
+## 11  Mississippi   11     3821    28
+## 12     Missouri    0  6137428    29
+## 13     Missouri    1  5086188    29
+## 14     Missouri    2   725579    29
+## 15     Missouri    3    35839    29
+## 16     Missouri    4   133312    29
+## 17     Missouri    5     9857    29
+## 18     Missouri    6   146653    29
+## 19     Missouri    7  5222409    29</code></pre>
+</div>
+<div id="clean-u.s.-census-data" class="section level2">
+<h2>Clean U.S. Census data</h2>
+<p>The Census data we extracted contain population estimates for multiple categories of age, race, and sex. It will be useful to simplify these data by creating some derived variables that may be of interest when visualizing and analyzing the data. For example, for each state, we may want to calculate:</p>
+<ol style="list-style-type: decimal">
+<li>Overall population count and density</li>
+<li>Proportion of people that are 65 years and older</li>
+<li>Proportion of people that are female (or male)</li>
+<li>Proportion of people that are black (or white, or other race)</li>
+</ol>
+<p>Overall population estimates:</p>
+<div class="sourceCode" id="cb120"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb120-1" data-line-number="1"><span class="co"># order by GEOID (same as state FIPS code)</span></a>
+<a class="sourceLine" id="cb120-2" data-line-number="2">pop_df[[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;POP&quot;</span>]] <span class="op">=</span> pop_df[[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;POP&quot;</span>]].<span class="bu">apply</span>(pd.to_numeric)</a>
+<a class="sourceLine" id="cb120-3" data-line-number="3">pop_wide <span class="op">=</span> pop_df.sort_values([<span class="st">&#39;GEOID&#39;</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb120-4" data-line-number="4"><span class="co"># exclude Puerto Rico and rename some variables</span></a>
+<a class="sourceLine" id="cb120-5" data-line-number="5"><span class="co"># data are already in wide format - no need to reshape</span></a>
+<a class="sourceLine" id="cb120-6" data-line-number="6">pop_wide <span class="op">=</span> pop_wide[pop_wide.state <span class="op">!=</span> <span class="st">&quot;Puerto Rico&quot;</span>].rename(columns<span class="op">=</span>{<span class="st">&#39;POP&#39;</span>:<span class="st">&#39;pop_count_2019&#39;</span>, <span class="st">&#39;DENSITY&#39;</span>:<span class="st">&#39;pop_density_2019&#39;</span>})</a>
+<a class="sourceLine" id="cb120-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb120-8" data-line-number="8"><span class="bu">print</span>(pop_wide.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##                    state  pop_count_2019      pop_density_2019  GEOID
+## 0                Alabama         4903185     96.81165243500000      1
+## 1                 Alaska          731545      1.28112659200000      2
+## 2                Arizona         7278717     64.04325175200000      4
+## 3               Arkansas         3017804     57.99283630500000      5
+## 4             California        39512223    253.52068818000000      6
+## 5               Colorado         5758736     55.56614283700000      8
+## 6            Connecticut         3565287    736.22104642000000      9
+## 7               Delaware          973764    499.74775877000000     10
+## 8   District of Columbia          705749  11543.99993900000000     11
+## 9                Florida        21477737    400.34642766000000     12
+## 10               Georgia        10617423    183.95873142000000     13
+## 11                Hawaii         1415872    220.45750094000000     15
+## 12                 Idaho         1787065     21.62335488800000     16
+## 13              Illinois        12671821    228.26467808000000     17
+## 14               Indiana         6732219    187.91203111000000     18
+## 15                  Iowa         3155070     56.48808963000000     19
+## 16                Kansas         2913314     35.63317347300000     20
+## 17              Kentucky         4467673    113.13031412000000     21
+## 18             Louisiana         4648794    107.59979292000000     22
+## 19                 Maine         1344212     43.57985940900000     23</code></pre>
+<p>Population estimates by age group:</p>
+<div class="sourceCode" id="cb122"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb122-1" data-line-number="1"><span class="co"># convert some variables to numeric</span></a>
+<a class="sourceLine" id="cb122-2" data-line-number="2">age_df[[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;AGEGROUP&quot;</span>, <span class="st">&quot;POP&quot;</span>]] <span class="op">=</span> age_df[[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;AGEGROUP&quot;</span>, <span class="st">&quot;POP&quot;</span>]].<span class="bu">apply</span>(pd.to_numeric)</a>
+<a class="sourceLine" id="cb122-3" data-line-number="3"><span class="co"># order by GEOID (same as state FIPS code)</span></a>
+<a class="sourceLine" id="cb122-4" data-line-number="4">age_df <span class="op">=</span> age_df.sort_values([<span class="st">&#39;GEOID&#39;</span>, <span class="st">&#39;AGEGROUP&#39;</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb122-5" data-line-number="5"><span class="co"># reshape the age groups to wide format</span></a>
+<a class="sourceLine" id="cb122-6" data-line-number="6">age_wide <span class="op">=</span> age_df.pivot_table(index<span class="op">=</span>[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;state&quot;</span>], columns<span class="op">=</span><span class="st">&#39;AGEGROUP&#39;</span>, values<span class="op">=</span><span class="st">&quot;POP&quot;</span>).reset_index()</a>
+<a class="sourceLine" id="cb122-7" data-line-number="7"><span class="co"># create variable for percent of people that are 65 years and older</span></a>
+<a class="sourceLine" id="cb122-8" data-line-number="8">age_wide[<span class="st">&quot;percent_age65over&quot;</span>] <span class="op">=</span> (age_wide[<span class="dv">26</span>] <span class="op">/</span> age_wide[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span></a>
+<a class="sourceLine" id="cb122-9" data-line-number="9"><span class="co"># select columns of interest</span></a>
+<a class="sourceLine" id="cb122-10" data-line-number="10">age_wide <span class="op">=</span> age_wide.loc[:, [<span class="st">&#39;GEOID&#39;</span>, <span class="st">&#39;state&#39;</span>, <span class="st">&#39;percent_age65over&#39;</span>]]</a>
+<a class="sourceLine" id="cb122-11" data-line-number="11"><span class="co"># exclude Puerto Rico</span></a>
+<a class="sourceLine" id="cb122-12" data-line-number="12">age_wide <span class="op">=</span> age_wide[age_wide.state <span class="op">!=</span> <span class="st">&quot;Puerto Rico&quot;</span>]</a>
+<a class="sourceLine" id="cb122-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb122-14" data-line-number="14"><span class="bu">print</span>(age_wide.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>## AGEGROUP  GEOID                 state  percent_age65over
+## 0             1               Alabama          17.332346
+## 1             2                Alaska          12.519804
+## 2             4               Arizona          17.978897
+## 3             5              Arkansas          17.359709
+## 4             6            California          14.775466
+## 5             8              Colorado          14.628418
+## 6             9           Connecticut          17.677230
+## 7            10              Delaware          19.399567
+## 8            11  District of Columbia          12.375930
+## 9            12               Florida          20.939529
+## 10           13               Georgia          14.287403
+## 11           15                Hawaii          18.959906
+## 12           16                 Idaho          16.265217
+## 13           17              Illinois          16.124218
+## 14           18               Indiana          16.127565
+## 15           19                  Iowa          17.525887
+## 16           20                Kansas          16.321172
+## 17           21              Kentucky          16.799887
+## 18           22             Louisiana          15.940091
+## 19           23                 Maine          21.221727</code></pre>
+<p>Population estimates by sex:</p>
+<div class="sourceCode" id="cb124"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb124-1" data-line-number="1"><span class="co"># convert some variables to numeric</span></a>
+<a class="sourceLine" id="cb124-2" data-line-number="2">sex_df[[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;SEX&quot;</span>, <span class="st">&quot;POP&quot;</span>]] <span class="op">=</span> sex_df[[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;SEX&quot;</span>, <span class="st">&quot;POP&quot;</span>]].<span class="bu">apply</span>(pd.to_numeric)</a>
+<a class="sourceLine" id="cb124-3" data-line-number="3"><span class="co"># order by GEOID (same as state FIPS code)</span></a>
+<a class="sourceLine" id="cb124-4" data-line-number="4">sex_df <span class="op">=</span> sex_df.sort_values([<span class="st">&#39;GEOID&#39;</span>, <span class="st">&#39;SEX&#39;</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb124-5" data-line-number="5"><span class="co"># reshape the sex groups to wide format</span></a>
+<a class="sourceLine" id="cb124-6" data-line-number="6">sex_wide <span class="op">=</span> sex_df.pivot_table(index<span class="op">=</span>[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;state&quot;</span>], columns<span class="op">=</span><span class="st">&#39;SEX&#39;</span>, values<span class="op">=</span><span class="st">&quot;POP&quot;</span>).reset_index()</a>
+<a class="sourceLine" id="cb124-7" data-line-number="7"><span class="co"># create variable for percent of people that are female</span></a>
+<a class="sourceLine" id="cb124-8" data-line-number="8">sex_wide[<span class="st">&quot;percent_female&quot;</span>] <span class="op">=</span> (sex_wide[<span class="dv">2</span>] <span class="op">/</span> sex_wide[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span></a>
+<a class="sourceLine" id="cb124-9" data-line-number="9"><span class="co"># select columns of interest</span></a>
+<a class="sourceLine" id="cb124-10" data-line-number="10">sex_wide <span class="op">=</span> sex_wide.loc[:, [<span class="st">&#39;GEOID&#39;</span>, <span class="st">&#39;state&#39;</span>, <span class="st">&#39;percent_female&#39;</span>]]</a>
+<a class="sourceLine" id="cb124-11" data-line-number="11"><span class="co"># exclude Puerto Rico</span></a>
+<a class="sourceLine" id="cb124-12" data-line-number="12">sex_wide <span class="op">=</span> sex_wide[sex_wide.state <span class="op">!=</span> <span class="st">&quot;Puerto Rico&quot;</span>]</a>
+<a class="sourceLine" id="cb124-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb124-14" data-line-number="14"><span class="bu">print</span>(sex_wide.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>## SEX  GEOID                 state  percent_female
+## 0        1               Alabama       51.673922
+## 1        2                Alaska       47.861307
+## 2        4               Arizona       50.303096
+## 3        5              Arkansas       50.904167
+## 4        6            California       50.281577
+## 5        8              Colorado       49.618319
+## 6        9           Connecticut       51.212427
+## 7       10              Delaware       51.652248
+## 8       11  District of Columbia       52.573649
+## 9       12               Florida       51.125875
+## 10      13               Georgia       51.396643
+## 11      15                Hawaii       49.992655
+## 12      16                 Idaho       49.865953
+## 13      17              Illinois       50.862958
+## 14      18               Indiana       50.679560
+## 15      19                  Iowa       50.204750
+## 16      20                Kansas       50.170253
+## 17      21              Kentucky       50.734331
+## 18      22             Louisiana       51.233589
+## 19      23                 Maine       51.041056</code></pre>
+<p>Population estimates by race:</p>
+<div class="sourceCode" id="cb126"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb126-1" data-line-number="1"><span class="co"># convert some variables to numeric</span></a>
+<a class="sourceLine" id="cb126-2" data-line-number="2">race_df[[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;RACE&quot;</span>, <span class="st">&quot;POP&quot;</span>]] <span class="op">=</span> race_df[[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;RACE&quot;</span>, <span class="st">&quot;POP&quot;</span>]].<span class="bu">apply</span>(pd.to_numeric)</a>
+<a class="sourceLine" id="cb126-3" data-line-number="3"><span class="co"># order by GEOID (same as state FIPS code)</span></a>
+<a class="sourceLine" id="cb126-4" data-line-number="4">race_df <span class="op">=</span> race_df.sort_values([<span class="st">&#39;GEOID&#39;</span>, <span class="st">&#39;RACE&#39;</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb126-5" data-line-number="5"><span class="co"># reshape the race categories to wide format</span></a>
+<a class="sourceLine" id="cb126-6" data-line-number="6">race_wide <span class="op">=</span> race_df.pivot_table(index<span class="op">=</span>[<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;state&quot;</span>], columns<span class="op">=</span><span class="st">&#39;RACE&#39;</span>, values<span class="op">=</span><span class="st">&quot;POP&quot;</span>).reset_index()</a>
+<a class="sourceLine" id="cb126-7" data-line-number="7"><span class="co"># create variables for percentages of people that are black and white</span></a>
+<a class="sourceLine" id="cb126-8" data-line-number="8">race_wide[<span class="st">&quot;percent_white&quot;</span>] <span class="op">=</span> (race_wide[<span class="dv">1</span>] <span class="op">/</span> race_wide[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span></a>
+<a class="sourceLine" id="cb126-9" data-line-number="9">race_wide[<span class="st">&quot;percent_black&quot;</span>] <span class="op">=</span> (race_wide[<span class="dv">2</span>] <span class="op">/</span> race_wide[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span></a>
+<a class="sourceLine" id="cb126-10" data-line-number="10"><span class="co"># select columns of interest</span></a>
+<a class="sourceLine" id="cb126-11" data-line-number="11">race_wide <span class="op">=</span> race_wide.loc[:, [<span class="st">&#39;GEOID&#39;</span>, <span class="st">&#39;state&#39;</span>, <span class="st">&#39;percent_white&#39;</span>, <span class="st">&#39;percent_black&#39;</span>]]</a>
+<a class="sourceLine" id="cb126-12" data-line-number="12"><span class="co"># exclude Puerto Rico</span></a>
+<a class="sourceLine" id="cb126-13" data-line-number="13">race_wide <span class="op">=</span> race_wide[race_wide.state <span class="op">!=</span> <span class="st">&quot;Puerto Rico&quot;</span>]</a>
+<a class="sourceLine" id="cb126-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb126-15" data-line-number="15"><span class="bu">print</span>(race_wide.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>## RACE  GEOID                 state  percent_white  percent_black
+## 0         1               Alabama      69.126415      26.784447
+## 1         2                Alaska      65.271173       3.705582
+## 2         4               Arizona      82.616785       5.179443
+## 3         5              Arkansas      79.039527      15.675239
+## 4         6            California      71.939104       6.460677
+## 5         8              Colorado      86.939426       4.592657
+## 6         9           Connecticut      79.700204      12.189341
+## 7        10              Delaware      69.223652      23.162080
+## 8        11  District of Columbia      45.990997      45.977253
+## 9        12               Florida      77.277192      16.917588
+## 10       13               Georgia      60.198270      32.570493
+## 11       15                Hawaii      25.519044       2.186497
+## 12       16                 Idaho      93.022078       0.914684
+## 13       17              Illinois      76.760199      14.619177
+## 14       18               Indiana      84.809956       9.946141
+## 15       19                  Iowa      90.618592       4.060290
+## 16       20                Kansas      86.288193       6.134766
+## 17       21              Kentucky      87.515872       8.471502
+## 18       22             Louisiana      62.787101      32.798463
+## 19       23                 Maine      94.429004       1.688052</code></pre>
+<p>We can now merge all the cleaned Census data into one object called <code>demographics</code>:</p>
+<div class="sourceCode" id="cb128"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb128-1" data-line-number="1">data_frames <span class="op">=</span> [pop_wide, age_wide, sex_wide, race_wide]</a>
+<a class="sourceLine" id="cb128-2" data-line-number="2">demographics <span class="op">=</span> <span class="bu">reduce</span>(<span class="kw">lambda</span>  left,right: pd.merge(left,right,on<span class="op">=</span>[<span class="st">&#39;GEOID&#39;</span>, <span class="st">&#39;state&#39;</span>], how<span class="op">=</span><span class="st">&#39;left&#39;</span>), data_frames)</a>
+<a class="sourceLine" id="cb128-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb128-4" data-line-number="4"><span class="bu">print</span>(demographics.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##                    state  ...  percent_black
+## 0                Alabama  ...      26.784447
+## 1                 Alaska  ...       3.705582
+## 2                Arizona  ...       5.179443
+## 3               Arkansas  ...      15.675239
+## 4             California  ...       6.460677
+## 5               Colorado  ...       4.592657
+## 6            Connecticut  ...      12.189341
+## 7               Delaware  ...      23.162080
+## 8   District of Columbia  ...      45.977253
+## 9                Florida  ...      16.917588
+## 10               Georgia  ...      32.570493
+## 11                Hawaii  ...       2.186497
+## 12                 Idaho  ...       0.914684
+## 13              Illinois  ...      14.619177
+## 14               Indiana  ...       9.946141
+## 15                  Iowa  ...       4.060290
+## 16                Kansas  ...       6.134766
+## 17              Kentucky  ...       8.471502
+## 18             Louisiana  ...      32.798463
+## 19                 Maine  ...       1.688052
+## 
+## [20 rows x 8 columns]</code></pre>
+</div>
+<div id="combine-census-and-covid-19-data" class="section level2">
+<h2>Combine Census and COVID-19 data</h2>
+<p>Merge the COVID-19 cases data with Census demographic data:</p>
+<div class="sourceCode" id="cb130"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb130-1" data-line-number="1"><span class="co"># merge COVID-19 cases with demographics</span></a>
+<a class="sourceLine" id="cb130-2" data-line-number="2">data_frames <span class="op">=</span> [US_states_cases_selected, demographics]</a>
+<a class="sourceLine" id="cb130-3" data-line-number="3">US_cases_long_demogr <span class="op">=</span> <span class="bu">reduce</span>(<span class="kw">lambda</span>  left,right: pd.merge(left,right,on<span class="op">=</span>[<span class="st">&#39;GEOID&#39;</span>, <span class="st">&#39;state&#39;</span>], how<span class="op">=</span><span class="st">&#39;left&#39;</span>), data_frames)</a>
+<a class="sourceLine" id="cb130-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb130-5" data-line-number="5"><span class="co"># update the case rate variables to use population estimates from 2019</span></a>
+<a class="sourceLine" id="cb130-6" data-line-number="6">US_cases_long_demogr[<span class="st">&quot;cases_cum_rate_100K&quot;</span>] <span class="op">=</span> (US_cases_long_demogr[<span class="st">&quot;cases_cum&quot;</span>] <span class="op">/</span> US_cases_long_demogr[<span class="st">&quot;pop_count_2019&quot;</span>]) <span class="op">*</span> <span class="fl">1e5</span></a>
+<a class="sourceLine" id="cb130-7" data-line-number="7">US_cases_long_demogr[<span class="st">&quot;cases_rate_100K&quot;</span>] <span class="op">=</span> (US_cases_long_demogr[<span class="st">&quot;cases_count_pos&quot;</span>] <span class="op">/</span> US_cases_long_demogr[<span class="st">&quot;pop_count_2019&quot;</span>]) <span class="op">*</span> <span class="fl">1e5</span></a>
+<a class="sourceLine" id="cb130-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb130-9" data-line-number="9"><span class="bu">print</span>(US_cases_long_demogr.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##     GEOID    state  ...  percent_white percent_black
+## 0       1  Alabama  ...      69.126415     26.784447
+## 1       1  Alabama  ...      69.126415     26.784447
+## 2       1  Alabama  ...      69.126415     26.784447
+## 3       1  Alabama  ...      69.126415     26.784447
+## 4       1  Alabama  ...      69.126415     26.784447
+## 5       1  Alabama  ...      69.126415     26.784447
+## 6       1  Alabama  ...      69.126415     26.784447
+## 7       1  Alabama  ...      69.126415     26.784447
+## 8       1  Alabama  ...      69.126415     26.784447
+## 9       1  Alabama  ...      69.126415     26.784447
+## 10      1  Alabama  ...      69.126415     26.784447
+## 11      1  Alabama  ...      69.126415     26.784447
+## 12      1  Alabama  ...      69.126415     26.784447
+## 13      1  Alabama  ...      69.126415     26.784447
+## 14      1  Alabama  ...      69.126415     26.784447
+## 15      1  Alabama  ...      69.126415     26.784447
+## 16      1  Alabama  ...      69.126415     26.784447
+## 17      1  Alabama  ...      69.126415     26.784447
+## 18      1  Alabama  ...      69.126415     26.784447
+## 19      1  Alabama  ...      69.126415     26.784447
+## 
+## [20 rows x 18 columns]</code></pre>
+</div>
+<div id="aggregate-to-weekly-level" class="section level2">
+<h2>Aggregate to weekly-level</h2>
+<p>Once again, for the purposes of modeling, it may be useful to aggregate to the weekly-level:</p>
+<div class="sourceCode" id="cb132"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb132-1" data-line-number="1"><span class="co"># COVID-19 data and demographic data</span></a>
+<a class="sourceLine" id="cb132-2" data-line-number="2">aggs_by_col <span class="op">=</span> {<span class="st">&#39;pop_count_2019&#39;</span>: <span class="kw">lambda</span> x: np.mean(x), <span class="st">&#39;percent_age65over&#39;</span>: <span class="kw">lambda</span> x: np.mean(x), <span class="st">&#39;percent_female&#39;</span>: <span class="kw">lambda</span> x: np.mean(x), <span class="op">\</span></a>
+<a class="sourceLine" id="cb132-3" data-line-number="3">    <span class="st">&#39;percent_white&#39;</span>: <span class="kw">lambda</span> x: np.mean(x), <span class="st">&#39;percent_black&#39;</span>: <span class="kw">lambda</span> x: np.mean(x),<span class="st">&#39;cases_cum&#39;</span>: <span class="st">&#39;sum&#39;</span>, <span class="st">&#39;cases_cum_rate_100K&#39;</span>: <span class="st">&#39;sum&#39;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb132-4" data-line-number="4">    <span class="st">&#39;cases_count_pos&#39;</span>: <span class="st">&#39;sum&#39;</span>, <span class="st">&#39;cases_rate_100K&#39;</span>: <span class="st">&#39;sum&#39;</span>}</a>
+<a class="sourceLine" id="cb132-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb132-6" data-line-number="6">US_cases_long_demogr_week <span class="op">=</span> US_cases_long_demogr.groupby([<span class="st">&#39;state&#39;</span>, <span class="st">&#39;week_of_year&#39;</span>], as_index<span class="op">=</span><span class="va">False</span>).agg(aggs_by_col)</a>
+<a class="sourceLine" id="cb132-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb132-8" data-line-number="8"><span class="bu">print</span>(US_cases_long_demogr_week.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##       state  week_of_year  ...  cases_count_pos  cases_rate_100K
+## 0   Alabama             4  ...              0.0         0.000000
+## 1   Alabama             5  ...              0.0         0.000000
+## 2   Alabama             6  ...              0.0         0.000000
+## 3   Alabama             7  ...              0.0         0.000000
+## 4   Alabama             8  ...              0.0         0.000000
+## 5   Alabama             9  ...              0.0         0.000000
+## 6   Alabama            10  ...              0.0         0.000000
+## 7   Alabama            11  ...             23.0         0.469083
+## 8   Alabama            12  ...            134.0         2.732917
+## 9   Alabama            13  ...            673.0        13.725772
+## 10  Alabama            14  ...           1010.0        20.598856
+## 11  Alabama            15  ...           1743.0        35.548322
+## 12  Alabama            16  ...           1320.0        26.921277
+## 13  Alabama            17  ...           1518.0        30.959468
+## 14  Alabama            18  ...           1467.0        29.919328
+## 15  Alabama            19  ...           2001.0        40.810208
+## 16  Alabama            20  ...           1882.0        38.383214
+## 17  Alabama            21  ...           2707.0        55.209012
+## 18  Alabama            22  ...           3474.0        70.851905
+## 19  Alabama            23  ...           2548.0        51.966222
+## 
+## [20 rows x 11 columns]</code></pre>
+<p>Let’s store the data frame in a <code>.csv</code> file so that we can easily access it later:</p>
+<div class="sourceCode" id="cb134"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb134-1" data-line-number="1"><span class="co"># store the data frame in a .csv file</span></a>
+<a class="sourceLine" id="cb134-2" data-line-number="2">US_cases_long_demogr_week.to_csv(<span class="st">&quot;data_py/US_cases_long_demogr_week.csv&quot;</span>)</a></code></pre></div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="day-1-acquiring-and-cleaning-data-python.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="day-2-data-visualization-python.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook/js/app.min.js"></script>
+<script src="libs/gitbook/js/lunr.js"></script>
+<script src="libs/gitbook/js/clipboard.min.js"></script>
+<script src="libs/gitbook/js/plugin-search.js"></script>
+<script src="libs/gitbook/js/plugin-sharing.js"></script>
+<script src="libs/gitbook/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook/js/jquery.highlight.js"></script>
+<script src="libs/gitbook/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/IQSS/datafest-project/edit/master/COVID19_project_Python.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["DataFest2021_project.pdf", "DataFest2021_project.epub"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+</body>
+
+</html>

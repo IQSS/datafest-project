@@ -1,0 +1,952 @@
+
+```{r, setup-py, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+knitr::opts_knit$set(root.dir="~/Documents/IQSS/datafest-project")
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, cache=FALSE, error=FALSE, fig.path="figures/", python.reticulate=TRUE)
+
+require(reticulate)
+use_condaenv(condaenv="datafest", required=TRUE)
+```
+
+
+# (PART) Python {-}
+
+# Python setup
+
+In early January, we'll create an installation guide for R and RStudio (based on this one: <https://iqss.github.io/dss-workshops/Rinstall.html>), together with instructions for installing packages, so that all participants can arrive with working Python environments.
+
+Here, we create a Conda environment using the `bash` shell to install all necessary packages:
+```{bash, eval=FALSE}
+# locally build pyDataverse
+conda skeleton pypi pyDataverse
+conda build pyDataverse
+
+# create a new virtual environment and activate it
+conda create -n datafest
+conda activate datafest
+
+# install pyDataverse from local build
+conda install --use-local pyDataverse
+
+# install all other modules after installing pyDataverse
+conda install requests pandas geopandas numpy matplotlib seaborn descartes bokeh statsmodels 
+
+# math, functools, and warnings modules are in the Python standard library
+```
+
+Now, we can load the necessary packages for the current material:
+```{python}
+from pyDataverse.api import Api
+from pyDataverse.models import Dataverse
+import pandas as pd
+import numpy as np
+import requests
+from functools import reduce
+import matplotlib.pyplot as plt
+import math
+import seaborn as sns
+# for maps
+import descartes
+import geopandas
+from bokeh.plotting import figure, save, show
+from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper, ColorBar
+from bokeh.palettes import Viridis256 as palette
+# for models
+import warnings
+warnings.filterwarnings("ignore")
+import statsmodels.api as sm
+import scipy.stats as stats
+from statsmodels.stats.outliers_influence import OLSInfluence as influence
+import statsmodels.formula.api as smf
+from statsmodels.genmod.bayes_mixed_glm import PoissonBayesMixedGLM
+from scipy.stats.distributions import chi2
+from statsmodels.genmod.generalized_estimating_equations import GEE
+from statsmodels.genmod.cov_struct import Autoregressive
+from statsmodels.genmod.families import (Poisson, NegativeBinomial)
+```
+
+
+# DAY 1: Acquiring and cleaning data (Python)
+
+## Acquiring data from APIs
+
+Often, we want to acquire data that is stored online. Online data sources are stored somewhere on a remote *server* --- a remotely located computer that is optimized to process requests for information. Usually, we make requests using a browser, also known as a *client*, but we can also make requests programmatically. An *Application Programming Interface* (API) is the part of a remote server that receives requests and sends responses. When we make requests programmatically, the responses an API sends are typically data-based, often in some structured format like JSON or XML. 
+
+For the project we'll pursue during DataFest, we're going to access data stored on the Harvard Dataverse. A Dataverse is open source software for repositing research data. Once data is stored in a Dataverse, it can be accessed programmatically using the Dataverse API. We will use the R package `dataverse` as an interface for the Dataverse API.   
+
+Here are three COVID-19 datasets from the Harvard Dataverse:
+
+1. US data on COVID-19 cases and deaths, daily at state-level or county-level: <https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/HIDLTK>
+2. US data on COVID-19 cases and deaths, daily at metropolitan-level: <https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/5B8YM8> 
+3. World data on COVID-19 cases and deaths, daily at country-level: <https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/L20LOT>
+
+As an example of how to use the Dataverse API, we're going to extract daily data on COVID-19 cases from the U.S. at the state-level (from dataset #1 above). These data span the period from January 21st 2020 until November 29th 2020 for each U.S. state (and the District of Columbia). If you wish, you may choose to use one of the other datasets for your project. 
+
+We can use the `pyDataverse` module as an interface for the API:
+```{python}
+# get the digital object identifier for the Dataverse dataset
+DOI = "doi:10.7910/DVN/HIDLTK"
+
+# establish connection
+base_url = 'https://dataverse.harvard.edu/'
+api = Api(base_url)
+print(api.status)
+
+# retrieve the contents of the dataset
+covid = api.get_dataset(DOI)
+```
+
+The `covid` object is a list of metadata that includes information on  all the files stored within this dataset. 
+```{python}
+covid_files_list = covid.json()['data']['latestVersion']['files']
+```
+
+Let's dig further and display the available files:
+```{python}
+# view available files
+for fileObject in covid_files_list:
+    print("File name is {}; id is {}".format(fileObject["dataFile"]["filename"], fileObject["dataFile"]["id"]))
+```
+
+For our example project, we're going to use the data on cumulative COVID-19 cases at the state-level contained in the `us_state_confirmed_case.tab` file.
+```{python}
+# get data file for COVID-19 cases
+US_states_cases_file = api.get_datafile("4201597")
+```
+
+To convert the data into a more user friendly data frame, we have to jump through a few hoops:
+```{python}
+# convert
+in_text = US_states_cases_file.content
+tmp = "data_py/US_states_cases.tab"
+
+f = open(tmp, "wb")
+f.write(in_text)
+f.close()
+
+US_states_cases = pd.read_csv(tmp, sep='\t')
+```
+
+We can now inspect the data:
+```{python}
+# inspect the data
+print(US_states_cases.head(10)) # 50 states plus DC by 314 days
+```
+
+
+## Cleaning data
+
+### COVID-19 cases data
+
+The COVID-19 cases data are in wide format, with individual columns for each day's case counts. To visualize and analyze the data, it will be much easier to reshape the data so that it is organized in long format, with a single column for case counts and another column indicating the date those counts are associated with. 
+
+In addition, it will be useful to derive some time-related variables (e.g., day of year, week of year) from the dates. Finally, we should transform our cumulative case counts into regular counts and create some rate variables by normalizing by population count.
+
+```{python}
+# select columns of interest
+US_states_cases_filtered = US_states_cases.filter(regex="^\\d", axis=1)
+US_states_cases_selected = US_states_cases.loc[:, ['fips', 'NAME', 'POP10']]
+US_states_cases_selected = US_states_cases_selected.assign(**US_states_cases_filtered)
+
+# rename some columns
+US_states_cases_selected = US_states_cases_selected.rename(columns={'fips':'GEOID', 'NAME':'state', 'POP10':'pop_count_2010'})
+
+# reshape to long format for dates
+US_states_cases_selected = pd.melt(US_states_cases_selected, 
+    id_vars=["GEOID", "state", "pop_count_2010"], 
+    var_name='date', value_name="cases_cum")
+US_states_cases_selected = US_states_cases_selected.sort_values(['GEOID', 'date']).reset_index(drop=True)
+
+# create new derived time variables from dates 
+US_states_cases_selected["day_of_year"] = pd.to_datetime(US_states_cases_selected.date).dt.dayofyear
+US_states_cases_selected["week_of_year"] = pd.to_datetime(US_states_cases_selected.date).dt.isocalendar().week
+US_states_cases_selected["month"] = pd.to_datetime(US_states_cases_selected.date).dt.month
+
+# create cases counts
+US_states_cases_selected["cases_count"] = US_states_cases_selected.groupby('state').cases_cum.apply(lambda x: x - x.shift(1)).fillna(0)
+
+# tidy-up negative counts
+US_states_cases_selected["cases_count_pos"] = np.where(US_states_cases_selected["cases_count"] < 0, 0, US_states_cases_selected["cases_count"])
+
+# create cases rates
+US_states_cases_selected["cases_rate_100K"] = (US_states_cases_selected["cases_count_pos"] / US_states_cases_selected["pop_count_2010"]) * 1e5
+US_states_cases_selected["cases_cum_rate_100K"] = (US_states_cases_selected["cases_cum"] / US_states_cases_selected["pop_count_2010"]) * 1e5
+
+US_states_cases_selected.to_csv("data_py/US_states_cases_selected.csv") # 16014 observations (50 states + 1 DC * 314 days)
+```
+
+### Aggregate data
+
+The cleaned data object `US_states_cases_selected` has 16,014 observations (50 states + 1 DC * 314 days). For visualization, this should be fine in most cases. When we come to build models for these data, they may take a long time to run. If we're mainly interested in longer term trends, we can probably get a good approximation by aggregating the data to the weekly level for modeling:
+```{python}
+# aggregate to weekly level (for later modeling)
+aggs_by_col = {'pop_count_2010': lambda x: np.mean(x), 'cases_cum': 'sum', 'cases_cum_rate_100K': 'sum', 'cases_count_pos': 'sum', 'cases_rate_100K': 'sum'}
+
+US_states_cases_week = US_states_cases_selected.groupby(['GEOID', 'state', 'week_of_year'], as_index=False).agg(aggs_by_col)
+print(US_states_cases_week.head(20))
+
+US_states_cases_week.to_csv("data_py/US_states_cases_week.csv")
+```
+
+
+# OPTIONAL: U.S. Census data (Python)
+
+This section is optional. It provides an example of how to acquire potentially interesting predictors of COVID-19 cases from the U.S. Census Bureau.
+
+The COVID-19 dataset we accessed above provides daily COVID-19 case counts for each U.S State, together with population counts from the 2010 Decennial Census. This should be enough information to produce some interesting visualizations. For modeling, however, we really only have one useful predictor in the dataset --- time. This section describes some options for acquiring other potentially interesting predictors of COVID-19 cases.
+
+## U.S. Census Bureau API
+
+We may want to use additional demographic information in our visualizations and analysis of the COVID-19 cases. An obvious place to source this information is from the U.S. Census Bureau. There are three U.S. Census Bureau data sources, each with their own API:
+
+1. **Decennial Census:** survey of every household in the U.S. every 10 years --- used to calculate population of U.S. geographic areas.
+2. **American Community Survey:** yearly representative sample of 3.5 million households --- used to calculate population estimates of U.S. geographic areas.
+3. **Population Estimates:** yearly population estimates of U.S. geographic areas.
+
+The COVID-19 data from Dataverse already contains population values from the 2010 decennial census. But, using the Census Bureau's Population Estimates API, we can get updated population data for 2019 as well as population data stratified by age groups, race, and sex.
+
+We're going to use the `requests` package as an interface to the Census Bureau API. 
+
+The first step is to sign-up for an API key: <http://api.census.gov/data/key_signup.html>. Then give the key a name.
+```{python, echo=FALSE}
+# store API key
+API_key = "77498e49cff2f881427082a66a00f284f0590ba7"
+```
+
+```{python, eval=FALSE}
+# store API key
+API_key = "your-API-key-here"
+```
+
+Next, we can use the `.get()` method to access the Population Estimates API and extract variables of interest into a pandas data frame:
+```{python}
+# access the Population Estimates API and extract variables of interest
+# provides overall population estimates and population densities
+pop_url = f'https://api.census.gov/data/2019/pep/population?get=NAME,POP,DENSITY&for=state:*&key={API_key}'
+response = requests.get(pop_url)
+pop_data = response.json()
+pop_df = pd.DataFrame(pop_data[1:], columns=pop_data[0]).rename(columns={'NAME':'state', 'state':'GEOID'})
+
+print(pop_df.head(20))
+```
+
+Get population estimates by age group: 
+```{python}
+age_url = f'https://api.census.gov/data/2019/pep/charagegroups?get=NAME,AGEGROUP,POP&for=state:*&key={API_key}'
+response = requests.get(age_url)
+age_data = response.json()
+age_df = pd.DataFrame(age_data[1:], columns=age_data[0]).rename(columns={'NAME':'state', 'state':'GEOID'})
+
+print(age_df.head(20))
+```
+
+Get population estimates by sex:
+```{python}
+sex_url = f'https://api.census.gov/data/2019/pep/charagegroups?get=NAME,SEX,POP&for=state:*&key={API_key}'
+response = requests.get(sex_url)
+sex_data = response.json()
+sex_df = pd.DataFrame(sex_data[1:], columns=sex_data[0]).rename(columns={'NAME':'state', 'state':'GEOID'})
+
+print(sex_df.head(20))
+```
+
+Get population estimates by race:
+```{python}
+race_url = f'https://api.census.gov/data/2019/pep/charagegroups?get=NAME,RACE,POP&for=state:*&key={API_key}'
+response = requests.get(race_url)
+race_data = response.json()
+race_df = pd.DataFrame(race_data[1:], columns=race_data[0]).rename(columns={'NAME':'state', 'state':'GEOID'})
+
+print(race_df.head(20))
+```
+
+
+## Clean U.S. Census data
+
+The Census data we extracted contain population estimates for multiple categories of age, race, and sex. It will be useful to simplify these data by creating some derived variables that may be of interest when visualizing and analyzing the data. For example, for each state, we may want to calculate:
+
+1. Overall population count and density 
+2. Proportion of people that are 65 years and older
+3. Proportion of people that are female (or male)
+4. Proportion of people that are black (or white, or other race)
+
+Overall population estimates:
+```{python}
+# order by GEOID (same as state FIPS code)
+pop_df[["GEOID", "POP"]] = pop_df[["GEOID", "POP"]].apply(pd.to_numeric)
+pop_wide = pop_df.sort_values(['GEOID']).reset_index(drop=True)
+# exclude Puerto Rico and rename some variables
+# data are already in wide format - no need to reshape
+pop_wide = pop_wide[pop_wide.state != "Puerto Rico"].rename(columns={'POP':'pop_count_2019', 'DENSITY':'pop_density_2019'})
+
+print(pop_wide.head(20))
+```
+ 
+Population estimates by age group: 
+```{python}
+# convert some variables to numeric
+age_df[["GEOID", "AGEGROUP", "POP"]] = age_df[["GEOID", "AGEGROUP", "POP"]].apply(pd.to_numeric)
+# order by GEOID (same as state FIPS code)
+age_df = age_df.sort_values(['GEOID', 'AGEGROUP']).reset_index(drop=True)
+# reshape the age groups to wide format
+age_wide = age_df.pivot_table(index=["GEOID", "state"], columns='AGEGROUP', values="POP").reset_index()
+# create variable for percent of people that are 65 years and older
+age_wide["percent_age65over"] = (age_wide[26] / age_wide[0]) * 100
+# select columns of interest
+age_wide = age_wide.loc[:, ['GEOID', 'state', 'percent_age65over']]
+# exclude Puerto Rico
+age_wide = age_wide[age_wide.state != "Puerto Rico"]
+
+print(age_wide.head(20))
+```
+
+Population estimates by sex:
+```{python}
+# convert some variables to numeric
+sex_df[["GEOID", "SEX", "POP"]] = sex_df[["GEOID", "SEX", "POP"]].apply(pd.to_numeric)
+# order by GEOID (same as state FIPS code)
+sex_df = sex_df.sort_values(['GEOID', 'SEX']).reset_index(drop=True)
+# reshape the sex groups to wide format
+sex_wide = sex_df.pivot_table(index=["GEOID", "state"], columns='SEX', values="POP").reset_index()
+# create variable for percent of people that are female
+sex_wide["percent_female"] = (sex_wide[2] / sex_wide[0]) * 100
+# select columns of interest
+sex_wide = sex_wide.loc[:, ['GEOID', 'state', 'percent_female']]
+# exclude Puerto Rico
+sex_wide = sex_wide[sex_wide.state != "Puerto Rico"]
+
+print(sex_wide.head(20))
+```
+
+Population estimates by race:
+```{python}
+# convert some variables to numeric
+race_df[["GEOID", "RACE", "POP"]] = race_df[["GEOID", "RACE", "POP"]].apply(pd.to_numeric)
+# order by GEOID (same as state FIPS code)
+race_df = race_df.sort_values(['GEOID', 'RACE']).reset_index(drop=True)
+# reshape the race categories to wide format
+race_wide = race_df.pivot_table(index=["GEOID", "state"], columns='RACE', values="POP").reset_index()
+# create variables for percentages of people that are black and white
+race_wide["percent_white"] = (race_wide[1] / race_wide[0]) * 100
+race_wide["percent_black"] = (race_wide[2] / race_wide[0]) * 100
+# select columns of interest
+race_wide = race_wide.loc[:, ['GEOID', 'state', 'percent_white', 'percent_black']]
+# exclude Puerto Rico
+race_wide = race_wide[race_wide.state != "Puerto Rico"]
+
+print(race_wide.head(20))
+```
+
+We can now merge all the cleaned Census data into one object called `demographics`:
+```{python}
+data_frames = [pop_wide, age_wide, sex_wide, race_wide]
+demographics = reduce(lambda  left,right: pd.merge(left,right,on=['GEOID', 'state'], how='left'), data_frames)
+
+print(demographics.head(20))
+```
+
+## Combine Census and COVID-19 data
+
+Merge the COVID-19 cases data with Census demographic data:
+```{python}
+# merge COVID-19 cases with demographics
+data_frames = [US_states_cases_selected, demographics]
+US_cases_long_demogr = reduce(lambda  left,right: pd.merge(left,right,on=['GEOID', 'state'], how='left'), data_frames)
+
+# update the case rate variables to use population estimates from 2019
+US_cases_long_demogr["cases_cum_rate_100K"] = (US_cases_long_demogr["cases_cum"] / US_cases_long_demogr["pop_count_2019"]) * 1e5
+US_cases_long_demogr["cases_rate_100K"] = (US_cases_long_demogr["cases_count_pos"] / US_cases_long_demogr["pop_count_2019"]) * 1e5
+
+print(US_cases_long_demogr.head(20))
+```
+
+## Aggregate to weekly-level
+
+Once again, for the purposes of modeling, it may be useful to aggregate to the weekly-level:
+```{python}
+# COVID-19 data and demographic data
+aggs_by_col = {'pop_count_2019': lambda x: np.mean(x), 'percent_age65over': lambda x: np.mean(x), 'percent_female': lambda x: np.mean(x), \
+    'percent_white': lambda x: np.mean(x), 'percent_black': lambda x: np.mean(x),'cases_cum': 'sum', 'cases_cum_rate_100K': 'sum', \
+    'cases_count_pos': 'sum', 'cases_rate_100K': 'sum'}
+
+US_cases_long_demogr_week = US_cases_long_demogr.groupby(['state', 'week_of_year'], as_index=False).agg(aggs_by_col)
+
+print(US_cases_long_demogr_week.head(20))
+```
+
+Let's store the data frame in a `.csv` file so that we can easily access it later:
+```{python}
+# store the data frame in a .csv file
+US_cases_long_demogr_week.to_csv("data_py/US_cases_long_demogr_week.csv")
+```
+
+
+# DAY 2: Data visualization (Python)
+
+The COVID-19 cases data we have are inherently temporal and spatial. Let's explore the space and time dimensions of the case data through visualization.
+
+## Non-spatial graphs
+
+Let's load the daily cases data we cleaned yesterday:
+```{python}
+# get dataframe
+US_states_cases_selected = pd.read_csv("data_py/US_states_cases_selected.csv")
+```
+
+We can easily create a wide range of non-spatial graphs using the `seaborn` module. We can start with a very simple line graph of the COVID-19 cases rates over time:
+```{python, fig.height=5, fig.width=7}
+# line graph of covid cases rates 
+sns.lineplot('date', 'cases_rate_100K', data = US_states_cases_selected, hue='state', legend=False)
+plt.xlabel("$date$", fontsize=10)
+plt.ylabel("$cases_rate_100K$", fontsize=10, rotation=90)
+plt.show()
+```
+
+This gives us an overall sense that the rate of cases has increased over time and has become particularly prevalent in the fall of 2020. But, because the lines for each state are not discernible, we can't see if some states have a different trajectory of case rates than other states. A better solution is to use faceting to produce mini-plots for each state.
+
+Let's create a new line graph of COVID-19 cases rates over time, this time with a separate mini-plot for each state:
+```{python, fig.height=8, fig.width=9}
+# line graphs of covid cases rates for each state    
+state_group = US_states_cases_selected["state"].value_counts().index.tolist()
+state_group.sort() 
+num_state_group = len(state_group)
+if num_state_group % 8 == 0:
+    rows = math.ceil(num_state_group/8) + 1
+else:
+    rows = math.ceil(num_state_group/8)
+fig, axs = plt.subplots(rows, 8, squeeze=False, sharex=True, figsize=(10, 10))
+fig.tight_layout()
+fig.text(0.5, 0.02, 'date', ha='center')
+fig.text(0.005, 0.5, 'cases_rate_100K', va='center', rotation='vertical')
+for i in range(len(state_group)):
+    quodient = i//8
+    remainder = i % 8
+    focal_sample = state_group[i]
+    temp = US_states_cases_selected.loc[(US_states_cases_selected.state == focal_sample), :]
+    axs[quodient,remainder].plot(temp['date'], temp['cases_rate_100K'])
+    axs[quodient,remainder].set_xticks(temp['date'], minor=True)
+    axs[quodient,remainder].set_title(label=focal_sample, loc='center', fontsize="x-small")
+if remainder != 5:
+    for j in range(remainder + 1, 8):
+        fig.delaxes(axs[quodient, j])
+
+plt.show()
+```
+
+We can try the same strategy for cumulative COVID-19 case rates over time. First, in a graph that jumbles together all the states:
+```{python, fig.height=5, fig.width=7}
+# line graph of cumulative covid cases rates    
+sns.lineplot('date', 'cases_cum_rate_100K', data = US_states_cases_selected, hue='state', legend=False)
+plt.xlabel("$date$", fontsize=10)
+plt.ylabel("$cases_cum_rate_100K$", fontsize=10, rotation=90)
+plt.show()
+```
+
+Again, we get a sense of the overall trend here, but we can get a much better picture of state-level differences by faceting. So, let's create a new line graph of COVID-19 cumulative cases rates over time, this time with a separate mini-plot for each state:
+```{python, fig.height=8, fig.width=9}
+# line graphs of cumulative covid cases rates for each state
+state_group_cum = US_states_cases_selected["state"].value_counts().index.tolist()
+state_group_cum.sort() 
+num_state_group_cum = len(state_group_cum)
+if num_state_group_cum % 8 == 0:
+    rows = math.ceil(num_state_group_cum/8) + 1
+else:
+    rows = math.ceil(num_state_group_cum/8)
+fig, axs = plt.subplots(rows, 8, squeeze=False, sharex=True, figsize=(10, 10))
+fig.tight_layout()
+fig.text(0.5, 0.02, 'date', ha='center')
+fig.text(0.005, 0.5, 'cases_cum_rate_100K', va='center', rotation='vertical')
+for i in range(len(state_group_cum)):
+    quodient = i//8
+    remainder = i % 8
+    focal_sample = state_group_cum[i]
+    temp = US_states_cases_selected.loc[(US_states_cases_selected.state == focal_sample), :]
+    axs[quodient,remainder].plot(temp['date'], temp['cases_cum_rate_100K'])
+    axs[quodient,remainder].set_xticks(temp['date'], minor=True)
+    axs[quodient,remainder].set_title(label=focal_sample, loc='center', fontsize="x-small")
+if remainder != 5:
+    for j in range(remainder + 1, 8):
+        fig.delaxes(axs[quodient, j])
+
+plt.show()
+```
+
+## Static Maps
+
+A great way to visualize spatial relationships in data is to superimpose variables onto a map. For some datasets, this could involve superimposing points or lines. For our state-level data, this will involve coloring state polygons in proportion to a variable of interest that represents an aggregate summary of a geographic characteristic within each state. Such a graph is often referred to as a choropleth map. To create a choropleth map we first need to acquire *shapefiles* that contain spatial data about U.S. state-level geographies.
+
+We can use the Census Tiger shape files for census geographies. We want state-level geographies, which we can download by putting the following URL into our browser: <https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip>. We then need to unzip the folder to gain access to the shape file named `tl_2019_us_state.shp`. Alternatively, we can do this programmatically using the bash shell, either using `wget` or, in this example, `curl`:
+```{bash, eval=FALSE}
+mkdir shapefiles
+
+cd shapefiles
+
+curl -sS https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip > file.zip
+
+unzip file.zip
+
+rm file.zip
+```
+
+Let's read the shapefile and clean it a little:
+```{python}
+# read the shapefile
+us_state_geo = geopandas.read_file('shapefiles/tl_2019_us_state.shp')
+# rename `NAME` variable to `state`
+us_state_geo = us_state_geo.rename(columns={'NAME':'state'})
+# clean
+us_state_geo[["GEOID"]] = us_state_geo[["GEOID"]].apply(pd.to_numeric)
+us_state_geo = us_state_geo[(us_state_geo.GEOID < 60) & (us_state_geo.state != "Alaska") & (us_state_geo.state != "Hawaii")]
+print(us_state_geo.head(20))
+# us_state_geo = us_state_geo.to_crs("EPSG:3395")
+```
+
+Now let's read in the weekly cases data we cleaned yesterday:
+```{python}
+# use previously cleaned weekly dataset
+US_states_cases_week = pd.read_csv("data_py/US_states_cases_week.csv")
+```
+
+We can now merge the spatial data with our weekly COVID-19 cases data, keeping only the contiguous 48 states (plus D.C.):
+```{python}
+# merge weekly COVID-19 cases with spatial data
+US_states_cases_week[["GEOID"]] = US_states_cases_week[["GEOID"]].apply(pd.to_numeric)
+data_frames = [us_state_geo, US_states_cases_week]
+US_cases_long_week_spatial = reduce(lambda  left,right: pd.merge(left,right,on=['GEOID', 'state'], how='left'), data_frames)
+# filter out some states and subset data for only latest week
+US_cases_long_week_spatial = US_cases_long_week_spatial[(US_cases_long_week_spatial.GEOID < 60) & (US_cases_long_week_spatial.state != "Alaska") & (US_cases_long_week_spatial.state != "Hawaii")]
+US_cases_long_week_spatial = US_cases_long_week_spatial[US_cases_long_week_spatial.week_of_year == max(US_cases_long_week_spatial.week_of_year)]
+
+print(US_cases_long_week_spatial.head(20))
+```
+
+Let's create a choropleth map for the latest week's COVID-19 cases using the `Matplotlib` module:
+```{python, fig.height=6, fig.width=9}
+# set the value column that will be visualized
+variable = 'cases_rate_100K'
+# set the range for the choropleth values
+vmin, vmax = 0, 600
+# create figure and axes for Matplotlib
+fig, ax = plt.subplots(1, figsize=(15, 15))
+# remove the axis
+ax.axis('off')
+# add a title and annotation
+ax.set_title('COVID-19 cases rates for last week', fontdict={'fontsize': '15', 'fontweight' : '3'})
+ax.annotate('Data Sources: Harvard Dataverse, 2020; U.S. Census Bureau, 2019', xy=(0.6, .05), xycoords='figure fraction', fontsize=12, color='#555555')
+# create colorbar legend
+legend = plt.cm.ScalarMappable(cmap='Greens', norm=plt.Normalize(vmin=vmin, vmax=vmax))
+# empty array for the data range
+legend.set_array([]) # or alternatively legend._A = []. Not sure why this step is necessary, but many recommend it
+# add the colorbar to the figure
+fig.colorbar(legend)
+# create map
+US_cases_long_week_spatial.plot(column=variable, cmap='Greens', linewidth=0.8, ax=ax, edgecolor='1.0')
+
+plt.show()
+```
+
+## Interactive Maps
+
+Static maps are great for publications. Interactive maps, which can be viewed in a browser, can potentially provide a much richer source of information.
+
+Firstly, we need to create a function to get the polygon x and y coordinates:
+```{python}
+def getPolyCoords(row, geom, coord_type):
+    """Returns the coordinates ('x|y') of edges/vertices of a Polygon/others"""
+
+    # Parse the geometries and grab the coordinate
+    geometry = row[geom]
+    #print(geometry.type)
+
+    if geometry.type=='Polygon':
+        if coord_type == 'x':
+            # Get the x coordinates of the exterior
+            # Interior is more complex: xxx.interiors[0].coords.xy[0]
+            return list( geometry.exterior.coords.xy[0] )
+        elif coord_type == 'y':
+            # Get the y coordinates of the exterior
+            return list( geometry.exterior.coords.xy[1] )
+
+    if geometry.type in ['Point', 'LineString']:
+        if coord_type == 'x':
+            return list( geometry.xy[0] )
+        elif coord_type == 'y':
+            return list( geometry.xy[1] )
+
+    if geometry.type=='MultiLineString':
+        all_xy = []
+        for ea in geometry:
+            if coord_type == 'x':
+                all_xy.extend(list( ea.xy[0] ))
+            elif coord_type == 'y':
+                all_xy.extend(list( ea.xy[1] ))
+        return all_xy
+
+    if geometry.type=='MultiPolygon':
+        all_xy = []
+        for ea in geometry:
+            if coord_type == 'x':
+                all_xy.extend(list( ea.exterior.coords.xy[0] ))
+            elif coord_type == 'y':
+                all_xy.extend(list( ea.exterior.coords.xy[1] ))
+        return all_xy
+
+    else:
+        # Finally, return empty list for unknown geometries
+        return []
+```
+
+Now let's use our function to get the Polygon x and y coordinates:
+```{python}
+# use our function to get the Polygon x and y coordinates
+US_cases_long_week_spatial['x'] = US_cases_long_week_spatial.apply(getPolyCoords, geom='geometry', coord_type='x', axis=1)
+US_cases_long_week_spatial['y'] = US_cases_long_week_spatial.apply(getPolyCoords, geom='geometry', coord_type='y', axis=1)
+# show only head of x and y columns
+print(US_cases_long_week_spatial[['x', 'y']].head(2))
+# make a copy, drop the geometry column and create ColumnDataSource
+US_cases_long_week_spatial_df = US_cases_long_week_spatial.drop('geometry', axis=1).copy()
+gsource = ColumnDataSource(US_cases_long_week_spatial_df)
+```
+
+In this section, we'll focus on building a simple interactive map using the `geopandas` module.
+```{python, fig.height=6, fig.width=9}
+# create the color mapper
+color_mapper = LogColorMapper(palette=palette)
+# initialize our figure
+p = figure(title="COVID-19 cases rates for last week", plot_width=1200, plot_height=800)
+# Plot grid
+p.patches('x', 'y', source=gsource, fill_color={'field': 'cases_rate_100K', 'transform': color_mapper}, fill_alpha=1.0, line_color="black", line_width=0.05)
+# create a color bar
+color_bar = ColorBar(color_mapper=color_mapper, width=16,  location=(0,0))
+# add color bar to map
+p.add_layout(color_bar, 'right')
+# initialize our tool for interactivity to the map
+my_hover = HoverTool()
+# tell to the HoverTool that what information it should show to us
+my_hover.tooltips = [('name', '@state'), ('cases rate', '@cases_rate_100K')]
+# add this new tool into our current map
+p.add_tools(my_hover)
+# save the map
+outfp = r"data_py/covid-19_map_hover.html"
+save(p, outfp)
+# show the map
+show(p)
+```
+
+
+# DAY 3: Data analysis (Python)
+
+In this section, we will be exploring the relationships between COVID-19 cases and demographic data from the Census Bureau. If you did not complete the optional Census data section, you can still access these data by loading the following file:
+```{python}
+# load data
+US_cases_long_demogr_week = pd.read_csv('data_py/US_cases_long_demogr_week.csv')
+del US_cases_long_demogr_week["Unnamed: 0"]
+
+print(US_cases_long_demogr_week.head(20))
+print(US_cases_long_demogr_week.shape)
+```
+
+## Descriptives
+
+It's always a good idea to start data analysis by looking at some descriptive statistics of the sample data. Here, we can inspect the demographic data we accessed through the Census API:
+```{python}
+US_cases_long_demogr_week_des = \
+    US_cases_long_demogr_week.groupby(['state'], \
+    as_index=False)['percent_age65over', 'percent_female', 'percent_white', 'percent_black'].mean()
+
+print(US_cases_long_demogr_week_des)
+```
+
+## Modeling
+
+The data we have consists of counts of COVID-19 cases over time for each of 50 U.S. states and D.C. These data will be challenging to model, since we will have to deal with the following issues:
+
+1. The response consists of counts with a huge number of zeros and an extended right tail. Typically, to model counts we'd use a poisson model. Here, the extended right tail suggests the data are overdispersed (i.e., the variance is greater than the mean), which would mean the restrictive assumptions of the poisson distribution are not met and may push us towards a quasi-poisson or negative binomial model. In addition, we may need some machinery in the model to deal with the excess of zeros (a zero-inflation component), since this is atypical for a poisson or negative binomial model. Let's inspect the response variable:
+   ```{python, fig.height=3.2, fig.width=6}
+   print(US_cases_long_demogr_week['cases_count_pos'].describe())
+
+   US_cases_long_demogr_week_filter = US_cases_long_demogr_week[US_cases_long_demogr_week.cases_count_pos < 1000]
+   sns.distplot(US_cases_long_demogr_week_filter['cases_count_pos'], kde=False, color='red', bins=1000)
+   plt.xlabel("$cases_count_pos$", fontsize=10)
+   plt.ylabel("$count$", fontsize=10, rotation=90)
+   plt.show()
+   ```
+
+2. The data are inherently spatial in nature --- in this case, at the state-level.
+3. The data are inherently temporal in nature --- in this case, at the daily- or weekly-level.
+
+
+### Cross-sectional models
+
+Let's start with something at the simpler end of the scale. We can reduce complexity by initially modeling a single time point (for example, the most recent week of case data), with a subset of states, and just a single predictor --- the intercept --- to estimate the average number of cases.
+```{python}
+# filter the most recent week's data
+US_cases_latest_week = US_cases_long_demogr_week[US_cases_long_demogr_week.week_of_year == max(US_cases_long_demogr_week.week_of_year)]
+
+print(US_cases_latest_week.head(20))
+```
+
+Now let's inspect the response variable for just this last week of data:
+```{python, fig.height=4, fig.width=6}
+# histogram of last week's counts
+sns.distplot(US_cases_latest_week['cases_count_pos'], kde=False, color='red', bins=50)
+plt.xlabel("$cases_count_pos$", fontsize=10)
+plt.ylabel("$count$", fontsize=10, rotation=90)
+plt.show()
+
+# distribution of cases in sample
+print(US_cases_latest_week['cases_count_pos'].describe())
+```
+
+Usually with count data, we'd fit a model designed to deal with the idiosyncrasies of counts --- which are integer-only, lower bounded at zero, and generally heavily right skewed --- such as a poisson, quasi-poisson, or negative binomial model. Here, however, the average number of counts is high and we don't have any observations near the theoretical lower boundary of zero, so we can try a basic linear model since in this situation the Gaussian family of distributions approximates the poisson. 
+```{python}
+# fit intercept-only OLS model
+US_cases_latest_week['intercept'] = 1
+Y = US_cases_latest_week['cases_count_pos']
+X = US_cases_latest_week['intercept']
+model_last_week1 = sm.OLS(Y,X)
+results = model_last_week1.fit()
+
+print(results.summary())
+print(results.conf_int(alpha=0.05))
+```
+
+Let's look at the model diagnostics:
+```{python, fig.height=5, fig.width=8}
+# model diagnostics
+fig, axs = plt.subplots(1, 3, squeeze=False, figsize=(6, 6))
+fig.tight_layout()
+axs[0,0].scatter(x=results.fittedvalues,y=results.resid,edgecolor='k')
+xmin = min(results.fittedvalues)
+xmax = max(results.fittedvalues)
+axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
+axs[0,0].set_xlabel("Fitted values",fontsize=10)
+axs[0,0].set_ylabel("Residuals",fontsize=10)
+axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+
+stats.probplot(results.resid_pearson, plot=plt, fit=True)
+axs[0,2].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[0,2].set_ylabel("Sample quantiles",fontsize=10)
+axs[0,2].set_title("Q-Q plot of normalized residuals",fontsize=12)
+
+inf=influence(results)
+(c, p) = inf.cooks_distance
+axs[0,1].stem(np.arange(len(c)), c, markerfmt=",")
+axs[0,1].set_title("Cook's distance plot for the residuals",fontsize=12)
+
+plt.show()
+```
+
+We recovered the average number of cases for the latest week, pooled over all the states. Now we can try adding some of our explanatory variables.
+```{python}
+# fit OLS model
+X = US_cases_latest_week[['percent_age65over', 'percent_female', 'percent_black']]
+Y = US_cases_latest_week['cases_count_pos']
+X = sm.add_constant(X)
+model_last_week2 = sm.OLS(Y,X)
+results2 = model_last_week2.fit()
+
+print(results2.summary())
+```
+
+Let's look at the model diagnostics:
+```{python, fig.height=5, fig.width=8}
+# model diagnostics 
+fig, axs = plt.subplots(1, 3, squeeze=False, figsize=(6, 6))
+fig.tight_layout()
+axs[0,0].scatter(x=results2.fittedvalues,y=results2.resid,edgecolor='k')
+xmin = min(results2.fittedvalues)
+xmax = max(results2.fittedvalues)
+axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
+axs[0,0].set_xlabel("Fitted values",fontsize=10)
+axs[0,0].set_ylabel("Residuals",fontsize=10)
+axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+
+stats.probplot(results2.resid_pearson, plot=plt, fit=True)
+axs[0,2].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[0,2].set_ylabel("Sample quantiles",fontsize=10)
+axs[0,2].set_title("Q-Q plot of normalized residuals",fontsize=12)
+
+inf=influence(results2)
+(c, p) = inf.cooks_distance
+axs[0,1].stem(np.arange(len(c)), c, markerfmt=",")
+axs[0,1].set_title("Cook's distance plot for the residuals",fontsize=12)
+
+plt.show()
+```
+
+We're not able to detect any effects of interest here --- perhaps because we're only using one week of data. We actually have a year's worth of data, so let's try modeling this as a panel (a longitudinal dataset).
+
+### Panel models
+
+We have case count data for each state, tracked at the weekly-level for a year. This means that the data are clustered at the state-level (i.e., observations within states are likely to be correlated with one another more than observations between different states). We could deal with this clustering in several different ways, but using a multi-level model with random intercepts grouped by state is a good, flexible option. Let's start with a linear model.
+```{python}
+# linear mixed effects with random intercepts for states
+model_panel1 = smf.mixedlm("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", US_cases_long_demogr_week, groups="state")
+model_panel1_results = model_panel1.fit(reml=False)
+
+print(model_panel1_results.summary())
+print(model_panel1_results.conf_int(alpha=0.05, cols=None))
+```
+
+Let's look at the model diagnostics:
+```{python, fig.height=5, fig.width=8}
+# model diagnostics
+fig, axs = plt.subplots(1, 2, squeeze=False, figsize=(6, 6))
+fig.tight_layout()
+axs[0,0].scatter(x=model_panel1_results.fittedvalues,y=model_panel1_results.resid,edgecolor='k')
+xmin = min(model_panel1_results.fittedvalues)
+xmax = max(model_panel1_results.fittedvalues)
+axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
+axs[0,0].set_xlabel("Fitted values",fontsize=10)
+axs[0,0].set_ylabel("Residuals",fontsize=10)
+axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+
+stats.probplot(model_panel1_results.resid, plot=plt, fit=True)
+axs[0,1].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[0,1].set_ylabel("Sample quantiles",fontsize=10)
+axs[0,1].set_title("Q-Q plot of residuals",fontsize=12)
+
+plt.show()
+```
+
+Aside from the convergence warning, the model diagnostics look terrible here --- why do you think that is? Now that we have a full year's worth of data, for many states the earlier part of that year consisted of a very small number of cases --- often zero cases. 
+```{python, eval=FALSE}
+# HOW TO DO THIS IN PYTHON???
+summary(US_cases_long_demogr_week$cases_count_pos)
+
+table(US_cases_long_demogr_week$cases_count_pos == 0)
+```
+
+About 15\% of the data are zeros. This makes the linear model a poor fit for these data. Let's try a model designed specifically for count data --- the poisson. To account for the fact that states have different population levels, we can include an exposure term using the `offset` argument to get counts per population unit:
+```{python}
+# Generalized Estimating Equations: poisson model
+
+gee_model1 = GEE.from_formula("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", \
+    groups="state", \
+    data=US_cases_long_demogr_week, \
+    time='week_of_year', \
+    cov_struct=Autoregressive(), \
+    family=Poisson(), \
+    offset=np.log(np.asarray(US_cases_long_demogr_week["pop_count_2019"])))
+    
+gee_model1_results = gee_model1.fit()
+
+print(gee_model1_results.summary())
+print(Autoregressive().summary())
+print("scale=%.2f" % (gee_model1_results.scale))
+```
+
+Let's look at the model diagnostics:
+```{python, fig.height=5, fig.width=8}
+# plot within-group residuals against time difference
+fig = gee_model1_results.plot_isotropic_dependence()
+plt.grid(True)
+plt.show()
+
+# plot mean-variance relationship without covariates
+yg = gee_model1.cluster_list(np.asarray(US_cases_long_demogr_week["cases_count_pos"]))
+ymn = [x.mean() for x in yg]
+yva = [x.var() for x in yg]
+plt.grid(True)
+plt.plot(np.log(ymn), np.log(yva), 'o')
+plt.xlabel("Log Mean", size=13)
+plt.ylabel("Log Variance", size=13)
+plt.show()
+
+# model diagnostics
+fig, axs = plt.subplots(1, 2, squeeze=False, figsize=(6, 6))
+fig.tight_layout()
+axs[0,0].scatter(x=gee_model1_results.fittedvalues,y=gee_model1_results.resid,edgecolor='k')
+xmin = min(gee_model1_results.fittedvalues)
+xmax = max(gee_model1_results.fittedvalues)
+axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
+axs[0,0].set_xlabel("Fitted values",fontsize=10)
+axs[0,0].set_ylabel("Residuals",fontsize=10)
+axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+
+stats.probplot(gee_model1_results.resid_pearson, plot=plt, fit=True)
+axs[0,1].set_xlim(0, 4)
+axs[0,1].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[0,1].set_ylabel("Sample quantiles",fontsize=10)
+axs[0,1].set_title("Q-Q plot of normalized residuals",fontsize=12)
+
+plt.show()
+```
+
+This model does a much better job of capturing the idiosyncrasies of our data. We can go further, however. The data may not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean), in which case one option is to fit a negative binomial model that can account for this over- or under-dispersion.
+```{python}
+# Generalized Estimating Equations: negative binomial model
+
+gee_model2 = GEE.from_formula("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", \
+    groups="state", \
+    data=US_cases_long_demogr_week, \
+    time='week_of_year', \
+    cov_struct=Autoregressive(), \
+    family=NegativeBinomial(alpha=1.), \
+    offset=np.log(np.asarray(US_cases_long_demogr_week["pop_count_2019"])))
+    
+gee_model2_results = gee_model2.fit()
+
+print(gee_model2_results.summary())
+print(Autoregressive().summary())
+print("scale=%.2f" % (gee_model2_results.scale))
+```
+
+Let's look at the model diagnostics:
+```{python, fig.height=5, fig.width=8}
+# model diagnostics
+fig, axs = plt.subplots(1, 2, squeeze=False, figsize=(6, 6))
+fig.tight_layout()
+axs[0,0].scatter(x=gee_model2_results.fittedvalues,y=gee_model2_results.resid,edgecolor='k')
+xmin = min(gee_model2_results.fittedvalues)
+xmax = max(gee_model2_results.fittedvalues)
+axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
+axs[0,0].set_xlabel("Fitted values",fontsize=10)
+axs[0,0].set_ylabel("Residuals",fontsize=10)
+axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+
+stats.probplot(gee_model2_results.resid_pearson, plot=plt, fit=True)
+axs[0,1].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[0,1].set_ylabel("Sample quantiles",fontsize=10)
+axs[0,1].set_title("Q-Q plot of normalized residuals",fontsize=12)
+
+plt.show()
+```
+
+Let's compare our last two models:
+```{python}
+# use quasi information criterion to compare poisson and negative binomial models
+print(gee_model2_results.qic())    
+print(gee_model1_results.qic())
+```
+
+Both count-based models improve upon the previous linear models, but are not satisfactory, probably because they cannot take account of the excessive zeros and they only use cluster-robust standard errors and thus cannot model how lower level coefficients vary across groups of the higher level. Python's `statsmodels` has zero-inflated count model methods, but they cannot deal with panel/clustered data. However, we can fit generalized linear mixed effects models in a Bayesian framework using `statsmodels`. Initially, let's try a model with random intercepts only:
+```{python}
+# Bayesian poisson mixed effects model with random intercepts for states
+formula = "cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black"
+po_bay_panel1 = PoissonBayesMixedGLM.from_formula(formula, {'state': '0 + C(state)'}, US_cases_long_demogr_week)              
+
+po_bay_panel1_results = po_bay_panel1.fit_map()                                                                                                                        
+print(po_bay_panel1_results.summary()) 
+``` 
+
+We can also add random slopes for time to allow for different trajectories of case rates across states:
+```{python}
+# Bayesian poisson mixed effects model with random intercepts and slopes
+formula = "cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black"
+po_bay_panel2 = PoissonBayesMixedGLM.from_formula(formula, {'state': '0 + C(state)', "week_of_year": '0 + C(week_of_year)'}, US_cases_long_demogr_week)                                                              
+po_bay_panel2_results = po_bay_panel2.fit_map()                                                                                                                        
+print(po_bay_panel2_results.summary()) 
+```
+
+So far, we've only been modeling a linear trend for time. From our visualizations we know that this is unrealistic. How could we incorporate non-linear time elements in the model (e.g., splines, polynomials)? In addition, we haven't dealt with the issue of zero-inflation --- what are our options? We could try to fit our model in two stages:
+
+1. a logistic model for the zero/non-zero component.
+2. a truncated count model (poisson or negative binomial) for the positive count component only.
+
+
+# DAY 4: Data archiving (Python)
+
+The data archiving session will probably be a GUI-based overview of using Harvard Dataverse. Though, we could put some demo code out there for how to create and populate a Dataverse entry using the API.
+
+

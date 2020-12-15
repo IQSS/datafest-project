@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>OPTIONAL: U.S. Census data (R) | DataFest2021 Project Example</title>
+  <meta name="description" content="An example project using COVID-19 data" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="OPTIONAL: U.S. Census data (R) | DataFest2021 Project Example" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An example project using COVID-19 data" />
+  <meta name="github-repo" content="IQSS/datafest-project" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="OPTIONAL: U.S. Census data (R) | DataFest2021 Project Example" />
+  
+  <meta name="twitter:description" content="An example project using COVID-19 data" />
+  
+
+<meta name="author" content="" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="day-1-acquiring-and-cleaning-data-r.html"/>
+<link rel="next" href="day-2-data-visualization-r.html"/>
+<script src="libs/jquery/jquery.min.js"></script>
+<link href="libs/gitbook/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<link href="libs/leaflet/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet/leaflet.js"></script>
+<link href="libs/leafletfix/leafletfix.css" rel="stylesheet" />
+<script src="libs/Proj4Leaflet/proj4-compressed.js"></script>
+<script src="libs/Proj4Leaflet/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding/leaflet.js"></script>
+<script src="libs/leaflet-providers/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton/home-button.js"></script>
+<script src="libs/HomeButton/easy-button-src.min.js"></script>
+<script src="libs/clipboard/setClipboardText.js"></script>
+<link href="libs/mapviewCSS/mapview-popup.css" rel="stylesheet" />
+<link href="libs/mapviewCSS/mapview.css" rel="stylesheet" />
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">DataFest2021 Example Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>What is this?</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#project-summary"><i class="fa fa-check"></i>Project summary</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#authors"><i class="fa fa-check"></i>Authors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="project-overview.html"><a href="project-overview.html"><i class="fa fa-check"></i>Project overview</a></li>
+<li class="part"><span><b>I R</b></span></li>
+<li class="chapter" data-level="" data-path="r-setup.html"><a href="r-setup.html"><i class="fa fa-check"></i>R setup</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html"><i class="fa fa-check"></i>DAY 1: Acquiring and cleaning data (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#acquiring-data-from-apis"><i class="fa fa-check"></i>Acquiring data from APIs</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#cleaning-data"><i class="fa fa-check"></i>Cleaning data</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#covid-19-cases-data"><i class="fa fa-check"></i>COVID-19 cases data</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#aggregate-data"><i class="fa fa-check"></i>Aggregate data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html"><i class="fa fa-check"></i>OPTIONAL: U.S. Census data (R)</a><ul>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#u.s.-census-bureau-api"><i class="fa fa-check"></i>U.S. Census Bureau API</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#clean-u.s.-census-data"><i class="fa fa-check"></i>Clean U.S. Census data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#combine-census-and-covid-19-data"><i class="fa fa-check"></i>Combine Census and COVID-19 data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#aggregate-to-weekly-level"><i class="fa fa-check"></i>Aggregate to weekly-level</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html"><i class="fa fa-check"></i>DAY 2: Data visualization (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#non-spatial-graphs"><i class="fa fa-check"></i>Non-spatial graphs</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#static-maps"><i class="fa fa-check"></i>Static Maps</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#interactive-maps"><i class="fa fa-check"></i>Interactive Maps</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html"><i class="fa fa-check"></i>DAY 3: Data analysis (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#descriptives"><i class="fa fa-check"></i>Descriptives</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#modeling"><i class="fa fa-check"></i>Modeling</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#cross-sectional-models"><i class="fa fa-check"></i>Cross-sectional models</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving-r.html"><a href="day-4-data-archiving-r.html"><i class="fa fa-check"></i>DAY 4: Data archiving (R)</a></li>
+<li class="part"><span><b>II Python</b></span></li>
+<li class="chapter" data-level="" data-path="python-setup.html"><a href="python-setup.html"><i class="fa fa-check"></i>Python setup</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-python.html"><a href="day-1-acquiring-and-cleaning-data-python.html"><i class="fa fa-check"></i>DAY 1: Acquiring and cleaning data (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#acquiring-data-from-apis"><i class="fa fa-check"></i>Acquiring data from APIs</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#cleaning-data"><i class="fa fa-check"></i>Cleaning data</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#covid-19-cases-data"><i class="fa fa-check"></i>COVID-19 cases data</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#aggregate-data"><i class="fa fa-check"></i>Aggregate data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-python.html"><a href="optional-u-s-census-data-python.html"><i class="fa fa-check"></i>OPTIONAL: U.S. Census data (Python)</a><ul>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#u.s.-census-bureau-api"><i class="fa fa-check"></i>U.S. Census Bureau API</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#clean-u.s.-census-data"><i class="fa fa-check"></i>Clean U.S. Census data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#combine-census-and-covid-19-data"><i class="fa fa-check"></i>Combine Census and COVID-19 data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#aggregate-to-weekly-level"><i class="fa fa-check"></i>Aggregate to weekly-level</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-python.html"><a href="day-2-data-visualization-python.html"><i class="fa fa-check"></i>DAY 2: Data visualization (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#non-spatial-graphs"><i class="fa fa-check"></i>Non-spatial graphs</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#static-maps"><i class="fa fa-check"></i>Static Maps</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#interactive-maps"><i class="fa fa-check"></i>Interactive Maps</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-python.html"><a href="day-3-data-analysis-python.html"><i class="fa fa-check"></i>DAY 3: Data analysis (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#descriptives"><i class="fa fa-check"></i>Descriptives</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#modeling"><i class="fa fa-check"></i>Modeling</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#cross-sectional-models"><i class="fa fa-check"></i>Cross-sectional models</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving-python.html"><a href="day-4-data-archiving-python.html"><i class="fa fa-check"></i>DAY 4: Data archiving (Python)</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">DataFest2021 Project Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="optional-u.s.-census-data-r" class="section level1">
+<h1>OPTIONAL: U.S. Census data (R)</h1>
+<p>This section is optional. It provides an example of how to acquire potentially interesting predictors of COVID-19 cases from the U.S. Census Bureau.</p>
+<p>The COVID-19 dataset we accessed above provides daily COVID-19 case counts for each U.S State, together with population counts from the 2010 Decennial Census. This should be enough information to produce some interesting visualizations. For modeling, however, we really only have one useful predictor in the dataset — time. This section describes some options for acquiring other potentially interesting predictors of COVID-19 cases.</p>
+<div id="u.s.-census-bureau-api" class="section level2">
+<h2>U.S. Census Bureau API</h2>
+<p>We may want to use additional demographic information in our visualizations and analysis of the COVID-19 cases. An obvious place to source this information is from the U.S. Census Bureau. There are three U.S. Census Bureau data sources, each with their own API:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Decennial Census:</strong> survey of every household in the U.S. every 10 years — used to calculate population of U.S. geographic areas.</li>
+<li><strong>American Community Survey:</strong> yearly representative sample of 3.5 million households — used to calculate population estimates of U.S. geographic areas.</li>
+<li><strong>Population Estimates:</strong> yearly population estimates of U.S. geographic areas.</li>
+</ol>
+<p>The COVID-19 data from Dataverse already contains population values from the 2010 decennial census. But, using the Census Bureau’s Population Estimates API, we can get updated population data for 2019 as well as population data stratified by age groups, race, and sex.</p>
+<p>We’re going to use the <code>tidycensus</code> package as an interface to the Census Bureau API. A basic usage guide is available — <a href="https://walker-data.com/tidycensus/articles/basic-usage.html" class="uri">https://walker-data.com/tidycensus/articles/basic-usage.html</a> — but we’ll walk through all the necessary steps.</p>
+<p>The first step is to sign-up for an API key: <a href="http://api.census.gov/data/key_signup.html" class="uri">http://api.census.gov/data/key_signup.html</a>. Then give the key a name.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># store API key</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">API_key &lt;-<span class="st"> &quot;your-API-key-here&quot;</span></a></code></pre></div>
+<p>We can then set the API key for our current R session using the <code>census_api_key()</code> function (or we can include it in an <code>.Renviron</code> file for future use):</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co"># set API key for current session</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">census_api_key</span>(API_key)</a></code></pre></div>
+<p>Next, we can use the <code>get_estimates()</code> function to access the Population Estimates API and extract variables of interest:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">pop &lt;-<span class="st"> </span><span class="kw">get_estimates</span>(</a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">    <span class="dt">geography =</span> <span class="st">&quot;state&quot;</span>, <span class="co"># we&#39;ll select state-level data</span></a>
+<a class="sourceLine" id="cb19-3" data-line-number="3">    <span class="dt">product =</span> <span class="st">&quot;population&quot;</span>, <span class="co"># provides overall population estimates and population densities</span></a>
+<a class="sourceLine" id="cb19-4" data-line-number="4">    <span class="dt">year =</span> <span class="dv">2019</span>, <span class="co"># the latest year available</span></a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">    <span class="dt">key =</span> API_key)</a>
+<a class="sourceLine" id="cb19-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb19-7" data-line-number="7"><span class="kw">glimpse</span>(pop)</a></code></pre></div>
+<pre><code>## Rows: 104
+## Columns: 4
+## $ NAME     &lt;chr&gt; &quot;Mississippi&quot;, &quot;Missouri&quot;, &quot;Montana&quot;, &quot;Nebraska&quot;, &quot;Nevada&quot;, …
+## $ GEOID    &lt;chr&gt; &quot;28&quot;, &quot;29&quot;, &quot;30&quot;, &quot;31&quot;, &quot;32&quot;, &quot;33&quot;, &quot;34&quot;, &quot;35&quot;, &quot;36&quot;, &quot;37&quot;, …
+## $ variable &lt;chr&gt; &quot;POP&quot;, &quot;POP&quot;, &quot;POP&quot;, &quot;POP&quot;, &quot;POP&quot;, &quot;POP&quot;, &quot;POP&quot;, &quot;POP&quot;, &quot;POP…
+## $ value    &lt;dbl&gt; 2976149, 6137428, 1068778, 1934408, 3080156, 1359711, 888219…</code></pre>
+<p>Get population estimates by age group:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">age &lt;-<span class="st"> </span><span class="kw">get_estimates</span>(</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">    <span class="dt">geography =</span> <span class="st">&quot;state&quot;</span>, </a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">    <span class="dt">product =</span> <span class="st">&quot;characteristics&quot;</span>, <span class="co"># provides population estimates stratified by the variable specified in `breakdown`</span></a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">    <span class="dt">breakdown =</span> <span class="st">&quot;AGEGROUP&quot;</span>, <span class="co"># population estimates for different age groups</span></a>
+<a class="sourceLine" id="cb21-5" data-line-number="5">    <span class="dt">breakdown_labels =</span> <span class="ot">TRUE</span>, <span class="co"># labels for age groups</span></a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">    <span class="dt">year =</span> <span class="dv">2019</span>, </a>
+<a class="sourceLine" id="cb21-7" data-line-number="7">    <span class="dt">key =</span> API_key) </a>
+<a class="sourceLine" id="cb21-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb21-9" data-line-number="9"><span class="kw">glimpse</span>(age)</a></code></pre></div>
+<pre><code>## Rows: 1,664
+## Columns: 4
+## $ GEOID    &lt;chr&gt; &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;54&quot;, &quot;05&quot;, &quot;16&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, …
+## $ NAME     &lt;chr&gt; &quot;Mississippi&quot;, &quot;Mississippi&quot;, &quot;Mississippi&quot;, &quot;West Virginia&quot;…
+## $ value    &lt;dbl&gt; 2976149, 183478, 189377, 1792147, 3017804, 1787065, 206282, …
+## $ AGEGROUP &lt;fct&gt; All ages, Age 0 to 4 years, Age 5 to 9 years, All ages, All …</code></pre>
+<p>Get population estimates by sex:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">sex &lt;-<span class="st"> </span><span class="kw">get_estimates</span>(</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">    <span class="dt">geography =</span> <span class="st">&quot;state&quot;</span>, </a>
+<a class="sourceLine" id="cb23-3" data-line-number="3">    <span class="dt">product =</span> <span class="st">&quot;characteristics&quot;</span>,</a>
+<a class="sourceLine" id="cb23-4" data-line-number="4">    <span class="dt">breakdown =</span> <span class="st">&quot;SEX&quot;</span>, <span class="co"># population estimates for different sexes</span></a>
+<a class="sourceLine" id="cb23-5" data-line-number="5">    <span class="dt">breakdown_labels =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb23-6" data-line-number="6">    <span class="dt">year =</span> <span class="dv">2019</span>, </a>
+<a class="sourceLine" id="cb23-7" data-line-number="7">    <span class="dt">key =</span> API_key) </a>
+<a class="sourceLine" id="cb23-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb23-9" data-line-number="9"><span class="kw">glimpse</span>(sex)</a></code></pre></div>
+<pre><code>## Rows: 156
+## Columns: 4
+## $ GEOID &lt;chr&gt; &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;29&quot;, &quot;29&quot;, &quot;29&quot;, &quot;30&quot;, &quot;30&quot;, &quot;30&quot;, &quot;31&quot;, &quot;31…
+## $ NAME  &lt;chr&gt; &quot;Mississippi&quot;, &quot;Mississippi&quot;, &quot;Mississippi&quot;, &quot;Missouri&quot;, &quot;Misso…
+## $ value &lt;dbl&gt; 2976149, 1442292, 1533857, 6137428, 3012662, 3124766, 1068778, …
+## $ SEX   &lt;chr&gt; &quot;Both sexes&quot;, &quot;Male&quot;, &quot;Female&quot;, &quot;Both sexes&quot;, &quot;Male&quot;, &quot;Female&quot;,…</code></pre>
+<p>Get population estimates by race:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">race &lt;-<span class="st"> </span><span class="kw">get_estimates</span>(</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">    <span class="dt">geography =</span> <span class="st">&quot;state&quot;</span>, </a>
+<a class="sourceLine" id="cb25-3" data-line-number="3">    <span class="dt">product =</span> <span class="st">&quot;characteristics&quot;</span>,</a>
+<a class="sourceLine" id="cb25-4" data-line-number="4">    <span class="dt">breakdown =</span><span class="st">&quot;RACE&quot;</span>, <span class="co"># population estimates for different races</span></a>
+<a class="sourceLine" id="cb25-5" data-line-number="5">    <span class="dt">breakdown_labels =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb25-6" data-line-number="6">    <span class="dt">year =</span> <span class="dv">2019</span>, </a>
+<a class="sourceLine" id="cb25-7" data-line-number="7">    <span class="dt">key =</span> API_key)</a>
+<a class="sourceLine" id="cb25-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb25-9" data-line-number="9"><span class="kw">glimpse</span>(race)</a></code></pre></div>
+<pre><code>## Rows: 613
+## Columns: 4
+## $ GEOID &lt;chr&gt; &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28&quot;, &quot;28…
+## $ NAME  &lt;chr&gt; &quot;Mississippi&quot;, &quot;Mississippi&quot;, &quot;Mississippi&quot;, &quot;Mississippi&quot;, &quot;Mi…
+## $ value &lt;dbl&gt; 2976149, 1758081, 1124559, 18705, 33032, 1806, 39966, 1792535, …
+## $ RACE  &lt;chr&gt; &quot;All races&quot;, &quot;White alone&quot;, &quot;Black alone&quot;, &quot;American Indian and…</code></pre>
+</div>
+<div id="clean-u.s.-census-data" class="section level2">
+<h2>Clean U.S. Census data</h2>
+<p>The Census data we extracted contain population estimates for multiple categories of age, race, and sex. It will be useful to simplify these data by creating some derived variables that may be of interest when visualizing and analyzing the data. For example, for each state, we may want to calculate:</p>
+<ol style="list-style-type: decimal">
+<li>Overall population count and density</li>
+<li>Proportion of people that are 65 years and older</li>
+<li>Proportion of people that are female (or male)</li>
+<li>Proportion of people that are black (or white, or other race)</li>
+</ol>
+<p>Overall population estimates:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">pop_wide &lt;-<span class="st"> </span>pop <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="st">    </span><span class="co"># order by GEOID (same as state FIPS code)</span></a>
+<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="st">    </span><span class="kw">arrange</span>(GEOID) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb27-4" data-line-number="4"><span class="st">    </span><span class="co"># rename state </span></a>
+<a class="sourceLine" id="cb27-5" data-line-number="5"><span class="st">    </span><span class="kw">rename</span>(<span class="dt">state =</span> NAME) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb27-6" data-line-number="6"><span class="st">    </span><span class="co"># exclude Puerto Rico</span></a>
+<a class="sourceLine" id="cb27-7" data-line-number="7"><span class="st">    </span><span class="kw">filter</span>(state <span class="op">!=</span><span class="st"> &quot;Puerto Rico&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-8" data-line-number="8"><span class="st">    </span><span class="co"># reshape population variables to wide format</span></a>
+<a class="sourceLine" id="cb27-9" data-line-number="9"><span class="st">    </span><span class="kw">pivot_wider</span>(<span class="dt">names_from =</span> variable, <span class="dt">values_from =</span> value) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb27-10" data-line-number="10"><span class="st">    </span><span class="co"># rename population variables</span></a>
+<a class="sourceLine" id="cb27-11" data-line-number="11"><span class="st">    </span><span class="kw">rename</span>(<span class="dt">pop_count_2019 =</span> POP, <span class="dt">pop_density_2019 =</span> DENSITY)</a>
+<a class="sourceLine" id="cb27-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb27-13" data-line-number="13"><span class="kw">glimpse</span>(pop_wide)</a></code></pre></div>
+<pre><code>## Rows: 51
+## Columns: 4
+## $ state            &lt;chr&gt; &quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;Califor…
+## $ GEOID            &lt;chr&gt; &quot;01&quot;, &quot;02&quot;, &quot;04&quot;, &quot;05&quot;, &quot;06&quot;, &quot;08&quot;, &quot;09&quot;, &quot;10&quot;, &quot;11&quot;…
+## $ pop_count_2019   &lt;dbl&gt; 4903185, 731545, 7278717, 3017804, 39512223, 5758736…
+## $ pop_density_2019 &lt;dbl&gt; 96.811652, 1.281127, 64.043252, 57.992836, 253.52068…</code></pre>
+<p>Population estimates by age group:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">age_wide &lt;-<span class="st"> </span>age <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="st">    </span><span class="co"># order by GEOID (same as state FIPS code)</span></a>
+<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="st">    </span><span class="kw">arrange</span>(GEOID) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb29-4" data-line-number="4"><span class="st">    </span><span class="co"># rename state</span></a>
+<a class="sourceLine" id="cb29-5" data-line-number="5"><span class="st">    </span><span class="kw">rename</span>(<span class="dt">state =</span> NAME) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb29-6" data-line-number="6"><span class="st">    </span><span class="co"># reshape the age groups to wide format</span></a>
+<a class="sourceLine" id="cb29-7" data-line-number="7"><span class="st">    </span><span class="kw">pivot_wider</span>(<span class="dt">names_from =</span> AGEGROUP, <span class="dt">values_from =</span> value) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb29-8" data-line-number="8"><span class="st">    </span><span class="co"># create variable for percentortion of people that are 65 years and older</span></a>
+<a class="sourceLine" id="cb29-9" data-line-number="9"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">percent_age65over =</span> (<span class="st">`</span><span class="dt">65 years and over</span><span class="st">`</span> <span class="op">/</span><span class="st">  `</span><span class="dt">All ages</span><span class="st">`</span>) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb29-10" data-line-number="10"><span class="st">    </span><span class="co"># select columns of interest</span></a>
+<a class="sourceLine" id="cb29-11" data-line-number="11"><span class="st">    </span><span class="kw">select</span>(GEOID, state, percent_age65over)</a>
+<a class="sourceLine" id="cb29-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb29-13" data-line-number="13"><span class="kw">glimpse</span>(age_wide)</a></code></pre></div>
+<pre><code>## Rows: 52
+## Columns: 3
+## $ GEOID             &lt;chr&gt; &quot;01&quot;, &quot;02&quot;, &quot;04&quot;, &quot;05&quot;, &quot;06&quot;, &quot;08&quot;, &quot;09&quot;, &quot;10&quot;, &quot;11…
+## $ state             &lt;chr&gt; &quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;Califo…
+## $ percent_age65over &lt;dbl&gt; 17.33235, 12.51980, 17.97890, 17.35971, 14.77547, 1…</code></pre>
+<p>Population estimates by sex:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">sex_wide &lt;-<span class="st"> </span>sex <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="st">    </span><span class="co"># order by GEOID (same as state FIPS code)</span></a>
+<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="st">    </span><span class="kw">arrange</span>(GEOID) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb31-4" data-line-number="4"><span class="st">    </span><span class="co"># rename state</span></a>
+<a class="sourceLine" id="cb31-5" data-line-number="5"><span class="st">    </span><span class="kw">rename</span>(<span class="dt">state =</span> NAME) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb31-6" data-line-number="6"><span class="st">    </span><span class="co"># reshape the sex categories to wide format</span></a>
+<a class="sourceLine" id="cb31-7" data-line-number="7"><span class="st">    </span><span class="kw">pivot_wider</span>(<span class="dt">names_from =</span> SEX, <span class="dt">values_from =</span> value) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb31-8" data-line-number="8"><span class="st">    </span><span class="co"># create variable for percentortion of people that are female</span></a>
+<a class="sourceLine" id="cb31-9" data-line-number="9"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">percent_female =</span> (Female <span class="op">/</span><span class="st"> `</span><span class="dt">Both sexes</span><span class="st">`</span>) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb31-10" data-line-number="10"><span class="st">    </span><span class="co"># select columns of interest</span></a>
+<a class="sourceLine" id="cb31-11" data-line-number="11"><span class="st">    </span><span class="kw">select</span>(GEOID, state, percent_female)</a>
+<a class="sourceLine" id="cb31-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb31-13" data-line-number="13"><span class="kw">glimpse</span>(sex_wide)</a></code></pre></div>
+<pre><code>## Rows: 52
+## Columns: 3
+## $ GEOID          &lt;chr&gt; &quot;01&quot;, &quot;02&quot;, &quot;04&quot;, &quot;05&quot;, &quot;06&quot;, &quot;08&quot;, &quot;09&quot;, &quot;10&quot;, &quot;11&quot;, …
+## $ state          &lt;chr&gt; &quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;Californi…
+## $ percent_female &lt;dbl&gt; 51.67392, 47.86131, 50.30310, 50.90417, 50.28158, 49.6…</code></pre>
+<p>Population estimates by race:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">race_wide &lt;-<span class="st"> </span>race <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-2" data-line-number="2"><span class="st">    </span><span class="co"># order by GEOID (same as state FIPS code)</span></a>
+<a class="sourceLine" id="cb33-3" data-line-number="3"><span class="st">    </span><span class="kw">arrange</span>(GEOID) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="st">    </span><span class="co"># rename state</span></a>
+<a class="sourceLine" id="cb33-5" data-line-number="5"><span class="st">    </span><span class="kw">rename</span>(<span class="dt">state =</span> NAME) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb33-6" data-line-number="6"><span class="st">    </span><span class="co"># reshape the race categories to wide format</span></a>
+<a class="sourceLine" id="cb33-7" data-line-number="7"><span class="st">    </span><span class="kw">pivot_wider</span>(<span class="dt">names_from =</span> RACE, <span class="dt">values_from =</span> value) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb33-8" data-line-number="8"><span class="st">    </span><span class="co"># create variables for percentortion of people that are black and white</span></a>
+<a class="sourceLine" id="cb33-9" data-line-number="9"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">percent_white =</span> (<span class="st">`</span><span class="dt">White alone</span><span class="st">`</span> <span class="op">/</span><span class="st">  `</span><span class="dt">All races</span><span class="st">`</span>) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb33-10" data-line-number="10">           <span class="dt">percent_black =</span> (<span class="st">`</span><span class="dt">Black alone</span><span class="st">`</span> <span class="op">/</span><span class="st">  `</span><span class="dt">All races</span><span class="st">`</span>) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb33-11" data-line-number="11"><span class="st">    </span><span class="co"># select columns of interest</span></a>
+<a class="sourceLine" id="cb33-12" data-line-number="12"><span class="st">    </span><span class="kw">select</span>(GEOID, state, percent_white, percent_black)</a>
+<a class="sourceLine" id="cb33-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb33-14" data-line-number="14"><span class="kw">glimpse</span>(race_wide)</a></code></pre></div>
+<pre><code>## Rows: 52
+## Columns: 4
+## $ GEOID         &lt;chr&gt; &quot;01&quot;, &quot;02&quot;, &quot;04&quot;, &quot;05&quot;, &quot;06&quot;, &quot;08&quot;, &quot;09&quot;, &quot;10&quot;, &quot;11&quot;, &quot;…
+## $ state         &lt;chr&gt; &quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;California…
+## $ percent_white &lt;dbl&gt; 69.12641, 65.27117, 82.61679, 79.03953, 71.93910, 86.93…
+## $ percent_black &lt;dbl&gt; 26.7844473, 3.7055820, 5.1794430, 15.6752393, 6.4606767…</code></pre>
+<p>We can now merge all the cleaned Census data into one object called <code>demographics</code>:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1">demographics &lt;-<span class="st"> </span><span class="kw">list</span>(pop_wide, age_wide, sex_wide, race_wide) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2"><span class="st">    </span><span class="kw">reduce</span>(left_join, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;state&quot;</span>))</a>
+<a class="sourceLine" id="cb35-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb35-4" data-line-number="4"><span class="kw">glimpse</span>(demographics)</a></code></pre></div>
+<pre><code>## Rows: 51
+## Columns: 8
+## $ state             &lt;chr&gt; &quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;Califo…
+## $ GEOID             &lt;chr&gt; &quot;01&quot;, &quot;02&quot;, &quot;04&quot;, &quot;05&quot;, &quot;06&quot;, &quot;08&quot;, &quot;09&quot;, &quot;10&quot;, &quot;11…
+## $ pop_count_2019    &lt;dbl&gt; 4903185, 731545, 7278717, 3017804, 39512223, 575873…
+## $ pop_density_2019  &lt;dbl&gt; 96.811652, 1.281127, 64.043252, 57.992836, 253.5206…
+## $ percent_age65over &lt;dbl&gt; 17.33235, 12.51980, 17.97890, 17.35971, 14.77547, 1…
+## $ percent_female    &lt;dbl&gt; 51.67392, 47.86131, 50.30310, 50.90417, 50.28158, 4…
+## $ percent_white     &lt;dbl&gt; 69.12641, 65.27117, 82.61679, 79.03953, 71.93910, 8…
+## $ percent_black     &lt;dbl&gt; 26.7844473, 3.7055820, 5.1794430, 15.6752393, 6.460…</code></pre>
+</div>
+<div id="combine-census-and-covid-19-data" class="section level2">
+<h2>Combine Census and COVID-19 data</h2>
+<p>Merge the COVID-19 cases data with Census demographic data:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co"># merge COVID-19 cases with demographics</span></a>
+<a class="sourceLine" id="cb37-2" data-line-number="2">US_cases_long_demogr &lt;-<span class="st"> </span>US_cases_long <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb37-3" data-line-number="3"><span class="st">    </span><span class="kw">left_join</span>(demographics, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;GEOID&quot;</span>, <span class="st">&quot;state&quot;</span>)) </a>
+<a class="sourceLine" id="cb37-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb37-5" data-line-number="5"><span class="co"># update the case rate variables to use population estimates from 2019</span></a>
+<a class="sourceLine" id="cb37-6" data-line-number="6">US_cases_long_demogr &lt;-<span class="st"> </span>US_cases_long_demogr <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb37-7" data-line-number="7"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">cases_cum_rate_100K =</span> (cases_cum <span class="op">/</span><span class="st"> </span>pop_count_<span class="dv">2019</span>) <span class="op">*</span><span class="st"> </span><span class="fl">1e5</span>,</a>
+<a class="sourceLine" id="cb37-8" data-line-number="8">           <span class="dt">cases_rate_100K =</span> (cases_count_pos <span class="op">/</span><span class="st"> </span>pop_count_<span class="dv">2019</span>) <span class="op">*</span><span class="st"> </span><span class="fl">1e5</span>)</a>
+<a class="sourceLine" id="cb37-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb37-10" data-line-number="10"><span class="kw">glimpse</span>(US_cases_long_demogr)</a></code></pre></div>
+<pre><code>## Rows: 16,014
+## Columns: 18
+## Groups: state [51]
+## $ GEOID               &lt;chr&gt; &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;01&quot;, &quot;…
+## $ state               &lt;chr&gt; &quot;Alabama&quot;, &quot;Alabama&quot;, &quot;Alabama&quot;, &quot;Alabama&quot;, &quot;Alab…
+## $ pop_count_2010      &lt;dbl&gt; 4779736, 4779736, 4779736, 4779736, 4779736, 4779…
+## $ date                &lt;date&gt; 2020-01-21, 2020-01-22, 2020-01-23, 2020-01-24, …
+## $ cases_cum           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ day_of_year         &lt;dbl&gt; 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 3…
+## $ week_of_year        &lt;dbl&gt; 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 6, 6…
+## $ month               &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2…
+## $ cases_count         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ cases_count_pos     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ cases_rate_100K     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ cases_cum_rate_100K &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ pop_count_2019      &lt;dbl&gt; 4903185, 4903185, 4903185, 4903185, 4903185, 4903…
+## $ pop_density_2019    &lt;dbl&gt; 96.81165, 96.81165, 96.81165, 96.81165, 96.81165,…
+## $ percent_age65over   &lt;dbl&gt; 17.33235, 17.33235, 17.33235, 17.33235, 17.33235,…
+## $ percent_female      &lt;dbl&gt; 51.67392, 51.67392, 51.67392, 51.67392, 51.67392,…
+## $ percent_white       &lt;dbl&gt; 69.12641, 69.12641, 69.12641, 69.12641, 69.12641,…
+## $ percent_black       &lt;dbl&gt; 26.78445, 26.78445, 26.78445, 26.78445, 26.78445,…</code></pre>
+</div>
+<div id="aggregate-to-weekly-level" class="section level2">
+<h2>Aggregate to weekly-level</h2>
+<p>Once again, for the purposes of modeling, it may be useful to aggregate to the weekly-level:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co"># COVID-19 data and demographic data</span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2">US_cases_long_demogr_week &lt;-<span class="st"> </span>US_cases_long_demogr <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-3" data-line-number="3"><span class="st">    </span><span class="kw">group_by</span>(state, week_of_year) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-4" data-line-number="4"><span class="st">    </span><span class="kw">summarize</span>(<span class="dt">pop_count_2019 =</span> <span class="kw">mean</span>(pop_count_<span class="dv">2019</span>),</a>
+<a class="sourceLine" id="cb39-5" data-line-number="5">              <span class="dt">percent_age65over =</span> <span class="kw">mean</span>(percent_age65over), </a>
+<a class="sourceLine" id="cb39-6" data-line-number="6">              <span class="dt">percent_female =</span> <span class="kw">mean</span>(percent_female), </a>
+<a class="sourceLine" id="cb39-7" data-line-number="7">              <span class="dt">percent_white =</span> <span class="kw">mean</span>(percent_white), </a>
+<a class="sourceLine" id="cb39-8" data-line-number="8">              <span class="dt">percent_black =</span> <span class="kw">mean</span>(percent_black),</a>
+<a class="sourceLine" id="cb39-9" data-line-number="9">              <span class="dt">cases_count_pos =</span> <span class="kw">sum</span>(cases_count_pos), </a>
+<a class="sourceLine" id="cb39-10" data-line-number="10">              <span class="dt">cases_rate_100K =</span> <span class="kw">sum</span>(cases_rate_100K)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-11" data-line-number="11"><span class="st">    </span><span class="kw">drop_na</span>()</a></code></pre></div>
+<p>Let’s store the data frame in a binary R file so that we can easily access it later:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw">save</span>(US_cases_long_demogr_week, <span class="dt">file =</span> <span class="st">&quot;data_r/US_cases_long_demogr_week.Rdata&quot;</span>)</a></code></pre></div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="day-1-acquiring-and-cleaning-data-r.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="day-2-data-visualization-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook/js/app.min.js"></script>
+<script src="libs/gitbook/js/lunr.js"></script>
+<script src="libs/gitbook/js/clipboard.min.js"></script>
+<script src="libs/gitbook/js/plugin-search.js"></script>
+<script src="libs/gitbook/js/plugin-sharing.js"></script>
+<script src="libs/gitbook/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook/js/jquery.highlight.js"></script>
+<script src="libs/gitbook/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/IQSS/datafest-project/edit/master/COVID19_project_R.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["DataFest2021_project.pdf", "DataFest2021_project.epub"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+</body>
+
+</html>

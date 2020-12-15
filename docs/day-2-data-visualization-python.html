@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>DAY 2: Data visualization (Python) | DataFest2021 Project Example</title>
+  <meta name="description" content="An example project using COVID-19 data" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="DAY 2: Data visualization (Python) | DataFest2021 Project Example" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An example project using COVID-19 data" />
+  <meta name="github-repo" content="IQSS/datafest-project" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="DAY 2: Data visualization (Python) | DataFest2021 Project Example" />
+  
+  <meta name="twitter:description" content="An example project using COVID-19 data" />
+  
+
+<meta name="author" content="" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="optional-u-s-census-data-python.html"/>
+<link rel="next" href="day-3-data-analysis-python.html"/>
+<script src="libs/jquery/jquery.min.js"></script>
+<link href="libs/gitbook/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<link href="libs/leaflet/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet/leaflet.js"></script>
+<link href="libs/leafletfix/leafletfix.css" rel="stylesheet" />
+<script src="libs/Proj4Leaflet/proj4-compressed.js"></script>
+<script src="libs/Proj4Leaflet/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding/leaflet.js"></script>
+<script src="libs/leaflet-providers/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton/home-button.js"></script>
+<script src="libs/HomeButton/easy-button-src.min.js"></script>
+<script src="libs/clipboard/setClipboardText.js"></script>
+<link href="libs/mapviewCSS/mapview-popup.css" rel="stylesheet" />
+<link href="libs/mapviewCSS/mapview.css" rel="stylesheet" />
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">DataFest2021 Example Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>What is this?</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#project-summary"><i class="fa fa-check"></i>Project summary</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#authors"><i class="fa fa-check"></i>Authors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="project-overview.html"><a href="project-overview.html"><i class="fa fa-check"></i>Project overview</a></li>
+<li class="part"><span><b>I R</b></span></li>
+<li class="chapter" data-level="" data-path="r-setup.html"><a href="r-setup.html"><i class="fa fa-check"></i>R setup</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html"><i class="fa fa-check"></i>DAY 1: Acquiring and cleaning data (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#acquiring-data-from-apis"><i class="fa fa-check"></i>Acquiring data from APIs</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#cleaning-data"><i class="fa fa-check"></i>Cleaning data</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#covid-19-cases-data"><i class="fa fa-check"></i>COVID-19 cases data</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#aggregate-data"><i class="fa fa-check"></i>Aggregate data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html"><i class="fa fa-check"></i>OPTIONAL: U.S. Census data (R)</a><ul>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#u.s.-census-bureau-api"><i class="fa fa-check"></i>U.S. Census Bureau API</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#clean-u.s.-census-data"><i class="fa fa-check"></i>Clean U.S. Census data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#combine-census-and-covid-19-data"><i class="fa fa-check"></i>Combine Census and COVID-19 data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#aggregate-to-weekly-level"><i class="fa fa-check"></i>Aggregate to weekly-level</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html"><i class="fa fa-check"></i>DAY 2: Data visualization (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#non-spatial-graphs"><i class="fa fa-check"></i>Non-spatial graphs</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#static-maps"><i class="fa fa-check"></i>Static Maps</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#interactive-maps"><i class="fa fa-check"></i>Interactive Maps</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html"><i class="fa fa-check"></i>DAY 3: Data analysis (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#descriptives"><i class="fa fa-check"></i>Descriptives</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#modeling"><i class="fa fa-check"></i>Modeling</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#cross-sectional-models"><i class="fa fa-check"></i>Cross-sectional models</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving-r.html"><a href="day-4-data-archiving-r.html"><i class="fa fa-check"></i>DAY 4: Data archiving (R)</a></li>
+<li class="part"><span><b>II Python</b></span></li>
+<li class="chapter" data-level="" data-path="python-setup.html"><a href="python-setup.html"><i class="fa fa-check"></i>Python setup</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-python.html"><a href="day-1-acquiring-and-cleaning-data-python.html"><i class="fa fa-check"></i>DAY 1: Acquiring and cleaning data (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#acquiring-data-from-apis"><i class="fa fa-check"></i>Acquiring data from APIs</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#cleaning-data"><i class="fa fa-check"></i>Cleaning data</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#covid-19-cases-data"><i class="fa fa-check"></i>COVID-19 cases data</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#aggregate-data"><i class="fa fa-check"></i>Aggregate data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-python.html"><a href="optional-u-s-census-data-python.html"><i class="fa fa-check"></i>OPTIONAL: U.S. Census data (Python)</a><ul>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#u.s.-census-bureau-api"><i class="fa fa-check"></i>U.S. Census Bureau API</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#clean-u.s.-census-data"><i class="fa fa-check"></i>Clean U.S. Census data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#combine-census-and-covid-19-data"><i class="fa fa-check"></i>Combine Census and COVID-19 data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#aggregate-to-weekly-level"><i class="fa fa-check"></i>Aggregate to weekly-level</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-python.html"><a href="day-2-data-visualization-python.html"><i class="fa fa-check"></i>DAY 2: Data visualization (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#non-spatial-graphs"><i class="fa fa-check"></i>Non-spatial graphs</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#static-maps"><i class="fa fa-check"></i>Static Maps</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#interactive-maps"><i class="fa fa-check"></i>Interactive Maps</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-python.html"><a href="day-3-data-analysis-python.html"><i class="fa fa-check"></i>DAY 3: Data analysis (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#descriptives"><i class="fa fa-check"></i>Descriptives</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#modeling"><i class="fa fa-check"></i>Modeling</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#cross-sectional-models"><i class="fa fa-check"></i>Cross-sectional models</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving-python.html"><a href="day-4-data-archiving-python.html"><i class="fa fa-check"></i>DAY 4: Data archiving (Python)</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">DataFest2021 Project Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="day-2-data-visualization-python" class="section level1">
+<h1>DAY 2: Data visualization (Python)</h1>
+<p>The COVID-19 cases data we have are inherently temporal and spatial. Let’s explore the space and time dimensions of the case data through visualization.</p>
+<div id="non-spatial-graphs" class="section level2">
+<h2>Non-spatial graphs</h2>
+<p>Let’s load the daily cases data we cleaned yesterday:</p>
+<div class="sourceCode" id="cb135"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb135-1" data-line-number="1"><span class="co"># get dataframe</span></a>
+<a class="sourceLine" id="cb135-2" data-line-number="2">US_states_cases_selected <span class="op">=</span> pd.read_csv(<span class="st">&quot;data_py/US_states_cases_selected.csv&quot;</span>)</a></code></pre></div>
+<p>We can easily create a wide range of non-spatial graphs using the <code>seaborn</code> module. We can start with a very simple line graph of the COVID-19 cases rates over time:</p>
+<div class="sourceCode" id="cb136"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb136-1" data-line-number="1"><span class="co"># line graph of covid cases rates </span></a>
+<a class="sourceLine" id="cb136-2" data-line-number="2">sns.lineplot(<span class="st">&#39;date&#39;</span>, <span class="st">&#39;cases_rate_100K&#39;</span>, data <span class="op">=</span> US_states_cases_selected, hue<span class="op">=</span><span class="st">&#39;state&#39;</span>, legend<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb136-3" data-line-number="3">plt.xlabel(<span class="st">&quot;$date$&quot;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb136-4" data-line-number="4">plt.ylabel(<span class="st">&quot;$cases_rate_100K$&quot;</span>, fontsize<span class="op">=</span><span class="dv">10</span>, rotation<span class="op">=</span><span class="dv">90</span>)</a>
+<a class="sourceLine" id="cb136-5" data-line-number="5">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-74-1.png" width="672" /></p>
+<p>This gives us an overall sense that the rate of cases has increased over time and has become particularly prevalent in the fall of 2020. But, because the lines for each state are not discernible, we can’t see if some states have a different trajectory of case rates than other states. A better solution is to use faceting to produce mini-plots for each state.</p>
+<p>Let’s create a new line graph of COVID-19 cases rates over time, this time with a separate mini-plot for each state:</p>
+<div class="sourceCode" id="cb137"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb137-1" data-line-number="1"><span class="co"># line graphs of covid cases rates for each state    </span></a>
+<a class="sourceLine" id="cb137-2" data-line-number="2">state_group <span class="op">=</span> US_states_cases_selected[<span class="st">&quot;state&quot;</span>].value_counts().index.tolist()</a>
+<a class="sourceLine" id="cb137-3" data-line-number="3">state_group.sort() </a>
+<a class="sourceLine" id="cb137-4" data-line-number="4">num_state_group <span class="op">=</span> <span class="bu">len</span>(state_group)</a>
+<a class="sourceLine" id="cb137-5" data-line-number="5"><span class="cf">if</span> num_state_group <span class="op">%</span> <span class="dv">8</span> <span class="op">==</span> <span class="dv">0</span>:</a>
+<a class="sourceLine" id="cb137-6" data-line-number="6">    rows <span class="op">=</span> math.ceil(num_state_group<span class="op">/</span><span class="dv">8</span>) <span class="op">+</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb137-7" data-line-number="7"><span class="cf">else</span>:</a>
+<a class="sourceLine" id="cb137-8" data-line-number="8">    rows <span class="op">=</span> math.ceil(num_state_group<span class="op">/</span><span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb137-9" data-line-number="9">fig, axs <span class="op">=</span> plt.subplots(rows, <span class="dv">8</span>, squeeze<span class="op">=</span><span class="va">False</span>, sharex<span class="op">=</span><span class="va">True</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</a>
+<a class="sourceLine" id="cb137-10" data-line-number="10">fig.tight_layout()</a>
+<a class="sourceLine" id="cb137-11" data-line-number="11">fig.text(<span class="fl">0.5</span>, <span class="fl">0.02</span>, <span class="st">&#39;date&#39;</span>, ha<span class="op">=</span><span class="st">&#39;center&#39;</span>)</a>
+<a class="sourceLine" id="cb137-12" data-line-number="12">fig.text(<span class="fl">0.005</span>, <span class="fl">0.5</span>, <span class="st">&#39;cases_rate_100K&#39;</span>, va<span class="op">=</span><span class="st">&#39;center&#39;</span>, rotation<span class="op">=</span><span class="st">&#39;vertical&#39;</span>)</a>
+<a class="sourceLine" id="cb137-13" data-line-number="13"><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(state_group)):</a>
+<a class="sourceLine" id="cb137-14" data-line-number="14">    quodient <span class="op">=</span> i<span class="op">//</span><span class="dv">8</span></a>
+<a class="sourceLine" id="cb137-15" data-line-number="15">    remainder <span class="op">=</span> i <span class="op">%</span> <span class="dv">8</span></a>
+<a class="sourceLine" id="cb137-16" data-line-number="16">    focal_sample <span class="op">=</span> state_group[i]</a>
+<a class="sourceLine" id="cb137-17" data-line-number="17">    temp <span class="op">=</span> US_states_cases_selected.loc[(US_states_cases_selected.state <span class="op">==</span> focal_sample), :]</a>
+<a class="sourceLine" id="cb137-18" data-line-number="18">    axs[quodient,remainder].plot(temp[<span class="st">&#39;date&#39;</span>], temp[<span class="st">&#39;cases_rate_100K&#39;</span>])</a>
+<a class="sourceLine" id="cb137-19" data-line-number="19">    axs[quodient,remainder].set_xticks(temp[<span class="st">&#39;date&#39;</span>], minor<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb137-20" data-line-number="20">    axs[quodient,remainder].set_title(label<span class="op">=</span>focal_sample, loc<span class="op">=</span><span class="st">&#39;center&#39;</span>, fontsize<span class="op">=</span><span class="st">&quot;x-small&quot;</span>)</a>
+<a class="sourceLine" id="cb137-21" data-line-number="21"><span class="cf">if</span> remainder <span class="op">!=</span> <span class="dv">5</span>:</a>
+<a class="sourceLine" id="cb137-22" data-line-number="22">    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(remainder <span class="op">+</span> <span class="dv">1</span>, <span class="dv">8</span>):</a>
+<a class="sourceLine" id="cb137-23" data-line-number="23">        fig.delaxes(axs[quodient, j])</a>
+<a class="sourceLine" id="cb137-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb137-25" data-line-number="25">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-75-1.png" width="960" /></p>
+<p>We can try the same strategy for cumulative COVID-19 case rates over time. First, in a graph that jumbles together all the states:</p>
+<div class="sourceCode" id="cb138"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb138-1" data-line-number="1"><span class="co"># line graph of cumulative covid cases rates    </span></a>
+<a class="sourceLine" id="cb138-2" data-line-number="2">sns.lineplot(<span class="st">&#39;date&#39;</span>, <span class="st">&#39;cases_cum_rate_100K&#39;</span>, data <span class="op">=</span> US_states_cases_selected, hue<span class="op">=</span><span class="st">&#39;state&#39;</span>, legend<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb138-3" data-line-number="3">plt.xlabel(<span class="st">&quot;$date$&quot;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb138-4" data-line-number="4">plt.ylabel(<span class="st">&quot;$cases_cum_rate_100K$&quot;</span>, fontsize<span class="op">=</span><span class="dv">10</span>, rotation<span class="op">=</span><span class="dv">90</span>)</a>
+<a class="sourceLine" id="cb138-5" data-line-number="5">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-76-1.png" width="960" /></p>
+<p>Again, we get a sense of the overall trend here, but we can get a much better picture of state-level differences by faceting. So, let’s create a new line graph of COVID-19 cumulative cases rates over time, this time with a separate mini-plot for each state:</p>
+<div class="sourceCode" id="cb139"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb139-1" data-line-number="1"><span class="co"># line graphs of cumulative covid cases rates for each state</span></a>
+<a class="sourceLine" id="cb139-2" data-line-number="2">state_group_cum <span class="op">=</span> US_states_cases_selected[<span class="st">&quot;state&quot;</span>].value_counts().index.tolist()</a>
+<a class="sourceLine" id="cb139-3" data-line-number="3">state_group_cum.sort() </a>
+<a class="sourceLine" id="cb139-4" data-line-number="4">num_state_group_cum <span class="op">=</span> <span class="bu">len</span>(state_group_cum)</a>
+<a class="sourceLine" id="cb139-5" data-line-number="5"><span class="cf">if</span> num_state_group_cum <span class="op">%</span> <span class="dv">8</span> <span class="op">==</span> <span class="dv">0</span>:</a>
+<a class="sourceLine" id="cb139-6" data-line-number="6">    rows <span class="op">=</span> math.ceil(num_state_group_cum<span class="op">/</span><span class="dv">8</span>) <span class="op">+</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb139-7" data-line-number="7"><span class="cf">else</span>:</a>
+<a class="sourceLine" id="cb139-8" data-line-number="8">    rows <span class="op">=</span> math.ceil(num_state_group_cum<span class="op">/</span><span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb139-9" data-line-number="9">fig, axs <span class="op">=</span> plt.subplots(rows, <span class="dv">8</span>, squeeze<span class="op">=</span><span class="va">False</span>, sharex<span class="op">=</span><span class="va">True</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</a>
+<a class="sourceLine" id="cb139-10" data-line-number="10">fig.tight_layout()</a>
+<a class="sourceLine" id="cb139-11" data-line-number="11">fig.text(<span class="fl">0.5</span>, <span class="fl">0.02</span>, <span class="st">&#39;date&#39;</span>, ha<span class="op">=</span><span class="st">&#39;center&#39;</span>)</a>
+<a class="sourceLine" id="cb139-12" data-line-number="12">fig.text(<span class="fl">0.005</span>, <span class="fl">0.5</span>, <span class="st">&#39;cases_cum_rate_100K&#39;</span>, va<span class="op">=</span><span class="st">&#39;center&#39;</span>, rotation<span class="op">=</span><span class="st">&#39;vertical&#39;</span>)</a>
+<a class="sourceLine" id="cb139-13" data-line-number="13"><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(state_group_cum)):</a>
+<a class="sourceLine" id="cb139-14" data-line-number="14">    quodient <span class="op">=</span> i<span class="op">//</span><span class="dv">8</span></a>
+<a class="sourceLine" id="cb139-15" data-line-number="15">    remainder <span class="op">=</span> i <span class="op">%</span> <span class="dv">8</span></a>
+<a class="sourceLine" id="cb139-16" data-line-number="16">    focal_sample <span class="op">=</span> state_group_cum[i]</a>
+<a class="sourceLine" id="cb139-17" data-line-number="17">    temp <span class="op">=</span> US_states_cases_selected.loc[(US_states_cases_selected.state <span class="op">==</span> focal_sample), :]</a>
+<a class="sourceLine" id="cb139-18" data-line-number="18">    axs[quodient,remainder].plot(temp[<span class="st">&#39;date&#39;</span>], temp[<span class="st">&#39;cases_cum_rate_100K&#39;</span>])</a>
+<a class="sourceLine" id="cb139-19" data-line-number="19">    axs[quodient,remainder].set_xticks(temp[<span class="st">&#39;date&#39;</span>], minor<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb139-20" data-line-number="20">    axs[quodient,remainder].set_title(label<span class="op">=</span>focal_sample, loc<span class="op">=</span><span class="st">&#39;center&#39;</span>, fontsize<span class="op">=</span><span class="st">&quot;x-small&quot;</span>)</a>
+<a class="sourceLine" id="cb139-21" data-line-number="21"><span class="cf">if</span> remainder <span class="op">!=</span> <span class="dv">5</span>:</a>
+<a class="sourceLine" id="cb139-22" data-line-number="22">    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(remainder <span class="op">+</span> <span class="dv">1</span>, <span class="dv">8</span>):</a>
+<a class="sourceLine" id="cb139-23" data-line-number="23">        fig.delaxes(axs[quodient, j])</a>
+<a class="sourceLine" id="cb139-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb139-25" data-line-number="25">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-77-1.png" width="960" /></p>
+</div>
+<div id="static-maps" class="section level2">
+<h2>Static Maps</h2>
+<p>A great way to visualize spatial relationships in data is to superimpose variables onto a map. For some datasets, this could involve superimposing points or lines. For our state-level data, this will involve coloring state polygons in proportion to a variable of interest that represents an aggregate summary of a geographic characteristic within each state. Such a graph is often referred to as a choropleth map. To create a choropleth map we first need to acquire <em>shapefiles</em> that contain spatial data about U.S. state-level geographies.</p>
+<p>We can use the Census Tiger shape files for census geographies. We want state-level geographies, which we can download by putting the following URL into our browser: <a href="https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip" class="uri">https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip</a>. We then need to unzip the folder to gain access to the shape file named <code>tl_2019_us_state.shp</code>. Alternatively, we can do this programmatically using the bash shell, either using <code>wget</code> or, in this example, <code>curl</code>:</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb140-1" data-line-number="1"><span class="fu">mkdir</span> shapefiles</a>
+<a class="sourceLine" id="cb140-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb140-3" data-line-number="3"><span class="bu">cd</span> shapefiles</a>
+<a class="sourceLine" id="cb140-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb140-5" data-line-number="5"><span class="ex">curl</span> -sS https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip <span class="op">&gt;</span> file.zip</a>
+<a class="sourceLine" id="cb140-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb140-7" data-line-number="7"><span class="fu">unzip</span> file.zip</a>
+<a class="sourceLine" id="cb140-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb140-9" data-line-number="9"><span class="fu">rm</span> file.zip</a></code></pre></div>
+<p>Let’s read the shapefile and clean it a little:</p>
+<div class="sourceCode" id="cb141"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb141-1" data-line-number="1"><span class="co"># read the shapefile</span></a>
+<a class="sourceLine" id="cb141-2" data-line-number="2">us_state_geo <span class="op">=</span> geopandas.read_file(<span class="st">&#39;shapefiles/tl_2019_us_state.shp&#39;</span>)</a>
+<a class="sourceLine" id="cb141-3" data-line-number="3"><span class="co"># rename `NAME` variable to `state`</span></a>
+<a class="sourceLine" id="cb141-4" data-line-number="4">us_state_geo <span class="op">=</span> us_state_geo.rename(columns<span class="op">=</span>{<span class="st">&#39;NAME&#39;</span>:<span class="st">&#39;state&#39;</span>})</a>
+<a class="sourceLine" id="cb141-5" data-line-number="5"><span class="co"># clean</span></a>
+<a class="sourceLine" id="cb141-6" data-line-number="6">us_state_geo[[<span class="st">&quot;GEOID&quot;</span>]] <span class="op">=</span> us_state_geo[[<span class="st">&quot;GEOID&quot;</span>]].<span class="bu">apply</span>(pd.to_numeric)</a>
+<a class="sourceLine" id="cb141-7" data-line-number="7">us_state_geo <span class="op">=</span> us_state_geo[(us_state_geo.GEOID <span class="op">&lt;</span> <span class="dv">60</span>) <span class="op">&amp;</span> (us_state_geo.state <span class="op">!=</span> <span class="st">&quot;Alaska&quot;</span>) <span class="op">&amp;</span> (us_state_geo.state <span class="op">!=</span> <span class="st">&quot;Hawaii&quot;</span>)]</a>
+<a class="sourceLine" id="cb141-8" data-line-number="8"><span class="bu">print</span>(us_state_geo.head(<span class="dv">20</span>))</a>
+<a class="sourceLine" id="cb141-9" data-line-number="9"><span class="co"># us_state_geo = us_state_geo.to_crs(&quot;EPSG:3395&quot;)</span></a></code></pre></div>
+<pre><code>##    REGION  ...                                           geometry
+## 0       3  ...  POLYGON ((-81.74725 39.09538, -81.74635 39.096...
+## 1       3  ...  MULTIPOLYGON (((-86.38865 30.99418, -86.38385 ...
+## 2       2  ...  POLYGON ((-91.18529 40.63780, -91.17510 40.643...
+## 3       2  ...  POLYGON ((-96.78438 46.63050, -96.78434 46.630...
+## 4       3  ...  POLYGON ((-77.45881 39.22027, -77.45866 39.220...
+## 5       1  ...  MULTIPOLYGON (((-71.78970 41.72520, -71.78971 ...
+## 6       4  ...  POLYGON ((-116.89971 44.84061, -116.89967 44.8...
+## 7       1  ...  POLYGON ((-72.32990 43.60021, -72.32984 43.600...
+## 8       3  ...  POLYGON ((-82.41674 36.07283, -82.41660 36.073...
+## 9       1  ...  POLYGON ((-73.31328 44.26413, -73.31274 44.265...
+## 10      1  ...  POLYGON ((-73.51808 41.66672, -73.51807 41.666...
+## 11      3  ...  POLYGON ((-75.76007 39.29682, -75.76010 39.297...
+## 12      4  ...  POLYGON ((-106.00632 36.99527, -106.00531 36.9...
+## 13      4  ...  MULTIPOLYGON (((-124.13656 41.46445, -124.1378...
+## 14      1  ...  POLYGON ((-75.18960 40.59178, -75.18977 40.592...
+## 15      2  ...  POLYGON ((-92.88707 45.64415, -92.88671 45.644...
+## 16      4  ...  POLYGON ((-124.06545 45.78305, -124.06206 45.7...
+## 17      2  ...  POLYGON ((-104.05264 42.00172, -104.05263 42.0...
+## 18      1  ...  POLYGON ((-80.51935 41.84956, -80.51938 41.850...
+## 19      4  ...  POLYGON ((-123.24792 48.28456, -123.24751 48.2...
+## 
+## [20 rows x 15 columns]</code></pre>
+<p>Now let’s read in the weekly cases data we cleaned yesterday:</p>
+<div class="sourceCode" id="cb143"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb143-1" data-line-number="1"><span class="co"># use previously cleaned weekly dataset</span></a>
+<a class="sourceLine" id="cb143-2" data-line-number="2">US_states_cases_week <span class="op">=</span> pd.read_csv(<span class="st">&quot;data_py/US_states_cases_week.csv&quot;</span>)</a></code></pre></div>
+<p>We can now merge the spatial data with our weekly COVID-19 cases data, keeping only the contiguous 48 states (plus D.C.):</p>
+<div class="sourceCode" id="cb144"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb144-1" data-line-number="1"><span class="co"># merge weekly COVID-19 cases with spatial data</span></a>
+<a class="sourceLine" id="cb144-2" data-line-number="2">US_states_cases_week[[<span class="st">&quot;GEOID&quot;</span>]] <span class="op">=</span> US_states_cases_week[[<span class="st">&quot;GEOID&quot;</span>]].<span class="bu">apply</span>(pd.to_numeric)</a>
+<a class="sourceLine" id="cb144-3" data-line-number="3">data_frames <span class="op">=</span> [us_state_geo, US_states_cases_week]</a>
+<a class="sourceLine" id="cb144-4" data-line-number="4">US_cases_long_week_spatial <span class="op">=</span> <span class="bu">reduce</span>(<span class="kw">lambda</span>  left,right: pd.merge(left,right,on<span class="op">=</span>[<span class="st">&#39;GEOID&#39;</span>, <span class="st">&#39;state&#39;</span>], how<span class="op">=</span><span class="st">&#39;left&#39;</span>), data_frames)</a>
+<a class="sourceLine" id="cb144-5" data-line-number="5"><span class="co"># filter out some states and subset data for only latest week</span></a>
+<a class="sourceLine" id="cb144-6" data-line-number="6">US_cases_long_week_spatial <span class="op">=</span> US_cases_long_week_spatial[(US_cases_long_week_spatial.GEOID <span class="op">&lt;</span> <span class="dv">60</span>) <span class="op">&amp;</span> (US_cases_long_week_spatial.state <span class="op">!=</span> <span class="st">&quot;Alaska&quot;</span>) <span class="op">&amp;</span> (US_cases_long_week_spatial.state <span class="op">!=</span> <span class="st">&quot;Hawaii&quot;</span>)]</a>
+<a class="sourceLine" id="cb144-7" data-line-number="7">US_cases_long_week_spatial <span class="op">=</span> US_cases_long_week_spatial[US_cases_long_week_spatial.week_of_year <span class="op">==</span> <span class="bu">max</span>(US_cases_long_week_spatial.week_of_year)]</a>
+<a class="sourceLine" id="cb144-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb144-9" data-line-number="9"><span class="bu">print</span>(US_cases_long_week_spatial.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##     REGION DIVISION  ... cases_count_pos cases_rate_100K
+## 44       3        5  ...          6519.0      351.809018
+## 89       3        5  ...         54246.0      288.522449
+## 134      2        3  ...         64085.0      499.468771
+## 179      2        4  ...         42815.0      807.232380
+## 224      3        5  ...         14245.0      246.728530
+## 269      1        1  ...          5953.0      565.569698
+## 314      4        8  ...          8823.0      562.841370
+## 359      1        1  ...          2882.0      218.918775
+## 404      3        5  ...         25141.0      263.657331
+## 449      1        1  ...           471.0       75.270759
+## 494      1        1  ...         11112.0      310.903705
+## 539      3        5  ...          3443.0      383.435754
+## 584      4        8  ...         13521.0      656.620915
+## 629      4        9  ...        100844.0      270.693400
+## 674      1        2  ...         28124.0      319.885567
+## 719      2        3  ...         32816.0      577.036764
+## 764      4        9  ...          8950.0      233.615952
+## 809      2        4  ...         12405.0      679.226935
+## 854      1        2  ...         47599.0      374.725081
+## 899      4        9  ...         18630.0      277.044973
+## 
+## [20 rows x 22 columns]</code></pre>
+<p>Let’s create a choropleth map for the latest week’s COVID-19 cases using the <code>Matplotlib</code> module:</p>
+<div class="sourceCode" id="cb146"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb146-1" data-line-number="1"><span class="co"># set the value column that will be visualized</span></a>
+<a class="sourceLine" id="cb146-2" data-line-number="2">variable <span class="op">=</span> <span class="st">&#39;cases_rate_100K&#39;</span></a>
+<a class="sourceLine" id="cb146-3" data-line-number="3"><span class="co"># set the range for the choropleth values</span></a>
+<a class="sourceLine" id="cb146-4" data-line-number="4">vmin, vmax <span class="op">=</span> <span class="dv">0</span>, <span class="dv">600</span></a>
+<a class="sourceLine" id="cb146-5" data-line-number="5"><span class="co"># create figure and axes for Matplotlib</span></a>
+<a class="sourceLine" id="cb146-6" data-line-number="6">fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">15</span>))</a>
+<a class="sourceLine" id="cb146-7" data-line-number="7"><span class="co"># remove the axis</span></a>
+<a class="sourceLine" id="cb146-8" data-line-number="8">ax.axis(<span class="st">&#39;off&#39;</span>)</a>
+<a class="sourceLine" id="cb146-9" data-line-number="9"><span class="co"># add a title and annotation</span></a></code></pre></div>
+<pre><code>## (0.0, 1.0, 0.0, 1.0)</code></pre>
+<div class="sourceCode" id="cb148"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb148-1" data-line-number="1">ax.set_title(<span class="st">&#39;COVID-19 cases rates for last week&#39;</span>, fontdict<span class="op">=</span>{<span class="st">&#39;fontsize&#39;</span>: <span class="st">&#39;15&#39;</span>, <span class="st">&#39;fontweight&#39;</span> : <span class="st">&#39;3&#39;</span>})</a>
+<a class="sourceLine" id="cb148-2" data-line-number="2">ax.annotate(<span class="st">&#39;Data Sources: Harvard Dataverse, 2020; U.S. Census Bureau, 2019&#39;</span>, xy<span class="op">=</span>(<span class="fl">0.6</span>, <span class="fl">.05</span>), xycoords<span class="op">=</span><span class="st">&#39;figure fraction&#39;</span>, fontsize<span class="op">=</span><span class="dv">12</span>, color<span class="op">=</span><span class="st">&#39;#555555&#39;</span>)</a>
+<a class="sourceLine" id="cb148-3" data-line-number="3"><span class="co"># create colorbar legend</span></a>
+<a class="sourceLine" id="cb148-4" data-line-number="4">legend <span class="op">=</span> plt.cm.ScalarMappable(cmap<span class="op">=</span><span class="st">&#39;Greens&#39;</span>, norm<span class="op">=</span>plt.Normalize(vmin<span class="op">=</span>vmin, vmax<span class="op">=</span>vmax))</a>
+<a class="sourceLine" id="cb148-5" data-line-number="5"><span class="co"># empty array for the data range</span></a>
+<a class="sourceLine" id="cb148-6" data-line-number="6">legend.set_array([]) <span class="co"># or alternatively legend._A = []. Not sure why this step is necessary, but many recommend it</span></a>
+<a class="sourceLine" id="cb148-7" data-line-number="7"><span class="co"># add the colorbar to the figure</span></a>
+<a class="sourceLine" id="cb148-8" data-line-number="8">fig.colorbar(legend)</a>
+<a class="sourceLine" id="cb148-9" data-line-number="9"><span class="co"># create map</span></a></code></pre></div>
+<pre><code>## &lt;matplotlib.colorbar.Colorbar object at 0x17e044c50&gt;</code></pre>
+<div class="sourceCode" id="cb150"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb150-1" data-line-number="1">US_cases_long_week_spatial.plot(column<span class="op">=</span>variable, cmap<span class="op">=</span><span class="st">&#39;Greens&#39;</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, ax<span class="op">=</span>ax, edgecolor<span class="op">=</span><span class="st">&#39;1.0&#39;</span>)</a>
+<a class="sourceLine" id="cb150-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb150-3" data-line-number="3">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-82-1.png" width="1440" /></p>
+</div>
+<div id="interactive-maps" class="section level2">
+<h2>Interactive Maps</h2>
+<p>Static maps are great for publications. Interactive maps, which can be viewed in a browser, can potentially provide a much richer source of information.</p>
+<p>Firstly, we need to create a function to get the polygon x and y coordinates:</p>
+<div class="sourceCode" id="cb151"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb151-1" data-line-number="1"><span class="kw">def</span> getPolyCoords(row, geom, coord_type):</a>
+<a class="sourceLine" id="cb151-2" data-line-number="2">    <span class="co">&quot;&quot;&quot;Returns the coordinates (&#39;x|y&#39;) of edges/vertices of a Polygon/others&quot;&quot;&quot;</span></a>
+<a class="sourceLine" id="cb151-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb151-4" data-line-number="4">    <span class="co"># Parse the geometries and grab the coordinate</span></a>
+<a class="sourceLine" id="cb151-5" data-line-number="5">    geometry <span class="op">=</span> row[geom]</a>
+<a class="sourceLine" id="cb151-6" data-line-number="6">    <span class="co">#print(geometry.type)</span></a>
+<a class="sourceLine" id="cb151-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb151-8" data-line-number="8">    <span class="cf">if</span> geometry.<span class="bu">type</span><span class="op">==</span><span class="st">&#39;Polygon&#39;</span>:</a>
+<a class="sourceLine" id="cb151-9" data-line-number="9">        <span class="cf">if</span> coord_type <span class="op">==</span> <span class="st">&#39;x&#39;</span>:</a>
+<a class="sourceLine" id="cb151-10" data-line-number="10">            <span class="co"># Get the x coordinates of the exterior</span></a>
+<a class="sourceLine" id="cb151-11" data-line-number="11">            <span class="co"># Interior is more complex: xxx.interiors[0].coords.xy[0]</span></a>
+<a class="sourceLine" id="cb151-12" data-line-number="12">            <span class="cf">return</span> <span class="bu">list</span>( geometry.exterior.coords.xy[<span class="dv">0</span>] )</a>
+<a class="sourceLine" id="cb151-13" data-line-number="13">        <span class="cf">elif</span> coord_type <span class="op">==</span> <span class="st">&#39;y&#39;</span>:</a>
+<a class="sourceLine" id="cb151-14" data-line-number="14">            <span class="co"># Get the y coordinates of the exterior</span></a>
+<a class="sourceLine" id="cb151-15" data-line-number="15">            <span class="cf">return</span> <span class="bu">list</span>( geometry.exterior.coords.xy[<span class="dv">1</span>] )</a>
+<a class="sourceLine" id="cb151-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb151-17" data-line-number="17">    <span class="cf">if</span> geometry.<span class="bu">type</span> <span class="kw">in</span> [<span class="st">&#39;Point&#39;</span>, <span class="st">&#39;LineString&#39;</span>]:</a>
+<a class="sourceLine" id="cb151-18" data-line-number="18">        <span class="cf">if</span> coord_type <span class="op">==</span> <span class="st">&#39;x&#39;</span>:</a>
+<a class="sourceLine" id="cb151-19" data-line-number="19">            <span class="cf">return</span> <span class="bu">list</span>( geometry.xy[<span class="dv">0</span>] )</a>
+<a class="sourceLine" id="cb151-20" data-line-number="20">        <span class="cf">elif</span> coord_type <span class="op">==</span> <span class="st">&#39;y&#39;</span>:</a>
+<a class="sourceLine" id="cb151-21" data-line-number="21">            <span class="cf">return</span> <span class="bu">list</span>( geometry.xy[<span class="dv">1</span>] )</a>
+<a class="sourceLine" id="cb151-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb151-23" data-line-number="23">    <span class="cf">if</span> geometry.<span class="bu">type</span><span class="op">==</span><span class="st">&#39;MultiLineString&#39;</span>:</a>
+<a class="sourceLine" id="cb151-24" data-line-number="24">        all_xy <span class="op">=</span> []</a>
+<a class="sourceLine" id="cb151-25" data-line-number="25">        <span class="cf">for</span> ea <span class="kw">in</span> geometry:</a>
+<a class="sourceLine" id="cb151-26" data-line-number="26">            <span class="cf">if</span> coord_type <span class="op">==</span> <span class="st">&#39;x&#39;</span>:</a>
+<a class="sourceLine" id="cb151-27" data-line-number="27">                all_xy.extend(<span class="bu">list</span>( ea.xy[<span class="dv">0</span>] ))</a>
+<a class="sourceLine" id="cb151-28" data-line-number="28">            <span class="cf">elif</span> coord_type <span class="op">==</span> <span class="st">&#39;y&#39;</span>:</a>
+<a class="sourceLine" id="cb151-29" data-line-number="29">                all_xy.extend(<span class="bu">list</span>( ea.xy[<span class="dv">1</span>] ))</a>
+<a class="sourceLine" id="cb151-30" data-line-number="30">        <span class="cf">return</span> all_xy</a>
+<a class="sourceLine" id="cb151-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb151-32" data-line-number="32">    <span class="cf">if</span> geometry.<span class="bu">type</span><span class="op">==</span><span class="st">&#39;MultiPolygon&#39;</span>:</a>
+<a class="sourceLine" id="cb151-33" data-line-number="33">        all_xy <span class="op">=</span> []</a>
+<a class="sourceLine" id="cb151-34" data-line-number="34">        <span class="cf">for</span> ea <span class="kw">in</span> geometry:</a>
+<a class="sourceLine" id="cb151-35" data-line-number="35">            <span class="cf">if</span> coord_type <span class="op">==</span> <span class="st">&#39;x&#39;</span>:</a>
+<a class="sourceLine" id="cb151-36" data-line-number="36">                all_xy.extend(<span class="bu">list</span>( ea.exterior.coords.xy[<span class="dv">0</span>] ))</a>
+<a class="sourceLine" id="cb151-37" data-line-number="37">            <span class="cf">elif</span> coord_type <span class="op">==</span> <span class="st">&#39;y&#39;</span>:</a>
+<a class="sourceLine" id="cb151-38" data-line-number="38">                all_xy.extend(<span class="bu">list</span>( ea.exterior.coords.xy[<span class="dv">1</span>] ))</a>
+<a class="sourceLine" id="cb151-39" data-line-number="39">        <span class="cf">return</span> all_xy</a>
+<a class="sourceLine" id="cb151-40" data-line-number="40"></a>
+<a class="sourceLine" id="cb151-41" data-line-number="41">    <span class="cf">else</span>:</a>
+<a class="sourceLine" id="cb151-42" data-line-number="42">        <span class="co"># Finally, return empty list for unknown geometries</span></a>
+<a class="sourceLine" id="cb151-43" data-line-number="43">        <span class="cf">return</span> []</a></code></pre></div>
+<p>Now let’s use our function to get the Polygon x and y coordinates:</p>
+<div class="sourceCode" id="cb152"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb152-1" data-line-number="1"><span class="co"># use our function to get the Polygon x and y coordinates</span></a>
+<a class="sourceLine" id="cb152-2" data-line-number="2">US_cases_long_week_spatial[<span class="st">&#39;x&#39;</span>] <span class="op">=</span> US_cases_long_week_spatial.<span class="bu">apply</span>(getPolyCoords, geom<span class="op">=</span><span class="st">&#39;geometry&#39;</span>, coord_type<span class="op">=</span><span class="st">&#39;x&#39;</span>, axis<span class="op">=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb152-3" data-line-number="3">US_cases_long_week_spatial[<span class="st">&#39;y&#39;</span>] <span class="op">=</span> US_cases_long_week_spatial.<span class="bu">apply</span>(getPolyCoords, geom<span class="op">=</span><span class="st">&#39;geometry&#39;</span>, coord_type<span class="op">=</span><span class="st">&#39;y&#39;</span>, axis<span class="op">=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb152-4" data-line-number="4"><span class="co"># show only head of x and y columns</span></a>
+<a class="sourceLine" id="cb152-5" data-line-number="5"><span class="bu">print</span>(US_cases_long_week_spatial[[<span class="st">&#39;x&#39;</span>, <span class="st">&#39;y&#39;</span>]].head(<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb152-6" data-line-number="6"><span class="co"># make a copy, drop the geometry column and create ColumnDataSource</span></a></code></pre></div>
+<pre><code>##                                                     x                                                  y
+## 44  [-81.747254, -81.746354, -81.746254, -81.74605...  [39.095379, 39.096578, 39.096878, 39.096978, 3...
+## 89  [-86.388646, -86.383854, -86.37907, -86.378965...  [30.994180999999998, 30.994235999999997, 30.99...</code></pre>
+<div class="sourceCode" id="cb154"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb154-1" data-line-number="1">US_cases_long_week_spatial_df <span class="op">=</span> US_cases_long_week_spatial.drop(<span class="st">&#39;geometry&#39;</span>, axis<span class="op">=</span><span class="dv">1</span>).copy()</a>
+<a class="sourceLine" id="cb154-2" data-line-number="2">gsource <span class="op">=</span> ColumnDataSource(US_cases_long_week_spatial_df)</a></code></pre></div>
+<p>In this section, we’ll focus on building a simple interactive map using the <code>geopandas</code> module.</p>
+<div class="sourceCode" id="cb155"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb155-1" data-line-number="1"><span class="co"># create the color mapper</span></a>
+<a class="sourceLine" id="cb155-2" data-line-number="2">color_mapper <span class="op">=</span> LogColorMapper(palette<span class="op">=</span>palette)</a>
+<a class="sourceLine" id="cb155-3" data-line-number="3"><span class="co"># initialize our figure</span></a>
+<a class="sourceLine" id="cb155-4" data-line-number="4">p <span class="op">=</span> figure(title<span class="op">=</span><span class="st">&quot;COVID-19 cases rates for last week&quot;</span>, plot_width<span class="op">=</span><span class="dv">1200</span>, plot_height<span class="op">=</span><span class="dv">800</span>)</a>
+<a class="sourceLine" id="cb155-5" data-line-number="5"><span class="co"># Plot grid</span></a>
+<a class="sourceLine" id="cb155-6" data-line-number="6">p.patches(<span class="st">&#39;x&#39;</span>, <span class="st">&#39;y&#39;</span>, source<span class="op">=</span>gsource, fill_color<span class="op">=</span>{<span class="st">&#39;field&#39;</span>: <span class="st">&#39;cases_rate_100K&#39;</span>, <span class="st">&#39;transform&#39;</span>: color_mapper}, fill_alpha<span class="op">=</span><span class="fl">1.0</span>, line_color<span class="op">=</span><span class="st">&quot;black&quot;</span>, line_width<span class="op">=</span><span class="fl">0.05</span>)</a>
+<a class="sourceLine" id="cb155-7" data-line-number="7"><span class="co"># create a color bar</span></a></code></pre></div>
+<pre><code>## GlyphRenderer(id=&#39;1039&#39;, ...)</code></pre>
+<div class="sourceCode" id="cb157"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb157-1" data-line-number="1">color_bar <span class="op">=</span> ColorBar(color_mapper<span class="op">=</span>color_mapper, width<span class="op">=</span><span class="dv">16</span>,  location<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb157-2" data-line-number="2"><span class="co"># add color bar to map</span></a>
+<a class="sourceLine" id="cb157-3" data-line-number="3">p.add_layout(color_bar, <span class="st">&#39;right&#39;</span>)</a>
+<a class="sourceLine" id="cb157-4" data-line-number="4"><span class="co"># initialize our tool for interactivity to the map</span></a>
+<a class="sourceLine" id="cb157-5" data-line-number="5">my_hover <span class="op">=</span> HoverTool()</a>
+<a class="sourceLine" id="cb157-6" data-line-number="6"><span class="co"># tell to the HoverTool that what information it should show to us</span></a>
+<a class="sourceLine" id="cb157-7" data-line-number="7">my_hover.tooltips <span class="op">=</span> [(<span class="st">&#39;name&#39;</span>, <span class="st">&#39;@state&#39;</span>), (<span class="st">&#39;cases rate&#39;</span>, <span class="st">&#39;@cases_rate_100K&#39;</span>)]</a>
+<a class="sourceLine" id="cb157-8" data-line-number="8"><span class="co"># add this new tool into our current map</span></a>
+<a class="sourceLine" id="cb157-9" data-line-number="9">p.add_tools(my_hover)</a>
+<a class="sourceLine" id="cb157-10" data-line-number="10"><span class="co"># save the map</span></a>
+<a class="sourceLine" id="cb157-11" data-line-number="11">outfp <span class="op">=</span> <span class="vs">r&quot;data_py/covid-19_map_hover.html&quot;</span></a>
+<a class="sourceLine" id="cb157-12" data-line-number="12">save(p, outfp)</a>
+<a class="sourceLine" id="cb157-13" data-line-number="13"><span class="co"># show the map</span></a></code></pre></div>
+<pre><code>## &#39;/Users/sworthin/Documents/IQSS/datafest-project/data_py/covid-19_map_hover.html&#39;</code></pre>
+<div class="sourceCode" id="cb159"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb159-1" data-line-number="1">show(p)</a></code></pre></div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="optional-u-s-census-data-python.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="day-3-data-analysis-python.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook/js/app.min.js"></script>
+<script src="libs/gitbook/js/lunr.js"></script>
+<script src="libs/gitbook/js/clipboard.min.js"></script>
+<script src="libs/gitbook/js/plugin-search.js"></script>
+<script src="libs/gitbook/js/plugin-sharing.js"></script>
+<script src="libs/gitbook/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook/js/jquery.highlight.js"></script>
+<script src="libs/gitbook/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/IQSS/datafest-project/edit/master/COVID19_project_Python.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["DataFest2021_project.pdf", "DataFest2021_project.epub"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+</body>
+
+</html>

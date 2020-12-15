@@ -6,7 +6,8 @@ repo: https://github.com/IQSS/datafest_project
 
 rmd_files:
   - "index.Rmd"
-  - "R_project.Rmd"
+  - "COVID19_project_R.Rmd"
+  - "COVID19_project_Python.Rmd"
 
 delete_merged_file: true
 

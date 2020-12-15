@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>DAY 3: Data analysis (R) | DataFest2021 Project Example</title>
+  <meta name="description" content="An example project using COVID-19 data" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="DAY 3: Data analysis (R) | DataFest2021 Project Example" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An example project using COVID-19 data" />
+  <meta name="github-repo" content="IQSS/datafest-project" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="DAY 3: Data analysis (R) | DataFest2021 Project Example" />
+  
+  <meta name="twitter:description" content="An example project using COVID-19 data" />
+  
+
+<meta name="author" content="" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="day-2-data-visualization-r.html"/>
+<link rel="next" href="day-4-data-archiving-r.html"/>
+<script src="libs/jquery/jquery.min.js"></script>
+<link href="libs/gitbook/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<link href="libs/leaflet/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet/leaflet.js"></script>
+<link href="libs/leafletfix/leafletfix.css" rel="stylesheet" />
+<script src="libs/Proj4Leaflet/proj4-compressed.js"></script>
+<script src="libs/Proj4Leaflet/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding/leaflet.js"></script>
+<script src="libs/leaflet-providers/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton/home-button.js"></script>
+<script src="libs/HomeButton/easy-button-src.min.js"></script>
+<script src="libs/clipboard/setClipboardText.js"></script>
+<link href="libs/mapviewCSS/mapview-popup.css" rel="stylesheet" />
+<link href="libs/mapviewCSS/mapview.css" rel="stylesheet" />
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">DataFest2021 Example Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>What is this?</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#project-summary"><i class="fa fa-check"></i>Project summary</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#authors"><i class="fa fa-check"></i>Authors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="project-overview.html"><a href="project-overview.html"><i class="fa fa-check"></i>Project overview</a></li>
+<li class="part"><span><b>I R</b></span></li>
+<li class="chapter" data-level="" data-path="r-setup.html"><a href="r-setup.html"><i class="fa fa-check"></i>R setup</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html"><i class="fa fa-check"></i>DAY 1: Acquiring and cleaning data (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#acquiring-data-from-apis"><i class="fa fa-check"></i>Acquiring data from APIs</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#cleaning-data"><i class="fa fa-check"></i>Cleaning data</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#covid-19-cases-data"><i class="fa fa-check"></i>COVID-19 cases data</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#aggregate-data"><i class="fa fa-check"></i>Aggregate data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html"><i class="fa fa-check"></i>OPTIONAL: U.S. Census data (R)</a><ul>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#u.s.-census-bureau-api"><i class="fa fa-check"></i>U.S. Census Bureau API</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#clean-u.s.-census-data"><i class="fa fa-check"></i>Clean U.S. Census data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#combine-census-and-covid-19-data"><i class="fa fa-check"></i>Combine Census and COVID-19 data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#aggregate-to-weekly-level"><i class="fa fa-check"></i>Aggregate to weekly-level</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html"><i class="fa fa-check"></i>DAY 2: Data visualization (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#non-spatial-graphs"><i class="fa fa-check"></i>Non-spatial graphs</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#static-maps"><i class="fa fa-check"></i>Static Maps</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#interactive-maps"><i class="fa fa-check"></i>Interactive Maps</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html"><i class="fa fa-check"></i>DAY 3: Data analysis (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#descriptives"><i class="fa fa-check"></i>Descriptives</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#modeling"><i class="fa fa-check"></i>Modeling</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#cross-sectional-models"><i class="fa fa-check"></i>Cross-sectional models</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving-r.html"><a href="day-4-data-archiving-r.html"><i class="fa fa-check"></i>DAY 4: Data archiving (R)</a></li>
+<li class="part"><span><b>II Python</b></span></li>
+<li class="chapter" data-level="" data-path="python-setup.html"><a href="python-setup.html"><i class="fa fa-check"></i>Python setup</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-python.html"><a href="day-1-acquiring-and-cleaning-data-python.html"><i class="fa fa-check"></i>DAY 1: Acquiring and cleaning data (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#acquiring-data-from-apis"><i class="fa fa-check"></i>Acquiring data from APIs</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#cleaning-data"><i class="fa fa-check"></i>Cleaning data</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#covid-19-cases-data"><i class="fa fa-check"></i>COVID-19 cases data</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#aggregate-data"><i class="fa fa-check"></i>Aggregate data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-python.html"><a href="optional-u-s-census-data-python.html"><i class="fa fa-check"></i>OPTIONAL: U.S. Census data (Python)</a><ul>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#u.s.-census-bureau-api"><i class="fa fa-check"></i>U.S. Census Bureau API</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#clean-u.s.-census-data"><i class="fa fa-check"></i>Clean U.S. Census data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#combine-census-and-covid-19-data"><i class="fa fa-check"></i>Combine Census and COVID-19 data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#aggregate-to-weekly-level"><i class="fa fa-check"></i>Aggregate to weekly-level</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-python.html"><a href="day-2-data-visualization-python.html"><i class="fa fa-check"></i>DAY 2: Data visualization (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#non-spatial-graphs"><i class="fa fa-check"></i>Non-spatial graphs</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#static-maps"><i class="fa fa-check"></i>Static Maps</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#interactive-maps"><i class="fa fa-check"></i>Interactive Maps</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-python.html"><a href="day-3-data-analysis-python.html"><i class="fa fa-check"></i>DAY 3: Data analysis (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#descriptives"><i class="fa fa-check"></i>Descriptives</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#modeling"><i class="fa fa-check"></i>Modeling</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#cross-sectional-models"><i class="fa fa-check"></i>Cross-sectional models</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving-python.html"><a href="day-4-data-archiving-python.html"><i class="fa fa-check"></i>DAY 4: Data archiving (Python)</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">DataFest2021 Project Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="day-3-data-analysis-r" class="section level1">
+<h1>DAY 3: Data analysis (R)</h1>
+<p>In this section, we will be exploring the relationships between COVID-19 cases and demographic data from the Census Bureau. If you did not complete the optional Census data section, you can still access these data by loading the following file:</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1"><span class="kw">load</span>(<span class="st">&quot;data_r/US_cases_long_demogr_week.Rdata&quot;</span>)</a>
+<a class="sourceLine" id="cb52-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb52-3" data-line-number="3"><span class="kw">glimpse</span>(US_cases_long_demogr_week)</a></code></pre></div>
+<pre><code>## Rows: 2,346
+## Columns: 9
+## Groups: state [51]
+## $ state             &lt;chr&gt; &quot;Alabama&quot;, &quot;Alabama&quot;, &quot;Alabama&quot;, &quot;Alabama&quot;, &quot;Alabam…
+## $ week_of_year      &lt;dbl&gt; 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17…
+## $ pop_count_2019    &lt;dbl&gt; 4903185, 4903185, 4903185, 4903185, 4903185, 490318…
+## $ percent_age65over &lt;dbl&gt; 17.33235, 17.33235, 17.33235, 17.33235, 17.33235, 1…
+## $ percent_female    &lt;dbl&gt; 51.67392, 51.67392, 51.67392, 51.67392, 51.67392, 5…
+## $ percent_white     &lt;dbl&gt; 69.12641, 69.12641, 69.12641, 69.12641, 69.12641, 6…
+## $ percent_black     &lt;dbl&gt; 26.78445, 26.78445, 26.78445, 26.78445, 26.78445, 2…
+## $ cases_count_pos   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 39, 203, 757, 1198, 1756, 1…
+## $ cases_rate_100K   &lt;dbl&gt; 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.00000…</code></pre>
+<div id="descriptives" class="section level2">
+<h2>Descriptives</h2>
+<p>It’s always a good idea to start data analysis by looking at some descriptive statistics of the sample data. Here, we can inspect the demographic data we accessed through the Census API:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1">US_cases_long_demogr_week <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb54-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(state) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb54-3" data-line-number="3"><span class="st">  </span><span class="kw">summarize_at</span>(<span class="kw">vars</span>(percent_age65over, percent_female, </a>
+<a class="sourceLine" id="cb54-4" data-line-number="4">                    percent_white, percent_black), <span class="dt">.funs =</span> mean) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb54-5" data-line-number="5"><span class="st">  </span><span class="kw">mutate_if</span>(is.numeric, round, <span class="dv">1</span>)</a></code></pre></div>
+<pre><code>## # A tibble: 51 x 5
+##    state             percent_age65ov… percent_female percent_white percent_black
+##    &lt;chr&gt;                        &lt;dbl&gt;          &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
+##  1 Alabama                       17.3           51.7          69.1          26.8
+##  2 Alaska                        12.5           47.9          65.3           3.7
+##  3 Arizona                       18             50.3          82.6           5.2
+##  4 Arkansas                      17.4           50.9          79            15.7
+##  5 California                    14.8           50.3          71.9           6.5
+##  6 Colorado                      14.6           49.6          86.9           4.6
+##  7 Connecticut                   17.7           51.2          79.7          12.2
+##  8 Delaware                      19.4           51.7          69.2          23.2
+##  9 District of Colu…             12.4           52.6          46            46  
+## 10 Florida                       20.9           51.1          77.3          16.9
+## # … with 41 more rows</code></pre>
+</div>
+<div id="modeling" class="section level2">
+<h2>Modeling</h2>
+<p>The data we have consists of counts of COVID-19 cases over time for each of 50 U.S. states and D.C. These data will be challenging to model, since we will have to deal with the following issues:</p>
+<ol style="list-style-type: decimal">
+<li><p>The response consists of counts with a huge number of zeros and an extended right tail. Typically, to model counts we’d use a poisson model. Here, the extended right tail suggests the data are overdispersed (i.e., the variance is greater than the mean), which would mean the restrictive assumptions of the poisson distribution are not met and may push us towards a quasi-poisson or negative binomial model. In addition, we may need some machinery in the model to deal with the excess of zeros (a zero-inflation component), since this is atypical for a poisson or negative binomial model. Let’s inspect the response variable:</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1"><span class="co"># response summary</span></a>
+<a class="sourceLine" id="cb56-2" data-line-number="2"><span class="kw">summary</span>(US_cases_long_demogr_week<span class="op">$</span>cases_count_pos)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     0.0   175.5  2001.0  5695.7  6093.2 94909.0</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1"><span class="co"># marginal response distribution (truncated to counts &lt; 1000)</span></a>
+<a class="sourceLine" id="cb58-2" data-line-number="2"><span class="kw">ggplot</span>(US_cases_long_demogr_week <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(cases_count_pos <span class="op">&lt;</span><span class="st"> </span><span class="dv">1000</span>), <span class="kw">aes</span>(<span class="dt">x =</span> cases_count_pos)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb58-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">bins =</span> <span class="fl">1e3</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb58-4" data-line-number="4"><span class="st">  </span><span class="kw">theme_classic</span>()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-36-1.png" width="576" /></p></li>
+<li>The data are inherently spatial in nature — in this case, at the state-level.</li>
+<li><p>The data are inherently temporal in nature — in this case, at the daily- or weekly-level.</p></li>
+</ol>
+<div id="cross-sectional-models" class="section level3">
+<h3>Cross-sectional models</h3>
+<p>Let’s start with something at the simpler end of the scale. We can reduce complexity by initially modeling a single time point (for example, the most recent week of case data), with a subset of states, and just a single predictor — the intercept — to estimate the average number of cases.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1"><span class="co"># filter the most recent week&#39;s data</span></a>
+<a class="sourceLine" id="cb59-2" data-line-number="2">US_cases_latest_week &lt;-<span class="st"> </span>US_cases_long_demogr_week <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-3" data-line-number="3"><span class="st">  </span><span class="kw">filter</span>(week_of_year <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(week_of_year))</a>
+<a class="sourceLine" id="cb59-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb59-5" data-line-number="5"><span class="kw">glimpse</span>(US_cases_latest_week)</a></code></pre></div>
+<pre><code>## Rows: 51
+## Columns: 9
+## Groups: state [51]
+## $ state             &lt;chr&gt; &quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;Califo…
+## $ week_of_year      &lt;dbl&gt; 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48,…
+## $ pop_count_2019    &lt;dbl&gt; 4903185, 731545, 7278717, 3017804, 39512223, 575873…
+## $ percent_age65over &lt;dbl&gt; 17.33235, 12.51980, 17.97890, 17.35971, 14.77547, 1…
+## $ percent_female    &lt;dbl&gt; 51.67392, 47.86131, 50.30310, 50.90417, 50.28158, 4…
+## $ percent_white     &lt;dbl&gt; 69.12641, 65.27117, 82.61679, 79.03953, 71.93910, 8…
+## $ percent_black     &lt;dbl&gt; 26.7844473, 3.7055820, 5.1794430, 15.6752393, 6.460…
+## $ cases_count_pos   &lt;dbl&gt; 10364, 3188, 18052, 7935, 66491, 22175, 5301, 2587,…
+## $ cases_rate_100K   &lt;dbl&gt; 211.37281, 435.79001, 248.01074, 262.93954, 168.279…</code></pre>
+<p>Now let’s inspect the response variable for just this last week of data:</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1"><span class="co"># histogram of last week&#39;s counts</span></a>
+<a class="sourceLine" id="cb61-2" data-line-number="2"><span class="kw">ggplot</span>(US_cases_latest_week, <span class="kw">aes</span>(<span class="dt">x =</span> cases_count_pos)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb61-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">bins =</span> <span class="dv">50</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb61-4" data-line-number="4"><span class="st">  </span><span class="kw">theme_classic</span>()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-38-1.png" width="672" /></p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" data-line-number="1"><span class="co"># distribution of cases in sample</span></a>
+<a class="sourceLine" id="cb62-2" data-line-number="2"><span class="kw">summary</span>(US_cases_latest_week<span class="op">$</span>cases_count_pos)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     338    5106   10364   15163   20009   66491</code></pre>
+<p>Usually with count data, we’d fit a model designed to deal with the idiosyncrasies of counts — which are integer-only, lower bounded at zero, and generally heavily right skewed — such as a poisson, quasi-poisson, or negative binomial model. Here, however, the average number of counts is high and we don’t have any observations near the theoretical lower boundary of zero, so we can try a basic linear model since in this situation the Gaussian family of distributions approximates the poisson.</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" data-line-number="1"><span class="co"># fit intercept-only OLS model</span></a>
+<a class="sourceLine" id="cb64-2" data-line-number="2">model_last_week1 &lt;-<span class="st"> </span><span class="kw">lm</span>(cases_count_pos <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb64-3" data-line-number="3">                       <span class="dt">data =</span> US_cases_latest_week)</a>
+<a class="sourceLine" id="cb64-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb64-5" data-line-number="5"><span class="co"># inference</span></a>
+<a class="sourceLine" id="cb64-6" data-line-number="6"><span class="kw">summary</span>(model_last_week1)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = cases_count_pos ~ 1, data = US_cases_latest_week)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -14825 -10058  -4799   4846  51328 
+## 
+## Coefficients:
+##             Estimate Std. Error t value      Pr(&gt;|t|)    
+## (Intercept)    15163       1981   7.655 0.00000000057 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 14150 on 50 degrees of freedom</code></pre>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" data-line-number="1"><span class="kw">confint</span>(model_last_week1)</a></code></pre></div>
+<pre><code>##                2.5 %  97.5 %
+## (Intercept) 11184.68 19141.6</code></pre>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" data-line-number="1"><span class="co"># model diagnostics - simulate residuals using the DHARMa package</span></a>
+<a class="sourceLine" id="cb68-2" data-line-number="2">model_last_week1_simres &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(model_last_week1)</a>
+<a class="sourceLine" id="cb68-3" data-line-number="3"><span class="kw">plot</span>(model_last_week1_simres, <span class="dt">quantreg =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-39-1.png" width="768" /></p>
+<p>We recovered the average number of cases for the latest week, pooled over all the states. Now we can try adding some of our explanatory variables.</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" data-line-number="1"><span class="co"># fit OLS model</span></a>
+<a class="sourceLine" id="cb69-2" data-line-number="2">model_last_week2 &lt;-<span class="st"> </span><span class="kw">lm</span>(cases_count_pos <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>percent_age65over <span class="op">+</span><span class="st"> </span>percent_female <span class="op">+</span><span class="st"> </span>percent_black, </a>
+<a class="sourceLine" id="cb69-3" data-line-number="3">                       <span class="dt">data =</span> US_cases_latest_week)</a>
+<a class="sourceLine" id="cb69-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb69-5" data-line-number="5"><span class="co"># inference</span></a>
+<a class="sourceLine" id="cb69-6" data-line-number="6"><span class="kw">summary</span>(model_last_week2)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = cases_count_pos ~ 1 + percent_age65over + percent_female + 
+##     percent_black, data = US_cases_latest_week)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -23275  -7096  -4382   3385  46178 
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)       -312043.4   204588.9  -1.525   0.1339  
+## percent_age65over   -2358.0     1242.6  -1.898   0.0639 .
+## percent_female       7363.1     4334.8   1.699   0.0960 .
+## percent_black        -469.0      341.1  -1.375   0.1756  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 13970 on 47 degrees of freedom
+## Multiple R-squared:  0.08298,	Adjusted R-squared:  0.02445 
+## F-statistic: 1.418 on 3 and 47 DF,  p-value: 0.2494</code></pre>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1"><span class="co"># model diagnostics - simulate residuals using the DHARMa package</span></a>
+<a class="sourceLine" id="cb71-2" data-line-number="2">model_last_week2_simres &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(model_last_week2)</a>
+<a class="sourceLine" id="cb71-3" data-line-number="3"><span class="kw">plot</span>(model_last_week2_simres, <span class="dt">quantreg =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-40-1.png" width="768" /></p>
+<p>We’re not able to detect any effects of interest here — perhaps because we’re only using one week of data. We actually have a year’s worth of data, so let’s try modeling this as a panel (a longitudinal dataset).</p>
+</div>
+<div id="panel-models" class="section level3">
+<h3>Panel models</h3>
+<p>We have case count data for each state, tracked at the weekly-level for a year. This means that the data are clustered at the state-level (i.e., observations within states are likely to be correlated with one another more than observations between different states). We could deal with this clustering in several different ways, but using a multi-level model with random intercepts grouped by state is a good, flexible option. Let’s start with a linear model.</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" data-line-number="1">model_panel1 &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(cases_count_pos <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>week_of_year <span class="op">+</span><span class="st"> </span>percent_age65over <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb72-2" data-line-number="2"><span class="st">                                          </span>percent_female <span class="op">+</span><span class="st"> </span>percent_black <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">|</span><span class="st"> </span>state),</a>
+<a class="sourceLine" id="cb72-3" data-line-number="3">                        <span class="dt">family =</span> <span class="kw">gaussian</span>(<span class="dt">link =</span> <span class="st">&quot;identity&quot;</span>),</a>
+<a class="sourceLine" id="cb72-4" data-line-number="4">                        <span class="dt">data =</span> US_cases_long_demogr_week)</a>
+<a class="sourceLine" id="cb72-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb72-6" data-line-number="6"><span class="co"># inference</span></a>
+<a class="sourceLine" id="cb72-7" data-line-number="7"><span class="kw">summary</span>(model_panel1)</a></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          
+## cases_count_pos ~ 1 + week_of_year + percent_age65over + percent_female +  
+##     percent_black + (1 | state)
+## Data: US_cases_long_demogr_week
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##       NA       NA       NA       NA     2339 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups   Name        Variance        Std.Dev.  
+##  state    (Intercept)        0.002297    0.04793
+##  Residual             91426064.955941 9561.69781
+## Number of obs: 2346, groups:  state, 51
+## 
+## Dispersion estimate for gaussian family (sigma^2): 9.14e+07 
+## 
+## Conditional model:
+##                    Estimate Std. Error z value             Pr(&gt;|z|)    
+## (Intercept)           2.023  20906.193   0.000                1.000    
+## week_of_year        327.253     14.870  22.008 &lt; 0.0000000000000002 ***
+## percent_age65over  -597.360    125.788  -4.749           0.00000204 ***
+## percent_female      135.539    442.844   0.306                0.760    
+## percent_black        49.035     34.700   1.413                0.158    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" data-line-number="1"><span class="co"># model diagnostics - simulate residuals using the DHARMa package</span></a>
+<a class="sourceLine" id="cb74-2" data-line-number="2">model_panel1_simres &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(model_panel1)</a>
+<a class="sourceLine" id="cb74-3" data-line-number="3"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb74-4" data-line-number="4"><span class="kw">plot</span>(model_panel1_simres, <span class="dt">quantreg =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-41-1.png" width="768" /></p>
+<p>Aside from the convergence warning, the model diagnostics look terrible here — why do you think that is? Now that we have a full year’s worth of data, for many states the earlier part of that year consisted of a very small number of cases — often zero cases.</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" data-line-number="1"><span class="kw">summary</span>(US_cases_long_demogr_week<span class="op">$</span>cases_count_pos)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     0.0   175.5  2001.0  5695.7  6093.2 94909.0</code></pre>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" data-line-number="1"><span class="kw">table</span>(US_cases_long_demogr_week<span class="op">$</span>cases_count_pos <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
+<pre><code>## 
+## FALSE  TRUE 
+##  2006   340</code></pre>
+<p>About 15% of the data are zeros. This makes the linear model a poor fit for these data. Let’s try a model designed specifically for count data:</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1">model_panel2 &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(cases_count_pos <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>week_of_year <span class="op">+</span><span class="st"> </span>percent_age65over <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb79-2" data-line-number="2"><span class="st">                                          </span>percent_female <span class="op">+</span><span class="st"> </span>percent_black <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">|</span><span class="st"> </span>state),</a>
+<a class="sourceLine" id="cb79-3" data-line-number="3">                        <span class="dt">family =</span> <span class="kw">poisson</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>),</a>
+<a class="sourceLine" id="cb79-4" data-line-number="4">                        <span class="dt">data =</span> US_cases_long_demogr_week)</a>
+<a class="sourceLine" id="cb79-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb79-6" data-line-number="6"><span class="co"># inference</span></a>
+<a class="sourceLine" id="cb79-7" data-line-number="7"><span class="kw">summary</span>(model_panel2)</a></code></pre></div>
+<pre><code>##  Family: poisson  ( log )
+## Formula:          
+## cases_count_pos ~ 1 + week_of_year + percent_age65over + percent_female +  
+##     percent_black + (1 | state)
+## Data: US_cases_long_demogr_week
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##  6970899  6970934 -3485444  6970887     2340 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups Name        Variance Std.Dev.
+##  state  (Intercept) 1.189    1.091   
+## Number of obs: 2346, groups:  state, 51
+## 
+## Conditional model:
+##                       Estimate   Std. Error z value            Pr(&gt;|z|)    
+## (Intercept)       -13.37143428  15.97031012    -0.8              0.4024    
+## week_of_year        0.06607058   0.00002526  2615.3 &lt;0.0000000000000002 ***
+## percent_age65over  -0.22649142   0.09699394    -2.3              0.0195 *  
+## percent_female      0.46168234   0.33838023     1.4              0.1724    
+## percent_black      -0.00887897   0.02662506    -0.3              0.7388    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="co"># model diagnostics - simulate residuals using the DHARMa package</span></a>
+<a class="sourceLine" id="cb81-2" data-line-number="2">model_panel2_simres &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(model_panel2)</a>
+<a class="sourceLine" id="cb81-3" data-line-number="3"><span class="kw">plot</span>(model_panel2_simres, <span class="dt">quantreg =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-43-1.png" width="768" /></p>
+<p>This looks better. But there are several issues we’re not yet dealing with. Chief among these are: 1) the fact that states have different population levels, but our model is unaware of this, and 2) we have a huge number of zeros in the data, which poisson models are ill-equipped to handle. Let’s fit a more sophisticated model that can account for these issues. We can include an exposure term using the <code>offset()</code> function to get counts per population unit, as well as a separate binomial model to account for the excess of zeros (the zero-inflation component):</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" data-line-number="1">model_panel3 &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(cases_count_pos <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">offset</span>(<span class="kw">log</span>(pop_count_<span class="dv">2019</span>)) <span class="op">+</span><span class="st"> </span>week_of_year <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb82-2" data-line-number="2"><span class="st">                                          </span>percent_age65over <span class="op">+</span><span class="st"> </span>percent_female <span class="op">+</span><span class="st"> </span>percent_black <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb82-3" data-line-number="3"><span class="st">                                          </span>(<span class="dv">1</span> <span class="op">|</span><span class="st"> </span>state),</a>
+<a class="sourceLine" id="cb82-4" data-line-number="4">                        <span class="dt">family =</span> <span class="kw">poisson</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>),</a>
+<a class="sourceLine" id="cb82-5" data-line-number="5">                        <span class="dt">ziformula =</span> <span class="op">~</span><span class="st"> </span>week_of_year,</a>
+<a class="sourceLine" id="cb82-6" data-line-number="6">                        <span class="dt">data =</span> US_cases_long_demogr_week)</a>
+<a class="sourceLine" id="cb82-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb82-8" data-line-number="8"><span class="co"># inference</span></a>
+<a class="sourceLine" id="cb82-9" data-line-number="9"><span class="kw">summary</span>(model_panel3)</a></code></pre></div>
+<pre><code>##  Family: poisson  ( log )
+## Formula:          
+## cases_count_pos ~ 1 + offset(log(pop_count_2019)) + week_of_year +  
+##     percent_age65over + percent_female + percent_black + (1 |      state)
+## Zero inflation:                   ~week_of_year
+## Data: US_cases_long_demogr_week
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##  6243994  6244040 -3121989  6243978     2338 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups Name        Variance Std.Dev.
+##  state  (Intercept) 0.2104   0.4587  
+## Number of obs: 2346, groups:  state, 51
+## 
+## Conditional model:
+##                      Estimate  Std. Error z value            Pr(&gt;|z|)    
+## (Intercept)        7.25747164  6.71704524     1.1              0.2799    
+## week_of_year       0.05878122  0.00002682  2191.4 &lt;0.0000000000000002 ***
+## percent_age65over -0.04876803  0.04079522    -1.2              0.2319    
+## percent_female    -0.30602496  0.14232092    -2.2              0.0315 *  
+## percent_black      0.01955739  0.01119827     1.7              0.0807 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Zero-inflation model:
+##              Estimate Std. Error z value            Pr(&gt;|z|)    
+## (Intercept)  10.51867    0.88767   11.85 &lt;0.0000000000000002 ***
+## week_of_year -1.14758    0.09542  -12.03 &lt;0.0000000000000002 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb84-1" data-line-number="1"><span class="co"># model diagnostics - simulate residuals using the DHARMa package</span></a>
+<a class="sourceLine" id="cb84-2" data-line-number="2">model_panel3_simres &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(model_panel3)</a>
+<a class="sourceLine" id="cb84-3" data-line-number="3"><span class="kw">plot</span>(model_panel3_simres, <span class="dt">quantreg =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-44-1.png" width="768" /></p>
+<p>This is looking better. Let’s compare our last two models:</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb85-1" data-line-number="1"><span class="co"># use likelihood ratio test to compare models with and without </span></a>
+<a class="sourceLine" id="cb85-2" data-line-number="2"><span class="co"># population exposure and zero-inflation component</span></a>
+<a class="sourceLine" id="cb85-3" data-line-number="3"><span class="kw">anova</span>(model_panel2, model_panel3)</a></code></pre></div>
+<pre><code>## Data: US_cases_long_demogr_week
+## Models:
+## model_panel2: cases_count_pos ~ 1 + week_of_year + percent_age65over + percent_female + , zi=~0, disp=~1
+## model_panel2:     percent_black + (1 | state), zi=~week_of_year, disp=~1
+## model_panel3: cases_count_pos ~ 1 + offset(log(pop_count_2019)) + week_of_year + , zi=~0, disp=~1
+## model_panel3:     percent_age65over + percent_female + percent_black + (1 | , zi=~week_of_year, disp=~1
+## model_panel3:     state), zi=~0, disp=~1
+##              Df     AIC     BIC   logLik deviance  Chisq Chi Df
+## model_panel2  6 6970899 6970934 -3485444  6970887              
+## model_panel3  8 6243994 6244040 -3121989  6243978 726909      2
+##                         Pr(&gt;Chisq)    
+## model_panel2                          
+## model_panel3 &lt; 0.00000000000000022 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Our <code>model_panel3</code> does a much better job of capturing the idiosyncrasies of our data. We can go further, however. The data may not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean), in which case one option is to fit a negative binomial model that can account for this over- or under-dispersion. We can also include a more flexible random effects structure, to allow each state to have different case count trajectories over time:</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" data-line-number="1">model_panel4 &lt;-<span class="st"> </span><span class="kw">glmmTMB</span>(cases_count_pos <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">offset</span>(<span class="kw">log</span>(pop_count_<span class="dv">2019</span>)) <span class="op">+</span><span class="st"> </span>week_of_year <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb87-2" data-line-number="2"><span class="st">                                          </span>percent_age65over <span class="op">+</span><span class="st"> </span>percent_female <span class="op">+</span><span class="st"> </span>percent_black <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb87-3" data-line-number="3"><span class="st">                                          </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>week_of_year <span class="op">|</span><span class="st"> </span>state),</a>
+<a class="sourceLine" id="cb87-4" data-line-number="4">                        <span class="dt">family =</span> <span class="kw">nbinom2</span>(<span class="dt">link =</span> <span class="st">&quot;log&quot;</span>),</a>
+<a class="sourceLine" id="cb87-5" data-line-number="5">                        <span class="dt">ziformula =</span> <span class="op">~</span><span class="st"> </span>week_of_year,</a>
+<a class="sourceLine" id="cb87-6" data-line-number="6">                        <span class="dt">data =</span> US_cases_long_demogr_week)</a>
+<a class="sourceLine" id="cb87-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb87-8" data-line-number="8"><span class="co"># inference                </span></a>
+<a class="sourceLine" id="cb87-9" data-line-number="9"><span class="kw">summary</span>(model_panel4) </a></code></pre></div>
+<pre><code>##  Family: nbinom2  ( log )
+## Formula:          
+## cases_count_pos ~ 1 + offset(log(pop_count_2019)) + week_of_year +  
+##     percent_age65over + percent_female + percent_black + (1 +  
+##     week_of_year | state)
+## Zero inflation:                   ~week_of_year
+## Data: US_cases_long_demogr_week
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##  36194.6  36257.9 -18086.3  36172.6     2335 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups Name         Variance Std.Dev. Corr  
+##  state  (Intercept)  1.043021 1.02128        
+##         week_of_year 0.001259 0.03549  -0.93 
+## Number of obs: 2346, groups:  state, 51
+## 
+## Overdispersion parameter for nbinom2 family ():  1.4 
+## 
+## Conditional model:
+##                     Estimate Std. Error z value            Pr(&gt;|z|)    
+## (Intercept)       -12.450500   7.002154  -1.778              0.0754 .  
+## week_of_year        0.076687   0.005287  14.505 &lt;0.0000000000000002 ***
+## percent_age65over  -0.073991   0.035469  -2.086              0.0370 *  
+## percent_female      0.079872   0.146119   0.547              0.5846    
+## percent_black       0.014524   0.009735   1.492              0.1357    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Zero-inflation model:
+##              Estimate Std. Error z value            Pr(&gt;|z|)    
+## (Intercept)  10.51630    0.88862   11.83 &lt;0.0000000000000002 ***
+## week_of_year -1.14789    0.09557  -12.01 &lt;0.0000000000000002 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="co"># model diagnostics - simulate residuals using the DHARMa package</span></a>
+<a class="sourceLine" id="cb89-2" data-line-number="2">model_panel4_simres &lt;-<span class="st"> </span><span class="kw">simulateResiduals</span>(model_panel4)</a>
+<a class="sourceLine" id="cb89-3" data-line-number="3"><span class="kw">plot</span>(model_panel4_simres, <span class="dt">quantreg =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-46-1.png" width="768" /></p>
+<p>This looks like our best model yet. We can’t compare our previous poisson model and this negative binomial model directly, but we can update our <code>model_panel3</code> model to use the negative binomial distribution, so that we can determine whether the random slope for time improve the model fit:</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" data-line-number="1"><span class="co"># update poisson model to use negative binomial family</span></a>
+<a class="sourceLine" id="cb90-2" data-line-number="2">model_panel3 &lt;-<span class="st"> </span><span class="kw">update</span>(model_panel3, <span class="dt">family =</span> nbinom2)</a>
+<a class="sourceLine" id="cb90-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb90-4" data-line-number="4"><span class="co"># use likelihood ratio test to compare model with and without random slopes for time</span></a>
+<a class="sourceLine" id="cb90-5" data-line-number="5"><span class="kw">anova</span>(model_panel3, model_panel4)</a></code></pre></div>
+<pre><code>## Data: US_cases_long_demogr_week
+## Models:
+## model_panel3: cases_count_pos ~ 1 + offset(log(pop_count_2019)) + week_of_year + , zi=~week_of_year, disp=~1
+## model_panel3:     percent_age65over + percent_female + percent_black + (1 | , zi=~week_of_year, disp=~1
+## model_panel3:     state), zi=~week_of_year, disp=~1
+## model_panel4: cases_count_pos ~ 1 + offset(log(pop_count_2019)) + week_of_year + , zi=~week_of_year, disp=~1
+## model_panel4:     percent_age65over + percent_female + percent_black + (1 + , zi=~week_of_year, disp=~1
+## model_panel4:     week_of_year | state), zi=~week_of_year, disp=~1
+##              Df   AIC   BIC logLik deviance  Chisq Chi Df            Pr(&gt;Chisq)
+## model_panel3  9 36484 36536 -18233    36466                                    
+## model_panel4 11 36195 36258 -18086    36173 293.69      2 &lt; 0.00000000000000022
+##                 
+## model_panel3    
+## model_panel4 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The random slope is a useful addition. Let’s look at some visualizations of the effects from the model:</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" data-line-number="1"><span class="co"># plot marginal effects for all explanatory variables</span></a>
+<a class="sourceLine" id="cb92-2" data-line-number="2">eff_panel4 &lt;-<span class="st"> </span><span class="kw">allEffects</span>(model_panel4)</a>
+<a class="sourceLine" id="cb92-3" data-line-number="3"><span class="kw">plot</span>(eff_panel4, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>)</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-48-1.png" width="672" /></p>
+<p>So far, we’ve only been modeling a linear trend for time. From our visualizations we know that this is unrealistic. How could we incorporate non-linear time elements in the model (e.g., splines, polynomials)?</p>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="day-2-data-visualization-r.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="day-4-data-archiving-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook/js/app.min.js"></script>
+<script src="libs/gitbook/js/lunr.js"></script>
+<script src="libs/gitbook/js/clipboard.min.js"></script>
+<script src="libs/gitbook/js/plugin-search.js"></script>
+<script src="libs/gitbook/js/plugin-sharing.js"></script>
+<script src="libs/gitbook/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook/js/jquery.highlight.js"></script>
+<script src="libs/gitbook/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/IQSS/datafest-project/edit/master/COVID19_project_R.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["DataFest2021_project.pdf", "DataFest2021_project.epub"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+</body>
+
+</html>

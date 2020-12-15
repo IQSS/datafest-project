@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>DAY 3: Data analysis (Python) | DataFest2021 Project Example</title>
+  <meta name="description" content="An example project using COVID-19 data" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="DAY 3: Data analysis (Python) | DataFest2021 Project Example" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An example project using COVID-19 data" />
+  <meta name="github-repo" content="IQSS/datafest-project" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="DAY 3: Data analysis (Python) | DataFest2021 Project Example" />
+  
+  <meta name="twitter:description" content="An example project using COVID-19 data" />
+  
+
+<meta name="author" content="" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="day-2-data-visualization-python.html"/>
+<link rel="next" href="day-4-data-archiving-python.html"/>
+<script src="libs/jquery/jquery.min.js"></script>
+<link href="libs/gitbook/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<link href="libs/leaflet/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet/leaflet.js"></script>
+<link href="libs/leafletfix/leafletfix.css" rel="stylesheet" />
+<script src="libs/Proj4Leaflet/proj4-compressed.js"></script>
+<script src="libs/Proj4Leaflet/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding/leaflet.js"></script>
+<script src="libs/leaflet-providers/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin/leaflet-providers-plugin.js"></script>
+<link href="libs/HomeButton/home-button.css" rel="stylesheet" />
+<script src="libs/HomeButton/home-button.js"></script>
+<script src="libs/HomeButton/easy-button-src.min.js"></script>
+<script src="libs/clipboard/setClipboardText.js"></script>
+<link href="libs/mapviewCSS/mapview-popup.css" rel="stylesheet" />
+<link href="libs/mapviewCSS/mapview.css" rel="stylesheet" />
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">DataFest2021 Example Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>What is this?</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#project-summary"><i class="fa fa-check"></i>Project summary</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#authors"><i class="fa fa-check"></i>Authors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="project-overview.html"><a href="project-overview.html"><i class="fa fa-check"></i>Project overview</a></li>
+<li class="part"><span><b>I R</b></span></li>
+<li class="chapter" data-level="" data-path="r-setup.html"><a href="r-setup.html"><i class="fa fa-check"></i>R setup</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html"><i class="fa fa-check"></i>DAY 1: Acquiring and cleaning data (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#acquiring-data-from-apis"><i class="fa fa-check"></i>Acquiring data from APIs</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#cleaning-data"><i class="fa fa-check"></i>Cleaning data</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#covid-19-cases-data"><i class="fa fa-check"></i>COVID-19 cases data</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#aggregate-data"><i class="fa fa-check"></i>Aggregate data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html"><i class="fa fa-check"></i>OPTIONAL: U.S. Census data (R)</a><ul>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#u.s.-census-bureau-api"><i class="fa fa-check"></i>U.S. Census Bureau API</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#clean-u.s.-census-data"><i class="fa fa-check"></i>Clean U.S. Census data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#combine-census-and-covid-19-data"><i class="fa fa-check"></i>Combine Census and COVID-19 data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#aggregate-to-weekly-level"><i class="fa fa-check"></i>Aggregate to weekly-level</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html"><i class="fa fa-check"></i>DAY 2: Data visualization (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#non-spatial-graphs"><i class="fa fa-check"></i>Non-spatial graphs</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#static-maps"><i class="fa fa-check"></i>Static Maps</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#interactive-maps"><i class="fa fa-check"></i>Interactive Maps</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html"><i class="fa fa-check"></i>DAY 3: Data analysis (R)</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#descriptives"><i class="fa fa-check"></i>Descriptives</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#modeling"><i class="fa fa-check"></i>Modeling</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#cross-sectional-models"><i class="fa fa-check"></i>Cross-sectional models</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving-r.html"><a href="day-4-data-archiving-r.html"><i class="fa fa-check"></i>DAY 4: Data archiving (R)</a></li>
+<li class="part"><span><b>II Python</b></span></li>
+<li class="chapter" data-level="" data-path="python-setup.html"><a href="python-setup.html"><i class="fa fa-check"></i>Python setup</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-python.html"><a href="day-1-acquiring-and-cleaning-data-python.html"><i class="fa fa-check"></i>DAY 1: Acquiring and cleaning data (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#acquiring-data-from-apis"><i class="fa fa-check"></i>Acquiring data from APIs</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#cleaning-data"><i class="fa fa-check"></i>Cleaning data</a><ul>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#covid-19-cases-data"><i class="fa fa-check"></i>COVID-19 cases data</a></li>
+<li class="chapter" data-level="" data-path="day-1-acquiring-and-cleaning-data-r.html"><a href="day-1-acquiring-and-cleaning-data-r.html#aggregate-data"><i class="fa fa-check"></i>Aggregate data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-python.html"><a href="optional-u-s-census-data-python.html"><i class="fa fa-check"></i>OPTIONAL: U.S. Census data (Python)</a><ul>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#u.s.-census-bureau-api"><i class="fa fa-check"></i>U.S. Census Bureau API</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#clean-u.s.-census-data"><i class="fa fa-check"></i>Clean U.S. Census data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#combine-census-and-covid-19-data"><i class="fa fa-check"></i>Combine Census and COVID-19 data</a></li>
+<li class="chapter" data-level="" data-path="optional-u-s-census-data-r.html"><a href="optional-u-s-census-data-r.html#aggregate-to-weekly-level"><i class="fa fa-check"></i>Aggregate to weekly-level</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-python.html"><a href="day-2-data-visualization-python.html"><i class="fa fa-check"></i>DAY 2: Data visualization (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#non-spatial-graphs"><i class="fa fa-check"></i>Non-spatial graphs</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#static-maps"><i class="fa fa-check"></i>Static Maps</a></li>
+<li class="chapter" data-level="" data-path="day-2-data-visualization-r.html"><a href="day-2-data-visualization-r.html#interactive-maps"><i class="fa fa-check"></i>Interactive Maps</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-python.html"><a href="day-3-data-analysis-python.html"><i class="fa fa-check"></i>DAY 3: Data analysis (Python)</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#descriptives"><i class="fa fa-check"></i>Descriptives</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#modeling"><i class="fa fa-check"></i>Modeling</a><ul>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#cross-sectional-models"><i class="fa fa-check"></i>Cross-sectional models</a></li>
+<li class="chapter" data-level="" data-path="day-3-data-analysis-r.html"><a href="day-3-data-analysis-r.html#panel-models"><i class="fa fa-check"></i>Panel models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="day-4-data-archiving-python.html"><a href="day-4-data-archiving-python.html"><i class="fa fa-check"></i>DAY 4: Data archiving (Python)</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">DataFest2021 Project Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="day-3-data-analysis-python" class="section level1">
+<h1>DAY 3: Data analysis (Python)</h1>
+<p>In this section, we will be exploring the relationships between COVID-19 cases and demographic data from the Census Bureau. If you did not complete the optional Census data section, you can still access these data by loading the following file:</p>
+<div class="sourceCode" id="cb160"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb160-1" data-line-number="1"><span class="co"># load data</span></a>
+<a class="sourceLine" id="cb160-2" data-line-number="2">US_cases_long_demogr_week <span class="op">=</span> pd.read_csv(<span class="st">&#39;data_py/US_cases_long_demogr_week.csv&#39;</span>)</a>
+<a class="sourceLine" id="cb160-3" data-line-number="3"><span class="kw">del</span> US_cases_long_demogr_week[<span class="st">&quot;Unnamed: 0&quot;</span>]</a>
+<a class="sourceLine" id="cb160-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb160-5" data-line-number="5"><span class="bu">print</span>(US_cases_long_demogr_week.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##       state  week_of_year  ...  cases_count_pos  cases_rate_100K
+## 0   Alabama             4  ...              0.0         0.000000
+## 1   Alabama             5  ...              0.0         0.000000
+## 2   Alabama             6  ...              0.0         0.000000
+## 3   Alabama             7  ...              0.0         0.000000
+## 4   Alabama             8  ...              0.0         0.000000
+## 5   Alabama             9  ...              0.0         0.000000
+## 6   Alabama            10  ...              0.0         0.000000
+## 7   Alabama            11  ...             23.0         0.469083
+## 8   Alabama            12  ...            134.0         2.732917
+## 9   Alabama            13  ...            673.0        13.725772
+## 10  Alabama            14  ...           1010.0        20.598856
+## 11  Alabama            15  ...           1743.0        35.548322
+## 12  Alabama            16  ...           1320.0        26.921277
+## 13  Alabama            17  ...           1518.0        30.959468
+## 14  Alabama            18  ...           1467.0        29.919328
+## 15  Alabama            19  ...           2001.0        40.810208
+## 16  Alabama            20  ...           1882.0        38.383214
+## 17  Alabama            21  ...           2707.0        55.209012
+## 18  Alabama            22  ...           3474.0        70.851905
+## 19  Alabama            23  ...           2548.0        51.966222
+## 
+## [20 rows x 11 columns]</code></pre>
+<div class="sourceCode" id="cb162"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb162-1" data-line-number="1"><span class="bu">print</span>(US_cases_long_demogr_week.shape)</a></code></pre></div>
+<pre><code>## (2295, 11)</code></pre>
+<div id="descriptives" class="section level2">
+<h2>Descriptives</h2>
+<p>It’s always a good idea to start data analysis by looking at some descriptive statistics of the sample data. Here, we can inspect the demographic data we accessed through the Census API:</p>
+<div class="sourceCode" id="cb164"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb164-1" data-line-number="1">US_cases_long_demogr_week_des <span class="op">=</span> <span class="op">\</span></a>
+<a class="sourceLine" id="cb164-2" data-line-number="2">    US_cases_long_demogr_week.groupby([<span class="st">&#39;state&#39;</span>], <span class="op">\</span></a>
+<a class="sourceLine" id="cb164-3" data-line-number="3">    as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">&#39;percent_age65over&#39;</span>, <span class="st">&#39;percent_female&#39;</span>, <span class="st">&#39;percent_white&#39;</span>, <span class="st">&#39;percent_black&#39;</span>].mean()</a>
+<a class="sourceLine" id="cb164-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb164-5" data-line-number="5"><span class="bu">print</span>(US_cases_long_demogr_week_des)</a></code></pre></div>
+<pre><code>##                    state  ...  percent_black
+## 0                Alabama  ...      26.784447
+## 1                 Alaska  ...       3.705582
+## 2                Arizona  ...       5.179443
+## 3               Arkansas  ...      15.675239
+## 4             California  ...       6.460677
+## 5               Colorado  ...       4.592657
+## 6            Connecticut  ...      12.189341
+## 7               Delaware  ...      23.162080
+## 8   District of Columbia  ...      45.977253
+## 9                Florida  ...      16.917588
+## 10               Georgia  ...      32.570493
+## 11                Hawaii  ...       2.186497
+## 12                 Idaho  ...       0.914684
+## 13              Illinois  ...      14.619177
+## 14               Indiana  ...       9.946141
+## 15                  Iowa  ...       4.060290
+## 16                Kansas  ...       6.134766
+## 17              Kentucky  ...       8.471502
+## 18             Louisiana  ...      32.798463
+## 19                 Maine  ...       1.688052
+## 20              Maryland  ...      31.074172
+## 21         Massachusetts  ...       9.022876
+## 22              Michigan  ...      14.097428
+## 23             Minnesota  ...       7.013862
+## 24           Mississippi  ...      37.785709
+## 25              Missouri  ...      11.822200
+## 26               Montana  ...       0.597786
+## 27              Nebraska  ...       5.208984
+## 28                Nevada  ...      10.269058
+## 29         New Hampshire  ...       1.792366
+## 30            New Jersey  ...      15.057739
+## 31            New Mexico  ...       2.612135
+## 32              New York  ...      17.586102
+## 33        North Carolina  ...      22.221056
+## 34          North Dakota  ...       3.409696
+## 35                  Ohio  ...      13.051219
+## 36              Oklahoma  ...       7.779157
+## 37                Oregon  ...       2.222519
+## 38          Pennsylvania  ...      12.030099
+## 39          Rhode Island  ...       8.505882
+## 40        South Carolina  ...      26.958518
+## 41          South Dakota  ...       2.298287
+## 42             Tennessee  ...      17.051272
+## 43                 Texas  ...      12.895697
+## 44                  Utah  ...       1.482771
+## 45               Vermont  ...       1.406115
+## 46              Virginia  ...      19.880584
+## 47            Washington  ...       4.358879
+## 48         West Virginia  ...       3.605173
+## 49             Wisconsin  ...       6.707556
+## 50               Wyoming  ...       1.290174
+## 
+## [51 rows x 5 columns]</code></pre>
+</div>
+<div id="modeling" class="section level2">
+<h2>Modeling</h2>
+<p>The data we have consists of counts of COVID-19 cases over time for each of 50 U.S. states and D.C. These data will be challenging to model, since we will have to deal with the following issues:</p>
+<ol style="list-style-type: decimal">
+<li><p>The response consists of counts with a huge number of zeros and an extended right tail. Typically, to model counts we’d use a poisson model. Here, the extended right tail suggests the data are overdispersed (i.e., the variance is greater than the mean), which would mean the restrictive assumptions of the poisson distribution are not met and may push us towards a quasi-poisson or negative binomial model. In addition, we may need some machinery in the model to deal with the excess of zeros (a zero-inflation component), since this is atypical for a poisson or negative binomial model. Let’s inspect the response variable:</p>
+<div class="sourceCode" id="cb166"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb166-1" data-line-number="1"><span class="bu">print</span>(US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].describe())</a></code></pre></div>
+<pre><code>## count      2295.000000
+## mean       5822.301961
+## std       10866.637622
+## min           0.000000
+## 25%         207.000000
+## 50%        2058.000000
+## 75%        6230.000000
+## max      100844.000000
+## Name: cases_count_pos, dtype: float64</code></pre>
+<div class="sourceCode" id="cb168"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb168-1" data-line-number="1">US_cases_long_demogr_week_filter <span class="op">=</span> US_cases_long_demogr_week[US_cases_long_demogr_week.cases_count_pos <span class="op">&lt;</span> <span class="dv">1000</span>]</a>
+<a class="sourceLine" id="cb168-2" data-line-number="2">sns.distplot(US_cases_long_demogr_week_filter[<span class="st">&#39;cases_count_pos&#39;</span>], kde<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span><span class="st">&#39;red&#39;</span>, bins<span class="op">=</span><span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb168-3" data-line-number="3">plt.xlabel(<span class="st">&quot;$cases_count_pos$&quot;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb168-4" data-line-number="4">plt.ylabel(<span class="st">&quot;$count$&quot;</span>, fontsize<span class="op">=</span><span class="dv">10</span>, rotation<span class="op">=</span><span class="dv">90</span>)</a>
+<a class="sourceLine" id="cb168-5" data-line-number="5">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-88-1.png" width="1440" /></p></li>
+<li>The data are inherently spatial in nature — in this case, at the state-level.</li>
+<li><p>The data are inherently temporal in nature — in this case, at the daily- or weekly-level.</p></li>
+</ol>
+<div id="cross-sectional-models" class="section level3">
+<h3>Cross-sectional models</h3>
+<p>Let’s start with something at the simpler end of the scale. We can reduce complexity by initially modeling a single time point (for example, the most recent week of case data), with a subset of states, and just a single predictor — the intercept — to estimate the average number of cases.</p>
+<div class="sourceCode" id="cb169"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb169-1" data-line-number="1"><span class="co"># filter the most recent week&#39;s data</span></a>
+<a class="sourceLine" id="cb169-2" data-line-number="2">US_cases_latest_week <span class="op">=</span> US_cases_long_demogr_week[US_cases_long_demogr_week.week_of_year <span class="op">==</span> <span class="bu">max</span>(US_cases_long_demogr_week.week_of_year)]</a>
+<a class="sourceLine" id="cb169-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb169-4" data-line-number="4"><span class="bu">print</span>(US_cases_latest_week.head(<span class="dv">20</span>))</a></code></pre></div>
+<pre><code>##                     state  ...  cases_rate_100K
+## 44                Alabama  ...       300.274210
+## 89                 Alaska  ...       583.286059
+## 134               Arizona  ...       361.286199
+## 179              Arkansas  ...       366.955574
+## 224            California  ...       255.222289
+## 269              Colorado  ...       534.162358
+## 314           Connecticut  ...       311.671964
+## 359              Delaware  ...       353.576431
+## 404  District of Columbia  ...       183.776385
+## 449               Florida  ...       252.568508
+## 494               Georgia  ...       182.417146
+## 539                Hawaii  ...        44.001153
+## 584                 Idaho  ...       493.714554
+## 629              Illinois  ...       505.728419
+## 674               Indiana  ...       564.538973
+## 719                  Iowa  ...       539.639374
+## 764                Kansas  ...       612.601319
+## 809              Kentucky  ...       423.979105
+## 854             Louisiana  ...       259.271544
+## 899                 Maine  ...        85.477588
+## 
+## [20 rows x 11 columns]</code></pre>
+<p>Now let’s inspect the response variable for just this last week of data:</p>
+<div class="sourceCode" id="cb171"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb171-1" data-line-number="1"><span class="co"># histogram of last week&#39;s counts</span></a>
+<a class="sourceLine" id="cb171-2" data-line-number="2">sns.distplot(US_cases_latest_week[<span class="st">&#39;cases_count_pos&#39;</span>], kde<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span><span class="st">&#39;red&#39;</span>, bins<span class="op">=</span><span class="dv">50</span>)</a>
+<a class="sourceLine" id="cb171-3" data-line-number="3">plt.xlabel(<span class="st">&quot;$cases_count_pos$&quot;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb171-4" data-line-number="4">plt.ylabel(<span class="st">&quot;$count$&quot;</span>, fontsize<span class="op">=</span><span class="dv">10</span>, rotation<span class="op">=</span><span class="dv">90</span>)</a>
+<a class="sourceLine" id="cb171-5" data-line-number="5">plt.show()</a>
+<a class="sourceLine" id="cb171-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb171-7" data-line-number="7"><span class="co"># distribution of cases in sample</span></a></code></pre></div>
+<p><img src="figures/unnamed-chunk-90-1.png" width="1440" /></p>
+<div class="sourceCode" id="cb172"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb172-1" data-line-number="1"><span class="bu">print</span>(US_cases_latest_week[<span class="st">&#39;cases_count_pos&#39;</span>].describe())</a></code></pre></div>
+<pre><code>## count        51.000000
+## mean      22147.000000
+## std       21029.232446
+## min         471.000000
+## 25%        7720.000000
+## 50%       16633.000000
+## 75%       27210.500000
+## max      100844.000000
+## Name: cases_count_pos, dtype: float64</code></pre>
+<p>Usually with count data, we’d fit a model designed to deal with the idiosyncrasies of counts — which are integer-only, lower bounded at zero, and generally heavily right skewed — such as a poisson, quasi-poisson, or negative binomial model. Here, however, the average number of counts is high and we don’t have any observations near the theoretical lower boundary of zero, so we can try a basic linear model since in this situation the Gaussian family of distributions approximates the poisson.</p>
+<div class="sourceCode" id="cb174"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb174-1" data-line-number="1"><span class="co"># fit intercept-only OLS model</span></a>
+<a class="sourceLine" id="cb174-2" data-line-number="2">US_cases_latest_week[<span class="st">&#39;intercept&#39;</span>] <span class="op">=</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb174-3" data-line-number="3">Y <span class="op">=</span> US_cases_latest_week[<span class="st">&#39;cases_count_pos&#39;</span>]</a>
+<a class="sourceLine" id="cb174-4" data-line-number="4">X <span class="op">=</span> US_cases_latest_week[<span class="st">&#39;intercept&#39;</span>]</a>
+<a class="sourceLine" id="cb174-5" data-line-number="5">model_last_week1 <span class="op">=</span> sm.OLS(Y,X)</a>
+<a class="sourceLine" id="cb174-6" data-line-number="6">results <span class="op">=</span> model_last_week1.fit()</a>
+<a class="sourceLine" id="cb174-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb174-8" data-line-number="8"><span class="bu">print</span>(results.summary())</a></code></pre></div>
+<pre><code>##                             OLS Regression Results                            
+## ==============================================================================
+## Dep. Variable:        cases_count_pos   R-squared:                       0.000
+## Model:                            OLS   Adj. R-squared:                  0.000
+## Method:                 Least Squares   F-statistic:                       nan
+## Date:                Mon, 14 Dec 2020   Prob (F-statistic):                nan
+## Time:                        23:03:30   Log-Likelihood:                -579.50
+## No. Observations:                  51   AIC:                             1161.
+## Df Residuals:                      50   BIC:                             1163.
+## Df Model:                           0                                         
+## Covariance Type:            nonrobust                                         
+## ==============================================================================
+##                  coef    std err          t      P&gt;|t|      [0.025      0.975]
+## ------------------------------------------------------------------------------
+## intercept   2.215e+04   2944.682      7.521      0.000    1.62e+04    2.81e+04
+## ==============================================================================
+## Omnibus:                       25.435   Durbin-Watson:                   2.060
+## Prob(Omnibus):                  0.000   Jarque-Bera (JB):               40.572
+## Skew:                           1.664   Prob(JB):                     1.55e-09
+## Kurtosis:                       5.830   Cond. No.                         1.00
+## ==============================================================================
+## 
+## Notes:
+## [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</code></pre>
+<div class="sourceCode" id="cb176"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb176-1" data-line-number="1"><span class="bu">print</span>(results.conf_int(alpha<span class="op">=</span><span class="fl">0.05</span>))</a></code></pre></div>
+<pre><code>##                       0             1
+## intercept  16232.433072  28061.566928</code></pre>
+<p>Let’s look at the model diagnostics:</p>
+<div class="sourceCode" id="cb178"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb178-1" data-line-number="1"><span class="co"># model diagnostics</span></a>
+<a class="sourceLine" id="cb178-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb178-3" data-line-number="3">fig.tight_layout()</a>
+<a class="sourceLine" id="cb178-4" data-line-number="4">axs[<span class="dv">0</span>,<span class="dv">0</span>].scatter(x<span class="op">=</span>results.fittedvalues,y<span class="op">=</span>results.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
+<a class="sourceLine" id="cb178-5" data-line-number="5">xmin <span class="op">=</span> <span class="bu">min</span>(results.fittedvalues)</a>
+<a class="sourceLine" id="cb178-6" data-line-number="6">xmax <span class="op">=</span> <span class="bu">max</span>(results.fittedvalues)</a>
+<a class="sourceLine" id="cb178-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb178-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb178-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb178-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb178-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb178-12" data-line-number="12">stats.probplot(results.resid_pearson, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
+<pre><code>## ((array([-2.21154155, -1.84175131, -1.62365924, -1.46329903, -1.33363779,
+##        -1.22318558, -1.1259265 , -1.03829303, -0.95798431, -0.88342315,
+##        -0.81347686, -0.74730127, -0.68424773, -0.62380483, -0.5655602 ,
+##        -0.50917466, -0.45436405, -0.40088629, -0.34853176, -0.29711609,
+##        -0.24647455, -0.19645772, -0.14692788, -0.09775611, -0.0488197 ,
+##         0.        ,  0.0488197 ,  0.09775611,  0.14692788,  0.19645772,
+##         0.24647455,  0.29711609,  0.34853176,  0.40088629,  0.45436405,
+##         0.50917466,  0.5655602 ,  0.62380483,  0.68424773,  0.74730127,
+##         0.81347686,  0.88342315,  0.95798431,  1.03829303,  1.1259265 ,
+##         1.22318558,  1.33363779,  1.46329903,  1.62365924,  1.84175131,
+##         2.21154155]), array([-1.03075564, -1.02352761, -0.99851481, -0.99147699, -0.91610571,
+##        -0.88942856, -0.85024501, -0.84772471, -0.7700709 , -0.76902474,
+##        -0.76208202, -0.74315599, -0.72812929, -0.64396074, -0.63359421,
+##        -0.627555  , -0.58551828, -0.52655274, -0.52474573, -0.4799985 ,
+##        -0.46325989, -0.41019091, -0.37576264, -0.35303238, -0.28926401,
+##        -0.26220643, -0.24351816, -0.20447727, -0.19178066, -0.19025897,
+##        -0.16724338, -0.15240689, -0.13214938, -0.04431926,  0.13357596,
+##         0.14237324,  0.16724338,  0.19734434,  0.2842234 ,  0.40962028,
+##         0.50734139,  0.7541407 ,  0.98282237,  1.085061  ,  1.21031522,
+##         1.26566674,  1.52639903,  1.94329489,  1.99427155,  2.47607706,
+##         3.74226688])), (0.9321886416156772, 3.0402711516827844e-16, 0.9085011845308415))</code></pre>
+<div class="sourceCode" id="cb180"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb180-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb180-2" data-line-number="2">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb180-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_title(<span class="st">&quot;Q-Q plot of normalized residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb180-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb180-5" data-line-number="5">inf<span class="op">=</span>influence(results)</a>
+<a class="sourceLine" id="cb180-6" data-line-number="6">(c, p) <span class="op">=</span> inf.cooks_distance</a>
+<a class="sourceLine" id="cb180-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">1</span>].stem(np.arange(<span class="bu">len</span>(c)), c, markerfmt<span class="op">=</span><span class="st">&quot;,&quot;</span>)</a></code></pre></div>
+<pre><code>## &lt;StemContainer object of 3 artists&gt;</code></pre>
+<div class="sourceCode" id="cb182"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb182-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Cook&#39;s distance plot for the residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb182-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb182-3" data-line-number="3">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-92-1.png" width="576" /></p>
+<p>We recovered the average number of cases for the latest week, pooled over all the states. Now we can try adding some of our explanatory variables.</p>
+<div class="sourceCode" id="cb183"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb183-1" data-line-number="1"><span class="co"># fit OLS model</span></a>
+<a class="sourceLine" id="cb183-2" data-line-number="2">X <span class="op">=</span> US_cases_latest_week[[<span class="st">&#39;percent_age65over&#39;</span>, <span class="st">&#39;percent_female&#39;</span>, <span class="st">&#39;percent_black&#39;</span>]]</a>
+<a class="sourceLine" id="cb183-3" data-line-number="3">Y <span class="op">=</span> US_cases_latest_week[<span class="st">&#39;cases_count_pos&#39;</span>]</a>
+<a class="sourceLine" id="cb183-4" data-line-number="4">X <span class="op">=</span> sm.add_constant(X)</a>
+<a class="sourceLine" id="cb183-5" data-line-number="5">model_last_week2 <span class="op">=</span> sm.OLS(Y,X)</a>
+<a class="sourceLine" id="cb183-6" data-line-number="6">results2 <span class="op">=</span> model_last_week2.fit()</a>
+<a class="sourceLine" id="cb183-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb183-8" data-line-number="8"><span class="bu">print</span>(results2.summary())</a></code></pre></div>
+<pre><code>##                             OLS Regression Results                            
+## ==============================================================================
+## Dep. Variable:        cases_count_pos   R-squared:                       0.094
+## Model:                            OLS   Adj. R-squared:                  0.036
+## Method:                 Least Squares   F-statistic:                     1.621
+## Date:                Mon, 14 Dec 2020   Prob (F-statistic):              0.197
+## Time:                        23:03:30   Log-Likelihood:                -576.99
+## No. Observations:                  51   AIC:                             1162.
+## Df Residuals:                      47   BIC:                             1170.
+## Df Model:                           3                                         
+## Covariance Type:            nonrobust                                         
+## =====================================================================================
+##                         coef    std err          t      P&gt;|t|      [0.025      0.975]
+## -------------------------------------------------------------------------------------
+## const             -4.659e+05   3.02e+05     -1.541      0.130   -1.07e+06    1.42e+05
+## percent_age65over -3865.7029   1836.319     -2.105      0.041   -7559.900    -171.505
+## percent_female     1.111e+04   6406.308      1.735      0.089   -1773.124     2.4e+04
+## percent_black      -764.2939    504.074     -1.516      0.136   -1778.361     249.773
+## ==============================================================================
+## Omnibus:                       20.527   Durbin-Watson:                   2.318
+## Prob(Omnibus):                  0.000   Jarque-Bera (JB):               27.472
+## Skew:                           1.462   Prob(JB):                     1.08e-06
+## Kurtosis:                       5.092   Cond. No.                     5.72e+03
+## ==============================================================================
+## 
+## Notes:
+## [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+## [2] The condition number is large, 5.72e+03. This might indicate that there are
+## strong multicollinearity or other numerical problems.</code></pre>
+<p>Let’s look at the model diagnostics:</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb185-1" data-line-number="1"><span class="co"># model diagnostics </span></a>
+<a class="sourceLine" id="cb185-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb185-3" data-line-number="3">fig.tight_layout()</a>
+<a class="sourceLine" id="cb185-4" data-line-number="4">axs[<span class="dv">0</span>,<span class="dv">0</span>].scatter(x<span class="op">=</span>results2.fittedvalues,y<span class="op">=</span>results2.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
+<a class="sourceLine" id="cb185-5" data-line-number="5">xmin <span class="op">=</span> <span class="bu">min</span>(results2.fittedvalues)</a>
+<a class="sourceLine" id="cb185-6" data-line-number="6">xmax <span class="op">=</span> <span class="bu">max</span>(results2.fittedvalues)</a>
+<a class="sourceLine" id="cb185-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb185-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb185-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb185-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb185-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb185-12" data-line-number="12">stats.probplot(results2.resid_pearson, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
+<pre><code>## ((array([-2.21154155, -1.84175131, -1.62365924, -1.46329903, -1.33363779,
+##        -1.22318558, -1.1259265 , -1.03829303, -0.95798431, -0.88342315,
+##        -0.81347686, -0.74730127, -0.68424773, -0.62380483, -0.5655602 ,
+##        -0.50917466, -0.45436405, -0.40088629, -0.34853176, -0.29711609,
+##        -0.24647455, -0.19645772, -0.14692788, -0.09775611, -0.0488197 ,
+##         0.        ,  0.0488197 ,  0.09775611,  0.14692788,  0.19645772,
+##         0.24647455,  0.29711609,  0.34853176,  0.40088629,  0.45436405,
+##         0.50917466,  0.5655602 ,  0.62380483,  0.68424773,  0.74730127,
+##         0.81347686,  0.88342315,  0.95798431,  1.03829303,  1.1259265 ,
+##         1.22318558,  1.33363779,  1.46329903,  1.62365924,  1.84175131,
+##         2.21154155]), array([-1.65253149, -1.15171007, -1.15136638, -0.88745662, -0.83968806,
+##        -0.81798463, -0.77035518, -0.74767218, -0.70260376, -0.68411567,
+##        -0.66412683, -0.58215749, -0.55216123, -0.50982097, -0.50772736,
+##        -0.46892188, -0.44930698, -0.38593231, -0.37444205, -0.36790381,
+##        -0.35316036, -0.31657762, -0.31503715, -0.30046222, -0.29987997,
+##        -0.29341457, -0.28214219, -0.27893446, -0.27089349, -0.23078865,
+##        -0.22888131, -0.20298685, -0.17918033, -0.09309308, -0.02355087,
+##         0.07163161,  0.07917909,  0.07978128,  0.25513112,  0.31931877,
+##         0.51358473,  0.63018409,  0.88017482,  0.94426812,  1.36938364,
+##         1.44044217,  1.85024983,  1.93863191,  1.95721227,  2.21881067,
+##         3.38898395])), (0.9133672320998864, -3.5166749065205114e-16, 0.9181279129299906))</code></pre>
+<div class="sourceCode" id="cb187"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb187-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb187-2" data-line-number="2">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb187-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_title(<span class="st">&quot;Q-Q plot of normalized residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb187-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb187-5" data-line-number="5">inf<span class="op">=</span>influence(results2)</a>
+<a class="sourceLine" id="cb187-6" data-line-number="6">(c, p) <span class="op">=</span> inf.cooks_distance</a>
+<a class="sourceLine" id="cb187-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">1</span>].stem(np.arange(<span class="bu">len</span>(c)), c, markerfmt<span class="op">=</span><span class="st">&quot;,&quot;</span>)</a></code></pre></div>
+<pre><code>## &lt;StemContainer object of 3 artists&gt;</code></pre>
+<div class="sourceCode" id="cb189"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb189-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Cook&#39;s distance plot for the residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb189-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb189-3" data-line-number="3">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-94-1.png" width="576" /></p>
+<p>We’re not able to detect any effects of interest here — perhaps because we’re only using one week of data. We actually have a year’s worth of data, so let’s try modeling this as a panel (a longitudinal dataset).</p>
+</div>
+<div id="panel-models" class="section level3">
+<h3>Panel models</h3>
+<p>We have case count data for each state, tracked at the weekly-level for a year. This means that the data are clustered at the state-level (i.e., observations within states are likely to be correlated with one another more than observations between different states). We could deal with this clustering in several different ways, but using a multi-level model with random intercepts grouped by state is a good, flexible option. Let’s start with a linear model.</p>
+<div class="sourceCode" id="cb190"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb190-1" data-line-number="1"><span class="co"># linear mixed effects with random intercepts for states</span></a>
+<a class="sourceLine" id="cb190-2" data-line-number="2">model_panel1 <span class="op">=</span> smf.mixedlm(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, US_cases_long_demogr_week, groups<span class="op">=</span><span class="st">&quot;state&quot;</span>)</a>
+<a class="sourceLine" id="cb190-3" data-line-number="3">model_panel1_results <span class="op">=</span> model_panel1.fit(reml<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb190-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb190-5" data-line-number="5"><span class="bu">print</span>(model_panel1_results.summary())</a></code></pre></div>
+<pre><code>##                    Mixed Linear Model Regression Results
+## ===========================================================================
+## Model:                  MixedLM     Dependent Variable:     cases_count_pos
+## No. Observations:       2295        Method:                 ML             
+## No. Groups:             51          Scale:                  62845260.0324  
+## Min. group size:        45          Log-Likelihood:         -23942.2208    
+## Max. group size:        45          Converged:              Yes            
+## Mean group size:        45.0                                               
+## ---------------------------------------------------------------------------
+##                      Coef.      Std.Err.   z    P&gt;|z|    [0.025     0.975] 
+## ---------------------------------------------------------------------------
+## Intercept          -113674.192 84765.869 -1.341 0.180 -279812.243 52463.858
+## week_of_year           343.037    12.742 26.922 0.000     318.064   368.011
+## percent_age65over     -960.246   514.813 -1.865 0.062   -1969.262    48.770
+## percent_female        2529.750  1796.013  1.409 0.159    -990.372  6049.872
+## percent_black         -102.852   141.318 -0.728 0.467    -379.829   174.126
+## state Var         32111710.625   846.529                                   
+## ===========================================================================</code></pre>
+<div class="sourceCode" id="cb192"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb192-1" data-line-number="1"><span class="bu">print</span>(model_panel1_results.conf_int(alpha<span class="op">=</span><span class="fl">0.05</span>, cols<span class="op">=</span><span class="va">None</span>))</a></code></pre></div>
+<pre><code>##                                0             1
+## Intercept         -279812.243024  52463.858344
+## week_of_year          318.063804    368.010685
+## percent_age65over   -1969.261801     48.769952
+## percent_female       -990.371764   6049.871748
+## percent_black        -379.829262    174.125712
+## state Var               0.301672      0.720257</code></pre>
+<p>Let’s look at the model diagnostics:</p>
+<div class="sourceCode" id="cb194"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb194-1" data-line-number="1"><span class="co"># model diagnostics</span></a>
+<a class="sourceLine" id="cb194-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb194-3" data-line-number="3">fig.tight_layout()</a>
+<a class="sourceLine" id="cb194-4" data-line-number="4">axs[<span class="dv">0</span>,<span class="dv">0</span>].scatter(x<span class="op">=</span>model_panel1_results.fittedvalues,y<span class="op">=</span>model_panel1_results.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
+<a class="sourceLine" id="cb194-5" data-line-number="5">xmin <span class="op">=</span> <span class="bu">min</span>(model_panel1_results.fittedvalues)</a>
+<a class="sourceLine" id="cb194-6" data-line-number="6">xmax <span class="op">=</span> <span class="bu">max</span>(model_panel1_results.fittedvalues)</a>
+<a class="sourceLine" id="cb194-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb194-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb194-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb194-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb194-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb194-12" data-line-number="12">stats.probplot(model_panel1_results.resid, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
+<pre><code>## ((array([-3.4298304 , -3.18133149, -3.04364356, ...,  3.04364356,
+##         3.18133149,  3.4298304 ]), array([-21724.68864953, -21565.7258941 , -21426.65140496, ...,
+##         59822.63271488,  63227.66995944,  67010.32134171])), (6710.889431080678, 2.78148511566632e-11, 0.8545500284943002))</code></pre>
+<div class="sourceCode" id="cb196"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb196-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb196-2" data-line-number="2">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb196-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Q-Q plot of residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb196-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb196-5" data-line-number="5">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-96-1.png" width="576" /></p>
+<p>Aside from the convergence warning, the model diagnostics look terrible here — why do you think that is? Now that we have a full year’s worth of data, for many states the earlier part of that year consisted of a very small number of cases — often zero cases.</p>
+<div class="sourceCode" id="cb197"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb197-1" data-line-number="1"><span class="co"># HOW TO DO THIS IN PYTHON???</span></a>
+<a class="sourceLine" id="cb197-2" data-line-number="2">summary(US_cases_long_demogr_week$cases_count_pos)</a>
+<a class="sourceLine" id="cb197-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb197-4" data-line-number="4">table(US_cases_long_demogr_week$cases_count_pos <span class="op">==</span> <span class="dv">0</span>)</a></code></pre></div>
+<p>About 15% of the data are zeros. This makes the linear model a poor fit for these data. Let’s try a model designed specifically for count data — the poisson. To account for the fact that states have different population levels, we can include an exposure term using the <code>offset</code> argument to get counts per population unit:</p>
+<div class="sourceCode" id="cb198"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb198-1" data-line-number="1"><span class="co"># Generalized Estimating Equations: poisson model</span></a>
+<a class="sourceLine" id="cb198-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb198-3" data-line-number="3">gee_model1 <span class="op">=</span> GEE.from_formula(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-4" data-line-number="4">    groups<span class="op">=</span><span class="st">&quot;state&quot;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-5" data-line-number="5">    data<span class="op">=</span>US_cases_long_demogr_week, <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-6" data-line-number="6">    time<span class="op">=</span><span class="st">&#39;week_of_year&#39;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-7" data-line-number="7">    cov_struct<span class="op">=</span>Autoregressive(), <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-8" data-line-number="8">    family<span class="op">=</span>Poisson(), <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-9" data-line-number="9">    offset<span class="op">=</span>np.log(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;pop_count_2019&quot;</span>])))</a>
+<a class="sourceLine" id="cb198-10" data-line-number="10">    </a>
+<a class="sourceLine" id="cb198-11" data-line-number="11">gee_model1_results <span class="op">=</span> gee_model1.fit()</a></code></pre></div>
+<pre><code>## /opt/anaconda3/envs/datafest/lib/python3.7/site-packages/statsmodels/genmod/generalized_estimating_equations.py:1252: IterationLimitWarning: Iteration limit reached prior to convergence
+##   IterationLimitWarning)</code></pre>
+<div class="sourceCode" id="cb200"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb200-1" data-line-number="1"><span class="bu">print</span>(gee_model1_results.summary())</a></code></pre></div>
+<pre><code>##                                GEE Regression Results                              
+## ===================================================================================
+## Dep. Variable:             cases_count_pos   No. Observations:                 2295
+## Model:                                 GEE   No. clusters:                       51
+## Method:                        Generalized   Min. cluster size:                  45
+##                       Estimating Equations   Max. cluster size:                  45
+## Family:                            Poisson   Mean cluster size:                45.0
+## Dependence structure:       Autoregressive   Num. iterations:                    60
+## Date:                     Mon, 14 Dec 2020   Scale:                           1.000
+## Covariance type:                    robust   Time:                         23:03:47
+## =====================================================================================
+##                         coef    std err          z      P&gt;|z|      [0.025      0.975]
+## -------------------------------------------------------------------------------------
+## Intercept             9.7617      6.996      1.395      0.163      -3.950      23.473
+## week_of_year          0.0714      0.006     12.025      0.000       0.060       0.083
+## percent_age65over     0.0511      0.025      2.071      0.038       0.003       0.099
+## percent_female       -0.3960      0.145     -2.724      0.006      -0.681      -0.111
+## percent_black         0.0154      0.010      1.521      0.128      -0.004       0.035
+## ==============================================================================
+## Skew:                          1.9152   Kurtosis:                      23.2141
+## Centered skew:                 2.4730   Centered kurtosis:             22.7322
+## ==============================================================================</code></pre>
+<div class="sourceCode" id="cb202"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb202-1" data-line-number="1"><span class="bu">print</span>(Autoregressive().summary())</a></code></pre></div>
+<pre><code>## Autoregressive(1) dependence parameter: 0.000</code></pre>
+<div class="sourceCode" id="cb204"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb204-1" data-line-number="1"><span class="bu">print</span>(<span class="st">&quot;scale=</span><span class="sc">%.2f</span><span class="st">&quot;</span> <span class="op">%</span> (gee_model1_results.scale))</a></code></pre></div>
+<pre><code>## scale=1.00</code></pre>
+<p>Let’s look at the model diagnostics:</p>
+<div class="sourceCode" id="cb206"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb206-1" data-line-number="1"><span class="co"># plot within-group residuals against time difference</span></a>
+<a class="sourceLine" id="cb206-2" data-line-number="2">fig <span class="op">=</span> gee_model1_results.plot_isotropic_dependence()</a>
+<a class="sourceLine" id="cb206-3" data-line-number="3">plt.grid(<span class="va">True</span>)</a>
+<a class="sourceLine" id="cb206-4" data-line-number="4">plt.show()</a>
+<a class="sourceLine" id="cb206-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb206-6" data-line-number="6"><span class="co"># plot mean-variance relationship without covariates</span></a></code></pre></div>
+<p><img src="figures/unnamed-chunk-99-1.png" width="768" /></p>
+<div class="sourceCode" id="cb207"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb207-1" data-line-number="1">yg <span class="op">=</span> gee_model1.cluster_list(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;cases_count_pos&quot;</span>]))</a>
+<a class="sourceLine" id="cb207-2" data-line-number="2">ymn <span class="op">=</span> [x.mean() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
+<a class="sourceLine" id="cb207-3" data-line-number="3">yva <span class="op">=</span> [x.var() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
+<a class="sourceLine" id="cb207-4" data-line-number="4">plt.grid(<span class="va">True</span>)</a>
+<a class="sourceLine" id="cb207-5" data-line-number="5">plt.plot(np.log(ymn), np.log(yva), <span class="st">&#39;o&#39;</span>)</a>
+<a class="sourceLine" id="cb207-6" data-line-number="6">plt.xlabel(<span class="st">&quot;Log Mean&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
+<a class="sourceLine" id="cb207-7" data-line-number="7">plt.ylabel(<span class="st">&quot;Log Variance&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
+<a class="sourceLine" id="cb207-8" data-line-number="8">plt.show()</a>
+<a class="sourceLine" id="cb207-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb207-10" data-line-number="10"><span class="co"># model diagnostics</span></a></code></pre></div>
+<p><img src="figures/unnamed-chunk-99-2.png" width="768" /></p>
+<div class="sourceCode" id="cb208"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb208-1" data-line-number="1">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb208-2" data-line-number="2">fig.tight_layout()</a>
+<a class="sourceLine" id="cb208-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">0</span>].scatter(x<span class="op">=</span>gee_model1_results.fittedvalues,y<span class="op">=</span>gee_model1_results.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
+<a class="sourceLine" id="cb208-4" data-line-number="4">xmin <span class="op">=</span> <span class="bu">min</span>(gee_model1_results.fittedvalues)</a>
+<a class="sourceLine" id="cb208-5" data-line-number="5">xmax <span class="op">=</span> <span class="bu">max</span>(gee_model1_results.fittedvalues)</a>
+<a class="sourceLine" id="cb208-6" data-line-number="6">axs[<span class="dv">0</span>,<span class="dv">0</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb208-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb208-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb208-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb208-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb208-11" data-line-number="11">stats.probplot(gee_model1_results.resid_pearson, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
+<pre><code>## ((array([-3.4298304 , -3.18133149, -3.04364356, ...,  3.04364356,
+##         3.18133149,  3.4298304 ]), array([-191.1089021 , -188.19197518, -174.4588629 , ...,  737.15790634,
+##         942.12012746,  950.37738338])), (58.85113298482878, 1.3110521592357662, 0.8111029280120384))</code></pre>
+<div class="sourceCode" id="cb210"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb210-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_xlim(<span class="dv">0</span>, <span class="dv">4</span>)</a></code></pre></div>
+<pre><code>## (0.0, 4.0)</code></pre>
+<div class="sourceCode" id="cb212"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb212-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb212-2" data-line-number="2">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb212-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Q-Q plot of normalized residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb212-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb212-5" data-line-number="5">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-99-3.png" width="576" /></p>
+<p>This model does a much better job of capturing the idiosyncrasies of our data. We can go further, however. The data may not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean), in which case one option is to fit a negative binomial model that can account for this over- or under-dispersion.</p>
+<div class="sourceCode" id="cb213"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb213-1" data-line-number="1"><span class="co"># Generalized Estimating Equations: negative binomial model</span></a>
+<a class="sourceLine" id="cb213-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb213-3" data-line-number="3">gee_model2 <span class="op">=</span> GEE.from_formula(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-4" data-line-number="4">    groups<span class="op">=</span><span class="st">&quot;state&quot;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-5" data-line-number="5">    data<span class="op">=</span>US_cases_long_demogr_week, <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-6" data-line-number="6">    time<span class="op">=</span><span class="st">&#39;week_of_year&#39;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-7" data-line-number="7">    cov_struct<span class="op">=</span>Autoregressive(), <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-8" data-line-number="8">    family<span class="op">=</span>NegativeBinomial(alpha<span class="op">=</span><span class="fl">1.</span>), <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-9" data-line-number="9">    offset<span class="op">=</span>np.log(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;pop_count_2019&quot;</span>])))</a>
+<a class="sourceLine" id="cb213-10" data-line-number="10">    </a>
+<a class="sourceLine" id="cb213-11" data-line-number="11">gee_model2_results <span class="op">=</span> gee_model2.fit()</a>
+<a class="sourceLine" id="cb213-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb213-13" data-line-number="13"><span class="bu">print</span>(gee_model2_results.summary())</a></code></pre></div>
+<pre><code>##                                GEE Regression Results                              
+## ===================================================================================
+## Dep. Variable:             cases_count_pos   No. Observations:                 2295
+## Model:                                 GEE   No. clusters:                       51
+## Method:                        Generalized   Min. cluster size:                  45
+##                       Estimating Equations   Max. cluster size:                  45
+## Family:                   NegativeBinomial   Mean cluster size:                45.0
+## Dependence structure:       Autoregressive   Num. iterations:                    52
+## Date:                     Mon, 14 Dec 2020   Scale:                           1.000
+## Covariance type:                    robust   Time:                         23:04:01
+## =====================================================================================
+##                         coef    std err          z      P&gt;|z|      [0.025      0.975]
+## -------------------------------------------------------------------------------------
+## Intercept             5.6206      4.490      1.252      0.211      -3.180      14.422
+## week_of_year          0.0745      0.005     15.051      0.000       0.065       0.084
+## percent_age65over     0.0321      0.019      1.707      0.088      -0.005       0.069
+## percent_female       -0.3092      0.093     -3.324      0.001      -0.492      -0.127
+## percent_black         0.0135      0.007      2.042      0.041       0.001       0.026
+## ==============================================================================
+## Skew:                          1.3220   Kurtosis:                      23.3385
+## Centered skew:                 2.1260   Centered kurtosis:             22.5005
+## ==============================================================================</code></pre>
+<div class="sourceCode" id="cb215"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb215-1" data-line-number="1"><span class="bu">print</span>(Autoregressive().summary())</a></code></pre></div>
+<pre><code>## Autoregressive(1) dependence parameter: 0.000</code></pre>
+<div class="sourceCode" id="cb217"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb217-1" data-line-number="1"><span class="bu">print</span>(<span class="st">&quot;scale=</span><span class="sc">%.2f</span><span class="st">&quot;</span> <span class="op">%</span> (gee_model2_results.scale))</a></code></pre></div>
+<pre><code>## scale=1.00</code></pre>
+<p>Let’s look at the model diagnostics:</p>
+<div class="sourceCode" id="cb219"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb219-1" data-line-number="1"><span class="co"># model diagnostics</span></a>
+<a class="sourceLine" id="cb219-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb219-3" data-line-number="3">fig.tight_layout()</a>
+<a class="sourceLine" id="cb219-4" data-line-number="4">axs[<span class="dv">0</span>,<span class="dv">0</span>].scatter(x<span class="op">=</span>gee_model2_results.fittedvalues,y<span class="op">=</span>gee_model2_results.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
+<a class="sourceLine" id="cb219-5" data-line-number="5">xmin <span class="op">=</span> <span class="bu">min</span>(gee_model2_results.fittedvalues)</a>
+<a class="sourceLine" id="cb219-6" data-line-number="6">xmax <span class="op">=</span> <span class="bu">max</span>(gee_model2_results.fittedvalues)</a>
+<a class="sourceLine" id="cb219-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb219-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb219-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb219-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb219-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb219-12" data-line-number="12">stats.probplot(gee_model2_results.resid_pearson, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
+<pre><code>## ((array([-3.4298304 , -3.18133149, -3.04364356, ...,  3.04364356,
+##         3.18133149,  3.4298304 ]), array([-0.99990553, -0.99987275, -0.99986291, ..., 11.19267986,
+##        14.14841603, 14.58366468])), (0.9935998252791962, -0.06394103716891036, 0.7861690659231126))</code></pre>
+<div class="sourceCode" id="cb221"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb221-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb221-2" data-line-number="2">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb221-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Q-Q plot of normalized residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb221-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb221-5" data-line-number="5">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-101-1.png" width="576" /></p>
+<p>Let’s compare our last two models:</p>
+<div class="sourceCode" id="cb222"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb222-1" data-line-number="1"><span class="co"># use quasi information criterion to compare poisson and negative binomial models</span></a>
+<a class="sourceLine" id="cb222-2" data-line-number="2"><span class="bu">print</span>(gee_model2_results.qic())    </a></code></pre></div>
+<pre><code>## (4709555305.822205, 6136.330127245823)</code></pre>
+<div class="sourceCode" id="cb224"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb224-1" data-line-number="1"><span class="bu">print</span>(gee_model1_results.qic())</a></code></pre></div>
+<pre><code>## (6283477826.611778, 8011349.26763178)</code></pre>
+<p>Both count-based models improve upon the previous linear models, but are not satisfactory, probably because they cannot take account of the excessive zeros and they only use cluster-robust standard errors and thus cannot model how lower level coefficients vary across groups of the higher level. Python’s <code>statsmodels</code> has zero-inflated count model methods, but they cannot deal with panel/clustered data. However, we can fit generalized linear mixed effects models in a Bayesian framework using <code>statsmodels</code>. Initially, let’s try a model with random intercepts only:</p>
+<div class="sourceCode" id="cb226"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb226-1" data-line-number="1"><span class="co"># Bayesian poisson mixed effects model with random intercepts for states</span></a>
+<a class="sourceLine" id="cb226-2" data-line-number="2">formula <span class="op">=</span> <span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span></a>
+<a class="sourceLine" id="cb226-3" data-line-number="3">po_bay_panel1 <span class="op">=</span> PoissonBayesMixedGLM.from_formula(formula, {<span class="st">&#39;state&#39;</span>: <span class="st">&#39;0 + C(state)&#39;</span>}, US_cases_long_demogr_week)              </a>
+<a class="sourceLine" id="cb226-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb226-5" data-line-number="5">po_bay_panel1_results <span class="op">=</span> po_bay_panel1.fit_map()                                                                                                                        </a>
+<a class="sourceLine" id="cb226-6" data-line-number="6"><span class="bu">print</span>(po_bay_panel1_results.summary()) </a></code></pre></div>
+<pre><code>##                    Poisson Mixed GLM Results
+## ================================================================
+##                   Type Post. Mean Post. SD   SD  SD (LB) SD (UB)
+## ----------------------------------------------------------------
+## Intercept            M    -0.2003   2.0899                      
+## week_of_year         M     0.0674   0.0000                      
+## percent_age65over    M    -0.1853   0.0858                      
+## percent_female       M     0.1826   0.0568                      
+## percent_black        M     0.0090   0.0162                      
+## state                V     0.0925   0.0985 1.097   0.901   1.336
+## ================================================================
+## Parameter types are mean structure (M) and variance structure
+## (V)
+## Variance parameters are modeled as log standard deviations</code></pre>
+<p>We can also add random slopes for time to allow for different trajectories of case rates across states:</p>
+<div class="sourceCode" id="cb228"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb228-1" data-line-number="1"><span class="co"># Bayesian poisson mixed effects model with random intercepts and slopes</span></a>
+<a class="sourceLine" id="cb228-2" data-line-number="2">formula <span class="op">=</span> <span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span></a>
+<a class="sourceLine" id="cb228-3" data-line-number="3">po_bay_panel2 <span class="op">=</span> PoissonBayesMixedGLM.from_formula(formula, {<span class="st">&#39;state&#39;</span>: <span class="st">&#39;0 + C(state)&#39;</span>, <span class="st">&quot;week_of_year&quot;</span>: <span class="st">&#39;0 + C(week_of_year)&#39;</span>}, US_cases_long_demogr_week)                                                              </a>
+<a class="sourceLine" id="cb228-4" data-line-number="4">po_bay_panel2_results <span class="op">=</span> po_bay_panel2.fit_map()                                                                                                                        </a>
+<a class="sourceLine" id="cb228-5" data-line-number="5"><span class="bu">print</span>(po_bay_panel2_results.summary()) </a></code></pre></div>
+<pre><code>##                    Poisson Mixed GLM Results
+## ================================================================
+##                   Type Post. Mean Post. SD   SD  SD (LB) SD (UB)
+## ----------------------------------------------------------------
+## Intercept            M    -0.2772   1.7799                      
+## week_of_year         M     0.2134   0.0282                      
+## percent_age65over    M    -0.1699   0.0842                      
+## percent_female       M     0.0765   0.0489                      
+## percent_black        M     0.0158   0.0160                      
+## state                V     0.0984   0.0985 1.103   0.906   1.344
+## week_of_year         V     0.8998   0.1059 2.459   1.990   3.039
+## ================================================================
+## Parameter types are mean structure (M) and variance structure
+## (V)
+## Variance parameters are modeled as log standard deviations</code></pre>
+<p>So far, we’ve only been modeling a linear trend for time. From our visualizations we know that this is unrealistic. How could we incorporate non-linear time elements in the model (e.g., splines, polynomials)? In addition, we haven’t dealt with the issue of zero-inflation — what are our options? We could try to fit our model in two stages:</p>
+<ol style="list-style-type: decimal">
+<li>a logistic model for the zero/non-zero component.</li>
+<li>a truncated count model (poisson or negative binomial) for the positive count component only.</li>
+</ol>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="day-2-data-visualization-python.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="day-4-data-archiving-python.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook/js/app.min.js"></script>
+<script src="libs/gitbook/js/lunr.js"></script>
+<script src="libs/gitbook/js/clipboard.min.js"></script>
+<script src="libs/gitbook/js/plugin-search.js"></script>
+<script src="libs/gitbook/js/plugin-sharing.js"></script>
+<script src="libs/gitbook/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook/js/jquery.highlight.js"></script>
+<script src="libs/gitbook/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/IQSS/datafest-project/edit/master/COVID19_project_Python.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["DataFest2021_project.pdf", "DataFest2021_project.epub"],
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+</body>
+
+</html>
