@@ -410,7 +410,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Model:                            OLS   Adj. R-squared:                  0.000
 ## Method:                 Least Squares   F-statistic:                       nan
 ## Date:                Tue, 15 Dec 2020   Prob (F-statistic):                nan
-## Time:                        16:25:25   Log-Likelihood:                -579.50
+## Time:                        21:35:05   Log-Likelihood:                -579.50
 ## No. Observations:                  51   AIC:                             1161.
 ## Df Residuals:                      50   BIC:                             1163.
 ## Df Model:                           0                                         
@@ -433,17 +433,18 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## intercept  16232.433072  28061.566928</code></pre>
 <p>Let’s look at the model diagnostics:</p>
 <div class="sourceCode" id="cb178"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb178-1" data-line-number="1"><span class="co"># model diagnostics</span></a>
-<a class="sourceLine" id="cb178-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb178-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
 <a class="sourceLine" id="cb178-3" data-line-number="3">fig.tight_layout()</a>
-<a class="sourceLine" id="cb178-4" data-line-number="4">axs[<span class="dv">0</span>,<span class="dv">0</span>].scatter(x<span class="op">=</span>results.fittedvalues,y<span class="op">=</span>results.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
-<a class="sourceLine" id="cb178-5" data-line-number="5">xmin <span class="op">=</span> <span class="bu">min</span>(results.fittedvalues)</a>
-<a class="sourceLine" id="cb178-6" data-line-number="6">xmax <span class="op">=</span> <span class="bu">max</span>(results.fittedvalues)</a>
-<a class="sourceLine" id="cb178-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb178-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb178-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb178-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
-<a class="sourceLine" id="cb178-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb178-12" data-line-number="12">stats.probplot(results.resid_pearson, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb178-4" data-line-number="4">fig.delaxes(axs[<span class="dv">1</span>, <span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb178-5" data-line-number="5">axs[<span class="dv">0</span>,<span class="dv">1</span>].scatter(x<span class="op">=</span>results.fittedvalues,y<span class="op">=</span>results.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
+<a class="sourceLine" id="cb178-6" data-line-number="6">xmin <span class="op">=</span> <span class="bu">min</span>(results.fittedvalues)</a>
+<a class="sourceLine" id="cb178-7" data-line-number="7">xmax <span class="op">=</span> <span class="bu">max</span>(results.fittedvalues)</a>
+<a class="sourceLine" id="cb178-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">1</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb178-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb178-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb178-11" data-line-number="11">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb178-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb178-13" data-line-number="13">stats.probplot(results.resid_pearson, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
 <pre><code>## ((array([-2.21154155, -1.84175131, -1.62365924, -1.46329903, -1.33363779,
 ##        -1.22318558, -1.1259265 , -1.03829303, -0.95798431, -0.88342315,
 ##        -0.81347686, -0.74730127, -0.68424773, -0.62380483, -0.5655602 ,
@@ -465,20 +466,21 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ##         0.50734139,  0.7541407 ,  0.98282237,  1.085061  ,  1.21031522,
 ##         1.26566674,  1.52639903,  1.94329489,  1.99427155,  2.47607706,
 ##         3.74226688])), (0.9321886416156772, 3.0402711516827844e-16, 0.9085011845308415))</code></pre>
-<div class="sourceCode" id="cb180"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb180-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb180-2" data-line-number="2">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb180-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_title(<span class="st">&quot;Q-Q plot of normalized residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<div class="sourceCode" id="cb180"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb180-1" data-line-number="1">axs[<span class="dv">1</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb180-2" data-line-number="2">axs[<span class="dv">1</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb180-3" data-line-number="3">axs[<span class="dv">1</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Q-Q plot of normalized residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb180-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb180-5" data-line-number="5">inf<span class="op">=</span>influence(results)</a>
 <a class="sourceLine" id="cb180-6" data-line-number="6">(c, p) <span class="op">=</span> inf.cooks_distance</a>
-<a class="sourceLine" id="cb180-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">1</span>].stem(np.arange(<span class="bu">len</span>(c)), c, markerfmt<span class="op">=</span><span class="st">&quot;,&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb180-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].stem(np.arange(<span class="bu">len</span>(c)), c, markerfmt<span class="op">=</span><span class="st">&quot;,&quot;</span>)</a></code></pre></div>
 <pre><code>## &lt;StemContainer object of 3 artists&gt;</code></pre>
-<div class="sourceCode" id="cb182"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb182-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Cook&#39;s distance plot for the residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
-<a class="sourceLine" id="cb182-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb182-3" data-line-number="3">plt.show()</a></code></pre></div>
+<div class="sourceCode" id="cb182"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb182-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Cook&#39;s distance plot for the residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb182-2" data-line-number="2">plt.subplots_adjust(left<span class="op">=</span><span class="fl">0.1</span>, wspace<span class="op">=</span><span class="fl">0.4</span>, hspace<span class="op">=</span><span class="fl">0.4</span>)</a>
+<a class="sourceLine" id="cb182-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb182-4" data-line-number="4">plt.show()</a></code></pre></div>
 <p><img src="figures/unnamed-chunk-92-1.png" width="576" /></p>
 <p>We recovered the average number of cases for the latest week, pooled over all the states. Now we can try adding some of our explanatory variables.</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb183-1" data-line-number="1"><span class="co"># fit OLS model</span></a>
+<div class="sourceCode" id="cb183"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb183-1" data-line-number="1"><span class="co"># fit OLS model with explanatory variables</span></a>
 <a class="sourceLine" id="cb183-2" data-line-number="2">X <span class="op">=</span> US_cases_latest_week[[<span class="st">&#39;percent_age65over&#39;</span>, <span class="st">&#39;percent_female&#39;</span>, <span class="st">&#39;percent_black&#39;</span>]]</a>
 <a class="sourceLine" id="cb183-3" data-line-number="3">Y <span class="op">=</span> US_cases_latest_week[<span class="st">&#39;cases_count_pos&#39;</span>]</a>
 <a class="sourceLine" id="cb183-4" data-line-number="4">X <span class="op">=</span> sm.add_constant(X)</a>
@@ -492,7 +494,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Model:                            OLS   Adj. R-squared:                  0.036
 ## Method:                 Least Squares   F-statistic:                     1.621
 ## Date:                Tue, 15 Dec 2020   Prob (F-statistic):              0.197
-## Time:                        16:25:26   Log-Likelihood:                -576.99
+## Time:                        21:35:06   Log-Likelihood:                -576.99
 ## No. Observations:                  51   AIC:                             1162.
 ## Df Residuals:                      47   BIC:                             1170.
 ## Df Model:                           3                                         
@@ -517,17 +519,18 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## strong multicollinearity or other numerical problems.</code></pre>
 <p>Let’s look at the model diagnostics:</p>
 <div class="sourceCode" id="cb185"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb185-1" data-line-number="1"><span class="co"># model diagnostics </span></a>
-<a class="sourceLine" id="cb185-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb185-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
 <a class="sourceLine" id="cb185-3" data-line-number="3">fig.tight_layout()</a>
-<a class="sourceLine" id="cb185-4" data-line-number="4">axs[<span class="dv">0</span>,<span class="dv">0</span>].scatter(x<span class="op">=</span>results2.fittedvalues,y<span class="op">=</span>results2.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
-<a class="sourceLine" id="cb185-5" data-line-number="5">xmin <span class="op">=</span> <span class="bu">min</span>(results2.fittedvalues)</a>
-<a class="sourceLine" id="cb185-6" data-line-number="6">xmax <span class="op">=</span> <span class="bu">max</span>(results2.fittedvalues)</a>
-<a class="sourceLine" id="cb185-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb185-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb185-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb185-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
-<a class="sourceLine" id="cb185-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb185-12" data-line-number="12">stats.probplot(results2.resid_pearson, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb185-4" data-line-number="4">fig.delaxes(axs[<span class="dv">1</span>, <span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb185-5" data-line-number="5">axs[<span class="dv">0</span>,<span class="dv">1</span>].scatter(x<span class="op">=</span>results2.fittedvalues,y<span class="op">=</span>results2.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
+<a class="sourceLine" id="cb185-6" data-line-number="6">xmin <span class="op">=</span> <span class="bu">min</span>(results2.fittedvalues)</a>
+<a class="sourceLine" id="cb185-7" data-line-number="7">xmax <span class="op">=</span> <span class="bu">max</span>(results2.fittedvalues)</a>
+<a class="sourceLine" id="cb185-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">1</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb185-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb185-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb185-11" data-line-number="11">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb185-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb185-13" data-line-number="13">stats.probplot(results2.resid_pearson, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
 <pre><code>## ((array([-2.21154155, -1.84175131, -1.62365924, -1.46329903, -1.33363779,
 ##        -1.22318558, -1.1259265 , -1.03829303, -0.95798431, -0.88342315,
 ##        -0.81347686, -0.74730127, -0.68424773, -0.62380483, -0.5655602 ,
@@ -549,17 +552,18 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ##         0.51358473,  0.63018409,  0.88017482,  0.94426812,  1.36938364,
 ##         1.44044217,  1.85024983,  1.93863191,  1.95721227,  2.21881067,
 ##         3.38898395])), (0.9133672320998864, -3.5166749065205114e-16, 0.9181279129299906))</code></pre>
-<div class="sourceCode" id="cb187"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb187-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb187-2" data-line-number="2">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb187-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">2</span>].set_title(<span class="st">&quot;Q-Q plot of normalized residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<div class="sourceCode" id="cb187"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb187-1" data-line-number="1">axs[<span class="dv">1</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb187-2" data-line-number="2">axs[<span class="dv">1</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb187-3" data-line-number="3">axs[<span class="dv">1</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Q-Q plot of normalized residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb187-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb187-5" data-line-number="5">inf<span class="op">=</span>influence(results2)</a>
 <a class="sourceLine" id="cb187-6" data-line-number="6">(c, p) <span class="op">=</span> inf.cooks_distance</a>
-<a class="sourceLine" id="cb187-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">1</span>].stem(np.arange(<span class="bu">len</span>(c)), c, markerfmt<span class="op">=</span><span class="st">&quot;,&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb187-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].stem(np.arange(<span class="bu">len</span>(c)), c, markerfmt<span class="op">=</span><span class="st">&quot;,&quot;</span>)</a></code></pre></div>
 <pre><code>## &lt;StemContainer object of 3 artists&gt;</code></pre>
-<div class="sourceCode" id="cb189"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb189-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Cook&#39;s distance plot for the residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<div class="sourceCode" id="cb189"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb189-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Cook&#39;s distance plot for the residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb189-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb189-3" data-line-number="3">plt.show()</a></code></pre></div>
+<a class="sourceLine" id="cb189-3" data-line-number="3">plt.subplots_adjust(left<span class="op">=</span><span class="fl">0.1</span>, wspace<span class="op">=</span><span class="fl">0.4</span>, hspace<span class="op">=</span><span class="fl">0.4</span>)</a>
+<a class="sourceLine" id="cb189-4" data-line-number="4">plt.show()</a></code></pre></div>
 <p><img src="figures/unnamed-chunk-94-1.png" width="576" /></p>
 <p>We’re not able to detect any effects of interest here — perhaps because we’re only using one week of data. We actually have a year’s worth of data, so let’s try modeling this as a panel (a longitudinal dataset).</p>
 </div>
@@ -599,7 +603,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## state Var               0.301672      0.720257</code></pre>
 <p>Let’s look at the model diagnostics:</p>
 <div class="sourceCode" id="cb194"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb194-1" data-line-number="1"><span class="co"># model diagnostics</span></a>
-<a class="sourceLine" id="cb194-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb194-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</a>
 <a class="sourceLine" id="cb194-3" data-line-number="3">fig.tight_layout()</a>
 <a class="sourceLine" id="cb194-4" data-line-number="4">axs[<span class="dv">0</span>,<span class="dv">0</span>].scatter(x<span class="op">=</span>model_panel1_results.fittedvalues,y<span class="op">=</span>model_panel1_results.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
 <a class="sourceLine" id="cb194-5" data-line-number="5">xmin <span class="op">=</span> <span class="bu">min</span>(model_panel1_results.fittedvalues)</a>
@@ -607,35 +611,40 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb194-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
 <a class="sourceLine" id="cb194-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb194-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb194-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb194-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb194-11" data-line-number="11"></a>
 <a class="sourceLine" id="cb194-12" data-line-number="12">stats.probplot(model_panel1_results.resid, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
 <pre><code>## ((array([-3.4298304 , -3.18133149, -3.04364356, ...,  3.04364356,
 ##         3.18133149,  3.4298304 ]), array([-21724.68864953, -21565.7258941 , -21426.65140496, ...,
 ##         59822.63271488,  63227.66995944,  67010.32134171])), (6710.889431080678, 2.78148511566632e-11, 0.8545500284943002))</code></pre>
-<div class="sourceCode" id="cb196"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb196-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb196-2" data-line-number="2">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb196-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Q-Q plot of residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
+<div class="sourceCode" id="cb196"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb196-1" data-line-number="1">axs[<span class="dv">1</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb196-2" data-line-number="2">axs[<span class="dv">1</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb196-3" data-line-number="3">axs[<span class="dv">1</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Q-Q plot of residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb196-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb196-5" data-line-number="5">plt.show()</a></code></pre></div>
-<p><img src="figures/unnamed-chunk-96-1.png" width="576" /></p>
-<p>Aside from the convergence warning, the model diagnostics look terrible here — why do you think that is? Now that we have a full year’s worth of data, for many states the earlier part of that year consisted of a very small number of cases — often zero cases.</p>
-<div class="sourceCode" id="cb197"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb197-1" data-line-number="1"><span class="co"># HOW TO DO THIS IN PYTHON???</span></a>
-<a class="sourceLine" id="cb197-2" data-line-number="2">summary(US_cases_long_demogr_week$cases_count_pos)</a>
-<a class="sourceLine" id="cb197-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb197-4" data-line-number="4">table(US_cases_long_demogr_week$cases_count_pos <span class="op">==</span> <span class="dv">0</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb196-5" data-line-number="5">plt.subplots_adjust(left<span class="op">=</span><span class="fl">0.12</span>, hspace<span class="op">=</span><span class="fl">0.25</span>)</a>
+<a class="sourceLine" id="cb196-6" data-line-number="6">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-96-1.png" width="768" /></p>
+<p>The model diagnostics look terrible here — why do you think that is? Now that we have a full year’s worth of data, for many states the earlier part of that year consisted of a very small number of cases — often zero cases.</p>
+<div class="sourceCode" id="cb197"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb197-1" data-line-number="1"><span class="co"># provides a summary of the number of zeros</span></a>
+<a class="sourceLine" id="cb197-2" data-line-number="2"><span class="bu">print</span>(US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].describe())</a>
+<a class="sourceLine" id="cb197-3" data-line-number="3"><span class="bu">print</span>(US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].value_counts())</a>
+<a class="sourceLine" id="cb197-4" data-line-number="4">count_total <span class="op">=</span> <span class="bu">sum</span>(US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].value_counts().to_dict().values())</a>
+<a class="sourceLine" id="cb197-5" data-line-number="5">count_zero <span class="op">=</span> US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].value_counts()[<span class="fl">0.0</span>]</a>
+<a class="sourceLine" id="cb197-6" data-line-number="6"><span class="bu">print</span>(<span class="st">&quot;Count of zero is </span><span class="sc">{}</span><span class="st">, about </span><span class="sc">{:.4f}</span><span class="st"> of the data.&quot;</span>.<span class="bu">format</span>(count_zero, count_zero <span class="op">/</span> count_total ))</a></code></pre></div>
 <p>About 15% of the data are zeros. This makes the linear model a poor fit for these data. Let’s try a model designed specifically for count data — the poisson. To account for the fact that states have different population levels, we can include an exposure term using the <code>offset</code> argument to get counts per population unit:</p>
 <div class="sourceCode" id="cb198"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb198-1" data-line-number="1"><span class="co"># Generalized Estimating Equations: poisson model</span></a>
 <a class="sourceLine" id="cb198-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb198-3" data-line-number="3">gee_model1 <span class="op">=</span> GEE.from_formula(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-4" data-line-number="4">    groups<span class="op">=</span><span class="st">&quot;state&quot;</span>, <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-5" data-line-number="5">    data<span class="op">=</span>US_cases_long_demogr_week, <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-6" data-line-number="6">    time<span class="op">=</span><span class="st">&#39;week_of_year&#39;</span>, <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-7" data-line-number="7">    cov_struct<span class="op">=</span>Autoregressive(), <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-8" data-line-number="8">    family<span class="op">=</span>Poisson(), <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-9" data-line-number="9">    offset<span class="op">=</span>np.log(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;pop_count_2019&quot;</span>])))</a>
-<a class="sourceLine" id="cb198-10" data-line-number="10">    </a>
-<a class="sourceLine" id="cb198-11" data-line-number="11">gee_model1_results <span class="op">=</span> gee_model1.fit()</a></code></pre></div>
+<a class="sourceLine" id="cb198-3" data-line-number="3">poi<span class="op">=</span>Poisson()</a>
+<a class="sourceLine" id="cb198-4" data-line-number="4">ar<span class="op">=</span>Autoregressive()</a>
+<a class="sourceLine" id="cb198-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb198-6" data-line-number="6">gee_model1 <span class="op">=</span> GEE.from_formula(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, groups<span class="op">=</span><span class="st">&quot;state&quot;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-7" data-line-number="7">    data<span class="op">=</span>US_cases_long_demogr_week, <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-8" data-line-number="8">    time<span class="op">=</span><span class="st">&#39;week_of_year&#39;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-9" data-line-number="9">    cov_struct<span class="op">=</span>ar, <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-10" data-line-number="10">    family<span class="op">=</span>poi, <span class="op">\</span></a>
+<a class="sourceLine" id="cb198-11" data-line-number="11">    offset<span class="op">=</span>np.log(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;pop_count_2019&quot;</span>])))</a>
+<a class="sourceLine" id="cb198-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb198-13" data-line-number="13">gee_model1_results <span class="op">=</span> gee_model1.fit(maxiter<span class="op">=</span><span class="dv">200</span>)</a></code></pre></div>
 <pre><code>## /opt/anaconda3/envs/datafest/lib/python3.7/site-packages/statsmodels/genmod/generalized_estimating_equations.py:1252: IterationLimitWarning: Iteration limit reached prior to convergence
 ##   IterationLimitWarning)</code></pre>
 <div class="sourceCode" id="cb200"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb200-1" data-line-number="1"><span class="bu">print</span>(gee_model1_results.summary())</a></code></pre></div>
@@ -646,9 +655,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Method:                        Generalized   Min. cluster size:                  45
 ##                       Estimating Equations   Max. cluster size:                  45
 ## Family:                            Poisson   Mean cluster size:                45.0
-## Dependence structure:       Autoregressive   Num. iterations:                    60
+## Dependence structure:       Autoregressive   Num. iterations:                   200
 ## Date:                     Tue, 15 Dec 2020   Scale:                           1.000
-## Covariance type:                    robust   Time:                         16:25:44
+## Covariance type:                    robust   Time:                         21:35:59
 ## =====================================================================================
 ##                         coef    std err          z      P&gt;|z|      [0.025      0.975]
 ## -------------------------------------------------------------------------------------
@@ -661,11 +670,12 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Skew:                          1.9152   Kurtosis:                      23.2141
 ## Centered skew:                 2.4730   Centered kurtosis:             22.7322
 ## ==============================================================================</code></pre>
-<div class="sourceCode" id="cb202"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb202-1" data-line-number="1"><span class="bu">print</span>(Autoregressive().summary())</a></code></pre></div>
-<pre><code>## Autoregressive(1) dependence parameter: 0.000</code></pre>
+<div class="sourceCode" id="cb202"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb202-1" data-line-number="1"><span class="bu">print</span>(ar.summary())</a></code></pre></div>
+<pre><code>## Autoregressive(1) dependence parameter: 0.768</code></pre>
 <div class="sourceCode" id="cb204"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb204-1" data-line-number="1"><span class="bu">print</span>(<span class="st">&quot;scale=</span><span class="sc">%.2f</span><span class="st">&quot;</span> <span class="op">%</span> (gee_model1_results.scale))</a></code></pre></div>
 <pre><code>## scale=1.00</code></pre>
-<p>Let’s look at the model diagnostics:</p>
+<p>We get a warning message: “IterationLimitWarning: Iteration limit reached prior to convergence”, but even if we specify a large value for maxiter (e.g., 2000) we still don’t achieve convergence. We could try specifying starting values, estimated using a simpler covariance structure, to try to get the estimating algorithm to converge. But, the lack of convergence may be a symptom of a more fundamental problem — that the data may not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean). In which case, we may need a more flexible model.</p>
+<p>Let’s look at some model diagnostics anyway:</p>
 <div class="sourceCode" id="cb206"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb206-1" data-line-number="1"><span class="co"># plot within-group residuals against time difference</span></a>
 <a class="sourceLine" id="cb206-2" data-line-number="2">fig <span class="op">=</span> gee_model1_results.plot_isotropic_dependence()</a>
 <a class="sourceLine" id="cb206-3" data-line-number="3">plt.grid(<span class="va">True</span>)</a>
@@ -680,46 +690,24 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb207-5" data-line-number="5">plt.plot(np.log(ymn), np.log(yva), <span class="st">&#39;o&#39;</span>)</a>
 <a class="sourceLine" id="cb207-6" data-line-number="6">plt.xlabel(<span class="st">&quot;Log Mean&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
 <a class="sourceLine" id="cb207-7" data-line-number="7">plt.ylabel(<span class="st">&quot;Log Variance&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
-<a class="sourceLine" id="cb207-8" data-line-number="8">plt.show()</a>
-<a class="sourceLine" id="cb207-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb207-10" data-line-number="10"><span class="co"># model diagnostics</span></a></code></pre></div>
+<a class="sourceLine" id="cb207-8" data-line-number="8">plt.show()</a></code></pre></div>
 <p><img src="figures/unnamed-chunk-99-2.png" width="768" /></p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb208-1" data-line-number="1">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
-<a class="sourceLine" id="cb208-2" data-line-number="2">fig.tight_layout()</a>
-<a class="sourceLine" id="cb208-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">0</span>].scatter(x<span class="op">=</span>gee_model1_results.fittedvalues,y<span class="op">=</span>gee_model1_results.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
-<a class="sourceLine" id="cb208-4" data-line-number="4">xmin <span class="op">=</span> <span class="bu">min</span>(gee_model1_results.fittedvalues)</a>
-<a class="sourceLine" id="cb208-5" data-line-number="5">xmax <span class="op">=</span> <span class="bu">max</span>(gee_model1_results.fittedvalues)</a>
-<a class="sourceLine" id="cb208-6" data-line-number="6">axs[<span class="dv">0</span>,<span class="dv">0</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb208-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb208-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb208-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
-<a class="sourceLine" id="cb208-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb208-11" data-line-number="11">stats.probplot(gee_model1_results.resid_pearson, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
-<pre><code>## ((array([-3.4298304 , -3.18133149, -3.04364356, ...,  3.04364356,
-##         3.18133149,  3.4298304 ]), array([-191.1089021 , -188.19197518, -174.4588629 , ...,  737.15790634,
-##         942.12012746,  950.37738338])), (58.85113298482878, 1.3110521592357662, 0.8111029280120384))</code></pre>
-<div class="sourceCode" id="cb210"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb210-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_xlim(<span class="dv">0</span>, <span class="dv">4</span>)</a></code></pre></div>
-<pre><code>## (0.0, 4.0)</code></pre>
-<div class="sourceCode" id="cb212"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb212-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb212-2" data-line-number="2">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb212-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Q-Q plot of normalized residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
-<a class="sourceLine" id="cb212-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb212-5" data-line-number="5">plt.show()</a></code></pre></div>
-<p><img src="figures/unnamed-chunk-99-3.png" width="576" /></p>
-<p>This model does a much better job of capturing the idiosyncrasies of our data. We can go further, however. The data may not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean), in which case one option is to fit a negative binomial model that can account for this over- or under-dispersion.</p>
-<div class="sourceCode" id="cb213"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb213-1" data-line-number="1"><span class="co"># Generalized Estimating Equations: negative binomial model</span></a>
-<a class="sourceLine" id="cb213-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb213-3" data-line-number="3">gee_model2 <span class="op">=</span> GEE.from_formula(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, <span class="op">\</span></a>
-<a class="sourceLine" id="cb213-4" data-line-number="4">    groups<span class="op">=</span><span class="st">&quot;state&quot;</span>, <span class="op">\</span></a>
-<a class="sourceLine" id="cb213-5" data-line-number="5">    data<span class="op">=</span>US_cases_long_demogr_week, <span class="op">\</span></a>
-<a class="sourceLine" id="cb213-6" data-line-number="6">    time<span class="op">=</span><span class="st">&#39;week_of_year&#39;</span>, <span class="op">\</span></a>
-<a class="sourceLine" id="cb213-7" data-line-number="7">    cov_struct<span class="op">=</span>Autoregressive(), <span class="op">\</span></a>
-<a class="sourceLine" id="cb213-8" data-line-number="8">    family<span class="op">=</span>NegativeBinomial(alpha<span class="op">=</span><span class="fl">1.</span>), <span class="op">\</span></a>
-<a class="sourceLine" id="cb213-9" data-line-number="9">    offset<span class="op">=</span>np.log(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;pop_count_2019&quot;</span>])))</a>
-<a class="sourceLine" id="cb213-10" data-line-number="10">    </a>
-<a class="sourceLine" id="cb213-11" data-line-number="11">gee_model2_results <span class="op">=</span> gee_model2.fit()</a>
-<a class="sourceLine" id="cb213-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb213-13" data-line-number="13"><span class="bu">print</span>(gee_model2_results.summary())</a></code></pre></div>
+<p>Overall, the poisson model does a much better job of capturing the idiosyncrasies of our data than the linear model. We can go further, however, by fitting a negative binomial model that can account for over- or under-dispersion (variance greater than or less than the mean).</p>
+<div class="sourceCode" id="cb208"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb208-1" data-line-number="1"><span class="co"># Generalized Estimating Equations: negative binomial model</span></a>
+<a class="sourceLine" id="cb208-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb208-3" data-line-number="3">nb <span class="op">=</span> NegativeBinomial(alpha<span class="op">=</span><span class="fl">1.</span>)</a>
+<a class="sourceLine" id="cb208-4" data-line-number="4">ar <span class="op">=</span> Autoregressive()</a>
+<a class="sourceLine" id="cb208-5" data-line-number="5"> </a>
+<a class="sourceLine" id="cb208-6" data-line-number="6">gee_model2 <span class="op">=</span> GEE.from_formula(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, groups<span class="op">=</span><span class="st">&quot;state&quot;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb208-7" data-line-number="7">    data<span class="op">=</span>US_cases_long_demogr_week, <span class="op">\</span></a>
+<a class="sourceLine" id="cb208-8" data-line-number="8">    time<span class="op">=</span><span class="st">&#39;week_of_year&#39;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb208-9" data-line-number="9">    cov_struct<span class="op">=</span>ar, <span class="op">\</span></a>
+<a class="sourceLine" id="cb208-10" data-line-number="10">    family<span class="op">=</span>nb, <span class="op">\</span></a>
+<a class="sourceLine" id="cb208-11" data-line-number="11">    offset<span class="op">=</span>np.log(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;pop_count_2019&quot;</span>])))</a>
+<a class="sourceLine" id="cb208-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb208-13" data-line-number="13">gee_model2_results <span class="op">=</span> gee_model2.fit(maxiter<span class="op">=</span><span class="dv">2000</span>)</a>
+<a class="sourceLine" id="cb208-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb208-15" data-line-number="15"><span class="bu">print</span>(gee_model2_results.summary())</a></code></pre></div>
 <pre><code>##                                GEE Regression Results                              
 ## ===================================================================================
 ## Dep. Variable:             cases_count_pos   No. Observations:                 2295
@@ -729,7 +717,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Family:                   NegativeBinomial   Mean cluster size:                45.0
 ## Dependence structure:       Autoregressive   Num. iterations:                    52
 ## Date:                     Tue, 15 Dec 2020   Scale:                           1.000
-## Covariance type:                    robust   Time:                         16:26:00
+## Covariance type:                    robust   Time:                         21:36:13
 ## =====================================================================================
 ##                         coef    std err          z      P&gt;|z|      [0.025      0.975]
 ## -------------------------------------------------------------------------------------
@@ -742,80 +730,82 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Skew:                          1.3220   Kurtosis:                      23.3385
 ## Centered skew:                 2.1260   Centered kurtosis:             22.5005
 ## ==============================================================================</code></pre>
-<div class="sourceCode" id="cb215"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb215-1" data-line-number="1"><span class="bu">print</span>(Autoregressive().summary())</a></code></pre></div>
-<pre><code>## Autoregressive(1) dependence parameter: 0.000</code></pre>
-<div class="sourceCode" id="cb217"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb217-1" data-line-number="1"><span class="bu">print</span>(<span class="st">&quot;scale=</span><span class="sc">%.2f</span><span class="st">&quot;</span> <span class="op">%</span> (gee_model2_results.scale))</a></code></pre></div>
+<div class="sourceCode" id="cb210"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb210-1" data-line-number="1"><span class="bu">print</span>(ar.summary())</a></code></pre></div>
+<pre><code>## Autoregressive(1) dependence parameter: 0.761</code></pre>
+<div class="sourceCode" id="cb212"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb212-1" data-line-number="1"><span class="bu">print</span>(<span class="st">&quot;scale=</span><span class="sc">%.2f</span><span class="st">&quot;</span> <span class="op">%</span> (gee_model2_results.scale))</a></code></pre></div>
 <pre><code>## scale=1.00</code></pre>
-<p>Let’s look at the model diagnostics:</p>
-<div class="sourceCode" id="cb219"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb219-1" data-line-number="1"><span class="co"># model diagnostics</span></a>
-<a class="sourceLine" id="cb219-2" data-line-number="2">fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, squeeze<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</a>
-<a class="sourceLine" id="cb219-3" data-line-number="3">fig.tight_layout()</a>
-<a class="sourceLine" id="cb219-4" data-line-number="4">axs[<span class="dv">0</span>,<span class="dv">0</span>].scatter(x<span class="op">=</span>gee_model2_results.fittedvalues,y<span class="op">=</span>gee_model2_results.resid,edgecolor<span class="op">=</span><span class="st">&#39;k&#39;</span>)</a>
-<a class="sourceLine" id="cb219-5" data-line-number="5">xmin <span class="op">=</span> <span class="bu">min</span>(gee_model2_results.fittedvalues)</a>
-<a class="sourceLine" id="cb219-6" data-line-number="6">xmax <span class="op">=</span> <span class="bu">max</span>(gee_model2_results.fittedvalues)</a>
-<a class="sourceLine" id="cb219-7" data-line-number="7">axs[<span class="dv">0</span>,<span class="dv">0</span>].hlines(y<span class="op">=</span><span class="dv">0</span>,xmin<span class="op">=</span>xmin<span class="op">*</span><span class="fl">0.9</span>,xmax<span class="op">=</span>xmax<span class="op">*</span><span class="fl">1.1</span>,color<span class="op">=</span><span class="st">&#39;red&#39;</span>,linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>,lw<span class="op">=</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb219-8" data-line-number="8">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Fitted values&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb219-9" data-line-number="9">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb219-10" data-line-number="10">axs[<span class="dv">0</span>,<span class="dv">0</span>].set_title(<span class="st">&quot;Fitted vs. residuals plot&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
-<a class="sourceLine" id="cb219-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb219-12" data-line-number="12">stats.probplot(gee_model2_results.resid_pearson, plot<span class="op">=</span>plt, fit<span class="op">=</span><span class="va">True</span>)</a></code></pre></div>
-<pre><code>## ((array([-3.4298304 , -3.18133149, -3.04364356, ...,  3.04364356,
-##         3.18133149,  3.4298304 ]), array([-0.99990553, -0.99987275, -0.99986291, ..., 11.19267986,
-##        14.14841603, 14.58366468])), (0.9935998252791962, -0.06394103716891036, 0.7861690659231126))</code></pre>
-<div class="sourceCode" id="cb221"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb221-1" data-line-number="1">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Theoretical quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb221-2" data-line-number="2">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Sample quantiles&quot;</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb221-3" data-line-number="3">axs[<span class="dv">0</span>,<span class="dv">1</span>].set_title(<span class="st">&quot;Q-Q plot of normalized residuals&quot;</span>,fontsize<span class="op">=</span><span class="dv">12</span>)</a>
-<a class="sourceLine" id="cb221-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb221-5" data-line-number="5">plt.show()</a></code></pre></div>
-<p><img src="figures/unnamed-chunk-101-1.png" width="576" /></p>
+<p>Let’s look at some model diagnostics:</p>
+<div class="sourceCode" id="cb214"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb214-1" data-line-number="1"><span class="co"># plot within-group residuals against time difference</span></a>
+<a class="sourceLine" id="cb214-2" data-line-number="2">fig <span class="op">=</span> gee_model2_results.plot_isotropic_dependence()</a>
+<a class="sourceLine" id="cb214-3" data-line-number="3">plt.grid(<span class="va">True</span>)</a>
+<a class="sourceLine" id="cb214-4" data-line-number="4">plt.show()</a>
+<a class="sourceLine" id="cb214-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb214-6" data-line-number="6"><span class="co"># plot mean-variance relationship without covariates</span></a></code></pre></div>
+<p><img src="figures/unnamed-chunk-101-1.png" width="768" /></p>
+<div class="sourceCode" id="cb215"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb215-1" data-line-number="1">yg <span class="op">=</span> gee_model2.cluster_list(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;cases_count_pos&quot;</span>]))</a>
+<a class="sourceLine" id="cb215-2" data-line-number="2">ymn <span class="op">=</span> [x.mean() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
+<a class="sourceLine" id="cb215-3" data-line-number="3">yva <span class="op">=</span> [x.var() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
+<a class="sourceLine" id="cb215-4" data-line-number="4">plt.grid(<span class="va">True</span>)</a>
+<a class="sourceLine" id="cb215-5" data-line-number="5">plt.plot(np.log(ymn), np.log(yva), <span class="st">&#39;o&#39;</span>)</a>
+<a class="sourceLine" id="cb215-6" data-line-number="6">plt.xlabel(<span class="st">&quot;Log Mean&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
+<a class="sourceLine" id="cb215-7" data-line-number="7">plt.ylabel(<span class="st">&quot;Log Variance&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
+<a class="sourceLine" id="cb215-8" data-line-number="8">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-101-2.png" width="768" /></p>
 <p>Let’s compare our last two models:</p>
-<div class="sourceCode" id="cb222"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb222-1" data-line-number="1"><span class="co"># use quasi information criterion to compare poisson and negative binomial models</span></a>
-<a class="sourceLine" id="cb222-2" data-line-number="2"><span class="bu">print</span>(gee_model2_results.qic())    </a></code></pre></div>
+<div class="sourceCode" id="cb216"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb216-1" data-line-number="1"><span class="co"># use quasi information criterion to compare poisson and negative binomial models</span></a>
+<a class="sourceLine" id="cb216-2" data-line-number="2"><span class="bu">print</span>(gee_model2_results.qic())    </a></code></pre></div>
 <pre><code>## (4709555305.822205, 6136.330127245823)</code></pre>
-<div class="sourceCode" id="cb224"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb224-1" data-line-number="1"><span class="bu">print</span>(gee_model1_results.qic())</a></code></pre></div>
-<pre><code>## (6283477826.611778, 8011349.26763178)</code></pre>
+<div class="sourceCode" id="cb218"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb218-1" data-line-number="1"><span class="bu">print</span>(gee_model1_results.qic())</a></code></pre></div>
+<pre><code>## (6283477749.315451, 8011349.269636027)</code></pre>
 <p>Both count-based models improve upon the previous linear models, but are not satisfactory, probably because they cannot take account of the excessive zeros and they only use cluster-robust standard errors and thus cannot model how lower level coefficients vary across groups of the higher level. Python’s <code>statsmodels</code> has zero-inflated count model methods, but they cannot deal with panel/clustered data. However, we can fit generalized linear mixed effects models in a Bayesian framework using <code>statsmodels</code>. Initially, let’s try a model with random intercepts only:</p>
-<div class="sourceCode" id="cb226"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb226-1" data-line-number="1"><span class="co"># Bayesian poisson mixed effects model with random intercepts for states</span></a>
-<a class="sourceLine" id="cb226-2" data-line-number="2">formula <span class="op">=</span> <span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span></a>
-<a class="sourceLine" id="cb226-3" data-line-number="3">po_bay_panel1 <span class="op">=</span> PoissonBayesMixedGLM.from_formula(formula, {<span class="st">&#39;state&#39;</span>: <span class="st">&#39;0 + C(state)&#39;</span>}, US_cases_long_demogr_week)              </a>
-<a class="sourceLine" id="cb226-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb226-5" data-line-number="5">po_bay_panel1_results <span class="op">=</span> po_bay_panel1.fit_map()                                                                                                                        </a>
-<a class="sourceLine" id="cb226-6" data-line-number="6"><span class="bu">print</span>(po_bay_panel1_results.summary()) </a></code></pre></div>
-<pre><code>##                    Poisson Mixed GLM Results
-## ================================================================
-##                   Type Post. Mean Post. SD   SD  SD (LB) SD (UB)
-## ----------------------------------------------------------------
-## Intercept            M    -0.2003   1.8546                      
-## week_of_year         M     0.0674   0.0000                      
-## percent_age65over    M    -0.1853   0.0841                      
-## percent_female       M     0.1826   0.0486                      
-## percent_black        M     0.0090   0.0159                      
-## state                V     0.0925   0.0985 1.097   0.901   1.336
-## ================================================================
-## Parameter types are mean structure (M) and variance structure
-## (V)
+<div class="sourceCode" id="cb220"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb220-1" data-line-number="1"><span class="co"># Bayesian poisson mixed effects model with random intercepts for states</span></a>
+<a class="sourceLine" id="cb220-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb220-3" data-line-number="3">formula <span class="op">=</span> <span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span></a>
+<a class="sourceLine" id="cb220-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb220-5" data-line-number="5">po_bay_panel1 <span class="op">=</span> PoissonBayesMixedGLM.from_formula(formula, {<span class="st">&#39;state&#39;</span>: <span class="st">&#39;0 + C(state)&#39;</span>}, US_cases_long_demogr_week)</a>
+<a class="sourceLine" id="cb220-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb220-7" data-line-number="7">po_bay_panel1_results <span class="op">=</span> po_bay_panel1.fit_map()</a>
+<a class="sourceLine" id="cb220-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb220-9" data-line-number="9"><span class="bu">print</span>(po_bay_panel1_results.summary()) </a></code></pre></div>
+<pre><code>##                     Poisson Mixed GLM Results
+## =================================================================
+##                   Type Post. Mean Post. SD   SD   SD (LB) SD (UB)
+## -----------------------------------------------------------------
+## Intercept            M     0.4348   1.2489                       
+## week_of_year         M     0.0991   0.0000                       
+## percent_age65over    M    -0.5636   0.3065                       
+## percent_female       M     0.2499      nan                       
+## percent_black        M    -0.0271   0.1359                       
+## state                V     2.4516   0.1852 11.606   8.014  16.810
+## =================================================================
+## Parameter types are mean structure (M) and variance structure (V)
 ## Variance parameters are modeled as log standard deviations</code></pre>
 <p>We can also add random slopes for time to allow for different trajectories of case rates across states:</p>
-<div class="sourceCode" id="cb228"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb228-1" data-line-number="1"><span class="co"># Bayesian poisson mixed effects model with random intercepts and slopes</span></a>
-<a class="sourceLine" id="cb228-2" data-line-number="2">formula <span class="op">=</span> <span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span></a>
-<a class="sourceLine" id="cb228-3" data-line-number="3">po_bay_panel2 <span class="op">=</span> PoissonBayesMixedGLM.from_formula(formula, {<span class="st">&#39;state&#39;</span>: <span class="st">&#39;0 + C(state)&#39;</span>, <span class="st">&quot;week_of_year&quot;</span>: <span class="st">&#39;0 + C(week_of_year)&#39;</span>}, US_cases_long_demogr_week)                                                              </a>
-<a class="sourceLine" id="cb228-4" data-line-number="4">po_bay_panel2_results <span class="op">=</span> po_bay_panel2.fit_map()                                                                                                                        </a>
-<a class="sourceLine" id="cb228-5" data-line-number="5"><span class="bu">print</span>(po_bay_panel2_results.summary()) </a></code></pre></div>
+<div class="sourceCode" id="cb222"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb222-1" data-line-number="1"><span class="co"># Bayesian poisson mixed effects model with independent random intercepts and slopes</span></a>
+<a class="sourceLine" id="cb222-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb222-3" data-line-number="3">formula <span class="op">=</span> <span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span></a>
+<a class="sourceLine" id="cb222-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb222-5" data-line-number="5">po_bay_panel2 <span class="op">=</span> PoissonBayesMixedGLM.from_formula(formula, {<span class="st">&#39;state&#39;</span>: <span class="st">&#39;0 + C(state)&#39;</span>, <span class="st">&quot;week_of_year&quot;</span>: <span class="st">&#39;0 + C(week_of_year)&#39;</span>}, US_cases_long_demogr_week)</a>
+<a class="sourceLine" id="cb222-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb222-7" data-line-number="7">po_bay_panel2_results <span class="op">=</span> po_bay_panel2.fit_map()</a>
+<a class="sourceLine" id="cb222-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb222-9" data-line-number="9"><span class="bu">print</span>(po_bay_panel2_results.summary()) </a></code></pre></div>
 <pre><code>##                    Poisson Mixed GLM Results
 ## ================================================================
 ##                   Type Post. Mean Post. SD   SD  SD (LB) SD (UB)
 ## ----------------------------------------------------------------
-## Intercept            M    -0.2772   1.7451                      
-## week_of_year         M     0.2134   0.0283                      
-## percent_age65over    M    -0.1699   0.0840                      
-## percent_female       M     0.0765   0.0484                      
-## percent_black        M     0.0158   0.0159                      
+## Intercept            M    -0.2772   1.9277                      
+## week_of_year         M     0.2134   0.0287                      
+## percent_age65over    M    -0.1699   0.0848                      
+## percent_female       M     0.0765   0.0530                      
+## percent_black        M     0.0158   0.0160                      
 ## state                V     0.0984   0.0985 1.103   0.906   1.344
 ## week_of_year         V     0.8998   0.1059 2.459   1.990   3.039
 ## ================================================================
 ## Parameter types are mean structure (M) and variance structure
 ## (V)
 ## Variance parameters are modeled as log standard deviations</code></pre>
+<p>These models approximate the posterior distribution using variational inference, rather than sampling from it using Markov chain Monte Carlo, so unfortunately we can’t visualize parameter distributions. But, it seems safe to say that there is some variation among states in case rate trajectories over time.</p>
 <p>So far, we’ve only been modeling a linear trend for time. From our visualizations we know that this is unrealistic. How could we incorporate non-linear time elements in the model (e.g., splines, polynomials)? In addition, we haven’t dealt with the issue of zero-inflation — what are our options? We could try to fit our model in two stages:</p>
 <ol style="list-style-type: decimal">
 <li>a logistic model for the zero/non-zero component.</li>

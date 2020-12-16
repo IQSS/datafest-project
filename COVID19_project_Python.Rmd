@@ -61,7 +61,7 @@ import statsmodels.formula.api as smf
 from statsmodels.genmod.bayes_mixed_glm import PoissonBayesMixedGLM
 from scipy.stats.distributions import chi2
 from statsmodels.genmod.generalized_estimating_equations import GEE
-from statsmodels.genmod.cov_struct import Autoregressive
+from statsmodels.genmod.cov_struct import (Exchangeable, Autoregressive)
 from statsmodels.genmod.families import (Poisson, NegativeBinomial)
 ```
 
@@ -727,32 +727,34 @@ print(results.conf_int(alpha=0.05))
 Let's look at the model diagnostics:
 ```{python, fig.height=4, fig.width=10}
 # model diagnostics
-fig, axs = plt.subplots(1, 3, squeeze=False, figsize=(6, 6))
+fig, axs = plt.subplots(2, 2, squeeze=False, figsize=(6, 6))
 fig.tight_layout()
-axs[0,0].scatter(x=results.fittedvalues,y=results.resid,edgecolor='k')
+fig.delaxes(axs[1, 1])
+axs[0,1].scatter(x=results.fittedvalues,y=results.resid,edgecolor='k')
 xmin = min(results.fittedvalues)
 xmax = max(results.fittedvalues)
-axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
-axs[0,0].set_xlabel("Fitted values",fontsize=10)
-axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+axs[0,1].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
+axs[0,1].set_xlabel("Fitted values",fontsize=10)
+axs[0,1].set_ylabel("Residuals",fontsize=10)
+axs[0,1].set_title("Fitted vs. residuals plot",fontsize=10)
 
 stats.probplot(results.resid_pearson, plot=plt, fit=True)
-axs[0,2].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,2].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,2].set_title("Q-Q plot of normalized residuals",fontsize=12)
+axs[1,0].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[1,0].set_ylabel("Sample quantiles",fontsize=10)
+axs[1,0].set_title("Q-Q plot of normalized residuals",fontsize=10)
 
 inf=influence(results)
 (c, p) = inf.cooks_distance
-axs[0,1].stem(np.arange(len(c)), c, markerfmt=",")
-axs[0,1].set_title("Cook's distance plot for the residuals",fontsize=12)
+axs[0,0].stem(np.arange(len(c)), c, markerfmt=",")
+axs[0,0].set_title("Cook's distance plot for the residuals",fontsize=10)
+plt.subplots_adjust(left=0.1, wspace=0.4, hspace=0.4)
 
 plt.show()
 ```
 
 We recovered the average number of cases for the latest week, pooled over all the states. Now we can try adding some of our explanatory variables.
 ```{python}
-# fit OLS model
+# fit OLS model with explanatory variables
 X = US_cases_latest_week[['percent_age65over', 'percent_female', 'percent_black']]
 Y = US_cases_latest_week['cases_count_pos']
 X = sm.add_constant(X)
@@ -765,26 +767,28 @@ print(results2.summary())
 Let's look at the model diagnostics:
 ```{python, fig.height=4, fig.width=10}
 # model diagnostics 
-fig, axs = plt.subplots(1, 3, squeeze=False, figsize=(6, 6))
+fig, axs = plt.subplots(2, 2, squeeze=False, figsize=(6, 6))
 fig.tight_layout()
-axs[0,0].scatter(x=results2.fittedvalues,y=results2.resid,edgecolor='k')
+fig.delaxes(axs[1, 1])
+axs[0,1].scatter(x=results2.fittedvalues,y=results2.resid,edgecolor='k')
 xmin = min(results2.fittedvalues)
 xmax = max(results2.fittedvalues)
-axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
-axs[0,0].set_xlabel("Fitted values",fontsize=10)
-axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+axs[0,1].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
+axs[0,1].set_xlabel("Fitted values",fontsize=10)
+axs[0,1].set_ylabel("Residuals",fontsize=10)
+axs[0,1].set_title("Fitted vs. residuals plot",fontsize=10)
 
 stats.probplot(results2.resid_pearson, plot=plt, fit=True)
-axs[0,2].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,2].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,2].set_title("Q-Q plot of normalized residuals",fontsize=12)
+axs[1,0].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[1,0].set_ylabel("Sample quantiles",fontsize=10)
+axs[1,0].set_title("Q-Q plot of normalized residuals",fontsize=10)
 
 inf=influence(results2)
 (c, p) = inf.cooks_distance
-axs[0,1].stem(np.arange(len(c)), c, markerfmt=",")
-axs[0,1].set_title("Cook's distance plot for the residuals",fontsize=12)
+axs[0,0].stem(np.arange(len(c)), c, markerfmt=",")
+axs[0,0].set_title("Cook's distance plot for the residuals",fontsize=10)
 
+plt.subplots_adjust(left=0.1, wspace=0.4, hspace=0.4)
 plt.show()
 ```
 
@@ -805,7 +809,7 @@ print(model_panel1_results.conf_int(alpha=0.05, cols=None))
 Let's look at the model diagnostics:
 ```{python, fig.height=4, fig.width=10}
 # model diagnostics
-fig, axs = plt.subplots(1, 2, squeeze=False, figsize=(6, 6))
+fig, axs = plt.subplots(2, 1, squeeze=False, figsize=(8, 8))
 fig.tight_layout()
 axs[0,0].scatter(x=model_panel1_results.fittedvalues,y=model_panel1_results.resid,edgecolor='k')
 xmin = min(model_panel1_results.fittedvalues)
@@ -813,44 +817,51 @@ xmax = max(model_panel1_results.fittedvalues)
 axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
 axs[0,0].set_xlabel("Fitted values",fontsize=10)
 axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+axs[0,0].set_title("Fitted vs. residuals plot",fontsize=10)
 
 stats.probplot(model_panel1_results.resid, plot=plt, fit=True)
-axs[0,1].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,1].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,1].set_title("Q-Q plot of residuals",fontsize=12)
+axs[1,0].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[1,0].set_ylabel("Sample quantiles",fontsize=10)
+axs[1,0].set_title("Q-Q plot of residuals",fontsize=10)
 
+plt.subplots_adjust(left=0.12, hspace=0.25)
 plt.show()
 ```
 
-Aside from the convergence warning, the model diagnostics look terrible here --- why do you think that is? Now that we have a full year's worth of data, for many states the earlier part of that year consisted of a very small number of cases --- often zero cases. 
+The model diagnostics look terrible here --- why do you think that is? Now that we have a full year's worth of data, for many states the earlier part of that year consisted of a very small number of cases --- often zero cases. 
 ```{python, eval=FALSE}
-# HOW TO DO THIS IN PYTHON???
-summary(US_cases_long_demogr_week$cases_count_pos)
-
-table(US_cases_long_demogr_week$cases_count_pos == 0)
+# provides a summary of the number of zeros
+print(US_cases_long_demogr_week['cases_count_pos'].describe())
+print(US_cases_long_demogr_week['cases_count_pos'].value_counts())
+count_total = sum(US_cases_long_demogr_week['cases_count_pos'].value_counts().to_dict().values())
+count_zero = US_cases_long_demogr_week['cases_count_pos'].value_counts()[0.0]
+print("Count of zero is {}, about {:.4f} of the data.".format(count_zero, count_zero / count_total ))
 ```
 
 About 15\% of the data are zeros. This makes the linear model a poor fit for these data. Let's try a model designed specifically for count data --- the poisson. To account for the fact that states have different population levels, we can include an exposure term using the `offset` argument to get counts per population unit:
 ```{python}
 # Generalized Estimating Equations: poisson model
 
-gee_model1 = GEE.from_formula("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", \
-    groups="state", \
+poi=Poisson()
+ar=Autoregressive()
+
+gee_model1 = GEE.from_formula("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", groups="state", \
     data=US_cases_long_demogr_week, \
     time='week_of_year', \
-    cov_struct=Autoregressive(), \
-    family=Poisson(), \
+    cov_struct=ar, \
+    family=poi, \
     offset=np.log(np.asarray(US_cases_long_demogr_week["pop_count_2019"])))
-    
-gee_model1_results = gee_model1.fit()
+
+gee_model1_results = gee_model1.fit(maxiter=200)
 
 print(gee_model1_results.summary())
-print(Autoregressive().summary())
+print(ar.summary())
 print("scale=%.2f" % (gee_model1_results.scale))
 ```
 
-Let's look at the model diagnostics:
+We get a warning message: "IterationLimitWarning: Iteration limit reached prior to convergence", but even if we specify a large value for maxiter (e.g., 2000) we still don't achieve convergence. We could try specifying starting values, estimated using a simpler covariance structure, to try to get the estimating algorithm to converge. But, the lack of convergence may be a symptom of a more fundamental problem --- that the data may not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean). In which case, we may need a more flexible model.   
+
+Let's look at some model diagnostics anyway:
 ```{python, fig.height=5, fig.width=8}
 # plot within-group residuals against time difference
 fig = gee_model1_results.plot_isotropic_dependence()
@@ -866,64 +877,44 @@ plt.plot(np.log(ymn), np.log(yva), 'o')
 plt.xlabel("Log Mean", size=13)
 plt.ylabel("Log Variance", size=13)
 plt.show()
-
-# model diagnostics
-fig, axs = plt.subplots(1, 2, squeeze=False, figsize=(6, 6))
-fig.tight_layout()
-axs[0,0].scatter(x=gee_model1_results.fittedvalues,y=gee_model1_results.resid,edgecolor='k')
-xmin = min(gee_model1_results.fittedvalues)
-xmax = max(gee_model1_results.fittedvalues)
-axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
-axs[0,0].set_xlabel("Fitted values",fontsize=10)
-axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
-
-stats.probplot(gee_model1_results.resid_pearson, plot=plt, fit=True)
-axs[0,1].set_xlim(0, 4)
-axs[0,1].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,1].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,1].set_title("Q-Q plot of normalized residuals",fontsize=12)
-
-plt.show()
 ```
 
-This model does a much better job of capturing the idiosyncrasies of our data. We can go further, however. The data may not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean), in which case one option is to fit a negative binomial model that can account for this over- or under-dispersion.
+Overall, the poisson model does a much better job of capturing the idiosyncrasies of our data than the linear model. We can go further, however, by fitting a negative binomial model that can account for over- or under-dispersion (variance greater than or less than the mean).
 ```{python}
 # Generalized Estimating Equations: negative binomial model
 
-gee_model2 = GEE.from_formula("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", \
-    groups="state", \
+nb = NegativeBinomial(alpha=1.)
+ar = Autoregressive()
+ 
+gee_model2 = GEE.from_formula("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", groups="state", \
     data=US_cases_long_demogr_week, \
     time='week_of_year', \
-    cov_struct=Autoregressive(), \
-    family=NegativeBinomial(alpha=1.), \
+    cov_struct=ar, \
+    family=nb, \
     offset=np.log(np.asarray(US_cases_long_demogr_week["pop_count_2019"])))
-    
-gee_model2_results = gee_model2.fit()
+
+gee_model2_results = gee_model2.fit(maxiter=2000)
 
 print(gee_model2_results.summary())
-print(Autoregressive().summary())
+print(ar.summary())
 print("scale=%.2f" % (gee_model2_results.scale))
 ```
 
-Let's look at the model diagnostics:
+Let's look at some model diagnostics:
 ```{python, fig.height=5, fig.width=8}
-# model diagnostics
-fig, axs = plt.subplots(1, 2, squeeze=False, figsize=(6, 6))
-fig.tight_layout()
-axs[0,0].scatter(x=gee_model2_results.fittedvalues,y=gee_model2_results.resid,edgecolor='k')
-xmin = min(gee_model2_results.fittedvalues)
-xmax = max(gee_model2_results.fittedvalues)
-axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
-axs[0,0].set_xlabel("Fitted values",fontsize=10)
-axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+# plot within-group residuals against time difference
+fig = gee_model2_results.plot_isotropic_dependence()
+plt.grid(True)
+plt.show()
 
-stats.probplot(gee_model2_results.resid_pearson, plot=plt, fit=True)
-axs[0,1].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,1].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,1].set_title("Q-Q plot of normalized residuals",fontsize=12)
-
+# plot mean-variance relationship without covariates
+yg = gee_model2.cluster_list(np.asarray(US_cases_long_demogr_week["cases_count_pos"]))
+ymn = [x.mean() for x in yg]
+yva = [x.var() for x in yg]
+plt.grid(True)
+plt.plot(np.log(ymn), np.log(yva), 'o')
+plt.xlabel("Log Mean", size=13)
+plt.ylabel("Log Variance", size=13)
 plt.show()
 ```
 
@@ -937,21 +928,30 @@ print(gee_model1_results.qic())
 Both count-based models improve upon the previous linear models, but are not satisfactory, probably because they cannot take account of the excessive zeros and they only use cluster-robust standard errors and thus cannot model how lower level coefficients vary across groups of the higher level. Python's `statsmodels` has zero-inflated count model methods, but they cannot deal with panel/clustered data. However, we can fit generalized linear mixed effects models in a Bayesian framework using `statsmodels`. Initially, let's try a model with random intercepts only:
 ```{python}
 # Bayesian poisson mixed effects model with random intercepts for states
-formula = "cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black"
-po_bay_panel1 = PoissonBayesMixedGLM.from_formula(formula, {'state': '0 + C(state)'}, US_cases_long_demogr_week)              
 
-po_bay_panel1_results = po_bay_panel1.fit_map()                                                                                                                        
+formula = "cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black"
+
+po_bay_panel1 = PoissonBayesMixedGLM.from_formula(formula, {'state': '0 + C(state)'}, US_cases_long_demogr_week)
+
+po_bay_panel1_results = po_bay_panel1.fit_map()
+
 print(po_bay_panel1_results.summary()) 
 ``` 
 
 We can also add random slopes for time to allow for different trajectories of case rates across states:
 ```{python}
-# Bayesian poisson mixed effects model with random intercepts and slopes
+# Bayesian poisson mixed effects model with independent random intercepts and slopes
+
 formula = "cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black"
-po_bay_panel2 = PoissonBayesMixedGLM.from_formula(formula, {'state': '0 + C(state)', "week_of_year": '0 + C(week_of_year)'}, US_cases_long_demogr_week)                                                              
-po_bay_panel2_results = po_bay_panel2.fit_map()                                                                                                                        
+
+po_bay_panel2 = PoissonBayesMixedGLM.from_formula(formula, {'state': '0 + C(state)', "week_of_year": '0 + C(week_of_year)'}, US_cases_long_demogr_week)
+
+po_bay_panel2_results = po_bay_panel2.fit_map()
+
 print(po_bay_panel2_results.summary()) 
 ```
+
+These models approximate the posterior distribution using variational inference, rather than sampling from it using Markov chain Monte Carlo, so unfortunately we can't visualize parameter distributions. But, it seems safe to say that there is some variation among states in case rate trajectories over time.
 
 So far, we've only been modeling a linear trend for time. From our visualizations we know that this is unrealistic. How could we incorporate non-linear time elements in the model (e.g., splines, polynomials)? In addition, we haven't dealt with the issue of zero-inflation --- what are our options? We could try to fit our model in two stages:
 
