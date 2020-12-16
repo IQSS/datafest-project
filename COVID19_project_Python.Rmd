@@ -108,7 +108,7 @@ for fileObject in covid_files_list:
     print("File name is {}; id is {}".format(fileObject["dataFile"]["filename"], fileObject["dataFile"]["id"]))
 ```
 
-For our example project, we're going to use the data on cumulative COVID-19 cases at the state-level contained in the `us_state_confirmed_case.tab` file.
+For our example project, we're going to use the data on cumulative COVID-19 cases at the state-level contained in the `us_state_confirmed_case.tab` file, which has the ID `4201597`.
 ```{python}
 # get data file for COVID-19 cases
 US_states_cases_file = api.get_datafile("4201597")

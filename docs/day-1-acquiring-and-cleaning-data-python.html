@@ -269,7 +269,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## File name is us_county_deaths_cases.tab; id is 4202273
 ## File name is us_state_confirmed_case.tab; id is 4201597
 ## File name is us_state_deaths_case.tab; id is 4201596</code></pre>
-<p>For our example project, we’re going to use the data on cumulative COVID-19 cases at the state-level contained in the <code>us_state_confirmed_case.tab</code> file.</p>
+<p>For our example project, we’re going to use the data on cumulative COVID-19 cases at the state-level contained in the <code>us_state_confirmed_case.tab</code> file, which has the ID <code>4201597</code>.</p>
 <div class="sourceCode" id="cb101"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb101-1" data-line-number="1"><span class="co"># get data file for COVID-19 cases</span></a>
 <a class="sourceLine" id="cb101-2" data-line-number="2">US_states_cases_file <span class="op">=</span> api.get_datafile(<span class="st">&quot;4201597&quot;</span>)</a></code></pre></div>
 <p>To convert the data into a more user friendly data frame, we have to jump through a few hoops:</p>

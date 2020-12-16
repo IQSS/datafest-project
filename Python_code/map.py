@@ -5,7 +5,8 @@ import geopandas
 import pandas as pd
 from functools import reduce
 import matplotlib.pyplot as plt
-from bokeh.plotting import figure, save, show
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from bokeh.plotting import figure, save, show, output_file
 from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper, ColorBar
 from bokeh.palettes import Viridis256 as palette
 
@@ -90,14 +91,20 @@ ax.axis('off')
 # add a title and annotation
 ax.set_title('COVID-19 cases rates for last week', fontdict={'fontsize': '15', 'fontweight' : '3'})
 ax.annotate('Data Sources: Harvard Dataverse, 2020; U.S. Census Bureau, 2019', xy=(0.6, .05), xycoords='figure fraction', fontsize=12, color='#555555')
+
+# create an axes on the right side of ax. The width of cax will be 3% of ax and the padding between cax and ax will be fixed at 0.05 inch.
+divider = make_axes_locatable(ax)
+cax = divider.append_axes("right", size="3%", pad=0.05)
+
 # Create colorbar legend
-sm = plt.cm.ScalarMappable(cmap='Greens', norm=plt.Normalize(vmin=vmin, vmax=vmax))
+legend = plt.cm.ScalarMappable(cmap='Greens', norm=plt.Normalize(vmin=vmin, vmax=vmax))
 # empty array for the data range
-sm.set_array([]) # or alternatively sm._A = []. Not sure why this step is necessary, but many recommends it
+legend.set_array([]) # or alternatively sm._A = []. Not sure why this step is necessary, but many recommends it
 # add the colorbar to the figure
-fig.colorbar(sm)
+fig.colorbar(legend, cax=cax)
+#fig.colorbar(legend)
 # create map
-US_cases_long_week_spatial.plot(column=variable, cmap='Greens', linewidth=0.8, ax=ax, edgecolor='1.0')
+US_cases_long_week_spatial.plot(column=variable, cmap='Greens', linewidth=0.8, ax=ax, cax=cax, edgecolor='1.0')
 
 plt.show()
 
@@ -129,7 +136,7 @@ my_hover.tooltips = [('name', '@state'), ('cases rate', '@cases_rate_100K')]
 # add this new tool into our current map
 p.add_tools(my_hover)
 # save the map
-outfp = r"D:\\DataFest_2021\\covid-19_map_hover.html"
-save(p, outfp)
+output_file("covid-19_map_hover.html")
+save(p)
 # show the map
 show(p)

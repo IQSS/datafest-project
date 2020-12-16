@@ -79,16 +79,10 @@ For our example project, we're going to use the data on cumulative COVID-19 case
 US_cases_file <- get_file("us_state_confirmed_case.tab", dataset = DOI)
 ```
 
-To convert the data from the raw vector into a more user friendly data frame, we have to jump through a few hoops:
+To convert the data from the raw vector into a more user friendly data frame, we can use the `read_csv()` function from the `readr` package:
 ```{r}
-# create a temporary file
-tmp <- tempfile(fileext = ".tab")
-
-# write the US_cases_file object to the temporary file
-writeBin(object = US_cases_file, con = tmp)
-
-# read the data from the temporary file into a data frame
-US_cases <- read_csv(tmp)
+# convert raw vector to dataframe
+US_cases <- read_csv(US_cases_file)
 ```
 
 We can now examine the structure of the data:

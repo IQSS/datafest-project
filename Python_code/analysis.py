@@ -13,7 +13,7 @@ import statsmodels.formula.api as smf
 from statsmodels.genmod.bayes_mixed_glm import PoissonBayesMixedGLM                                                  
 from scipy.stats.distributions import chi2
 from statsmodels.genmod.generalized_estimating_equations import GEE
-from statsmodels.genmod.cov_struct import Autoregressive
+from statsmodels.genmod.cov_struct import (Exchangeable, Autoregressive)
 from statsmodels.genmod.families import (Poisson, NegativeBinomial)
 
 # load data
@@ -60,26 +60,27 @@ print(results.summary())
 print(results.conf_int(alpha=0.05))
 
 # model diagnostics
-fig, axs = plt.subplots(1, 3, squeeze=False, figsize=(6, 6))
+fig, axs = plt.subplots(2, 2, squeeze=False, figsize=(6, 6))
 fig.tight_layout()
-axs[0,0].scatter(x=results.fittedvalues,y=results.resid,edgecolor='k')
+fig.delaxes(axs[1, 1])
+axs[0,1].scatter(x=results.fittedvalues,y=results.resid,edgecolor='k')
 xmin = min(results.fittedvalues)
 xmax = max(results.fittedvalues)
-axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
-axs[0,0].set_xlabel("Fitted values",fontsize=10)
-axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+axs[0,1].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
+axs[0,1].set_xlabel("Fitted values",fontsize=10)
+axs[0,1].set_ylabel("Residuals",fontsize=10)
+axs[0,1].set_title("Fitted vs. residuals plot",fontsize=10)
 
 stats.probplot(results.resid_pearson, plot=plt, fit=True)
-axs[0,2].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,2].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,2].set_title("Q-Q plot of normalized residuals",fontsize=12)
+axs[1,0].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[1,0].set_ylabel("Sample quantiles",fontsize=10)
+axs[1,0].set_title("Q-Q plot of normalized residuals",fontsize=10)
 
 inf=influence(results)
 (c, p) = inf.cooks_distance
-axs[0,1].stem(np.arange(len(c)), c, markerfmt=",")
-axs[0,1].set_title("Cook's distance plot for the residuals",fontsize=12)
-
+axs[0,0].stem(np.arange(len(c)), c, markerfmt=",")
+axs[0,0].set_title("Cook's distance plot for the residuals",fontsize=10)
+plt.subplots_adjust(left=0.1, wspace=0.4, hspace=0.4)
 plt.show()
 
 # fit OLS model with explanatory variables
@@ -91,29 +92,31 @@ results2 = model_last_week2.fit()
 print(results2.summary())
 
 # model diagnostics
-fig, axs = plt.subplots(1, 3, squeeze=False, figsize=(6, 6))
+fig, axs = plt.subplots(2, 2, squeeze=False, figsize=(6, 6))
 fig.tight_layout()
-axs[0,0].scatter(x=results2.fittedvalues,y=results2.resid,edgecolor='k')
+fig.delaxes(axs[1, 1])
+axs[0,1].scatter(x=results2.fittedvalues,y=results2.resid,edgecolor='k')
 xmin = min(results2.fittedvalues)
 xmax = max(results2.fittedvalues)
-axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
-axs[0,0].set_xlabel("Fitted values",fontsize=10)
-axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+axs[0,1].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
+axs[0,1].set_xlabel("Fitted values",fontsize=10)
+axs[0,1].set_ylabel("Residuals",fontsize=10)
+axs[0,1].set_title("Fitted vs. residuals plot",fontsize=10)
 
 stats.probplot(results2.resid_pearson, plot=plt, fit=True)
-axs[0,2].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,2].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,2].set_title("Q-Q plot of normalized residuals",fontsize=12)
+axs[1,0].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[1,0].set_ylabel("Sample quantiles",fontsize=10)
+axs[1,0].set_title("Q-Q plot of normalized residuals",fontsize=10)
 
 inf=influence(results2)
 (c, p) = inf.cooks_distance
-axs[0,1].stem(np.arange(len(c)), c, markerfmt=",")
-axs[0,1].set_title("Cook's distance plot for the residuals",fontsize=12)
+axs[0,0].stem(np.arange(len(c)), c, markerfmt=",")
+axs[0,0].set_title("Cook's distance plot for the residuals",fontsize=10)
 
+plt.subplots_adjust(left=0.1, wspace=0.4, hspace=0.4)
 plt.show()
 
-# Panel Models
+# Panal Models
 # Linear mixed effects with random intercept
 model_panel1 = smf.mixedlm("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", US_cases_long_demogr_week, groups="state")
 model_panel1_results = model_panel1.fit(reml=False)
@@ -121,7 +124,7 @@ print(model_panel1_results.summary())
 print(model_panel1_results.conf_int(alpha=0.05, cols=None))
 
 # model diagnostics
-fig, axs = plt.subplots(1, 2, squeeze=False, figsize=(6, 6))
+fig, axs = plt.subplots(2, 1, squeeze=False, figsize=(8, 8))
 fig.tight_layout()
 axs[0,0].scatter(x=model_panel1_results.fittedvalues,y=model_panel1_results.resid,edgecolor='k')
 xmin = min(model_panel1_results.fittedvalues)
@@ -129,13 +132,14 @@ xmax = max(model_panel1_results.fittedvalues)
 axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
 axs[0,0].set_xlabel("Fitted values",fontsize=10)
 axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+axs[0,0].set_title("Fitted vs. residuals plot",fontsize=10)
 
 stats.probplot(model_panel1_results.resid, plot=plt, fit=True)
-axs[0,1].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,1].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,1].set_title("Q-Q plot of residuals",fontsize=12)
+axs[1,0].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[1,0].set_ylabel("Sample quantiles",fontsize=10)
+axs[1,0].set_title("Q-Q plot of residuals",fontsize=10)
 
+plt.subplots_adjust(left=0.12, hspace=0.25)
 plt.show()
 
 # Linear mixed effects with random intercept and random slope
@@ -146,7 +150,7 @@ print(model_panel2_results.summary())
 print(model_panel2_results.conf_int(alpha=0.05, cols=None))
 
 # model diagnostics
-fig, axs = plt.subplots(1, 2, squeeze=False, figsize=(6, 6))
+fig, axs = plt.subplots(2, 1, squeeze=False, figsize=(8, 8))
 fig.tight_layout()
 axs[0,0].scatter(x=model_panel2_results.fittedvalues,y=model_panel2_results.resid,edgecolor='k')
 xmin = min(model_panel2_results.fittedvalues)
@@ -154,13 +158,14 @@ xmax = max(model_panel2_results.fittedvalues)
 axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
 axs[0,0].set_xlabel("Fitted values",fontsize=10)
 axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+axs[0,0].set_title("Fitted vs. residuals plot",fontsize=10)
 
 stats.probplot(model_panel2_results.resid, plot=plt, fit=True)
-axs[0,1].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,1].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,1].set_title("Q-Q plot of residuals",fontsize=12)
+axs[1,0].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[1,0].set_ylabel("Sample quantiles",fontsize=10)
+axs[1,0].set_title("Q-Q plot of residuals",fontsize=10)
 
+plt.subplots_adjust(left=0.12, hspace=0.25)
 plt.show()
 
 # model comparison with likelihood ratio test
@@ -168,13 +173,42 @@ LR = 2 * (model_panel2_results.llf - model_panel1_results.llf)
 p = chi2.sf(LR, 2) 
 print('p: %.30f' % p) 
 
+# provides a summary of the number of zeros
+print(US_cases_long_demogr_week['cases_count_pos'].describe())
+print(US_cases_long_demogr_week['cases_count_pos'].value_counts())
+count_total = sum(US_cases_long_demogr_week['cases_count_pos'].value_counts().to_dict().values())
+count_zero = US_cases_long_demogr_week['cases_count_pos'].value_counts()[0.0]
+print("Count of zero is {}, about {:.4f} of the data.".format(count_zero, count_zero / count_total ))
+
 # Approach one to generalized linear models for panel data: Generalized Estimating Equations
 # poisson model
+poi=Poisson()
+ar=Autoregressive()
+gee_model0 = GEE.from_formula("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", groups="state", \
+    data=US_cases_long_demogr_week, time='week_of_year', cov_struct=ar, family=poi, offset=np.log(np.asarray(US_cases_long_demogr_week["pop_count_2019"])))
+gee_model0_results = gee_model0.fit(maxiter=200)
+print(gee_model0_results.summary())
+print(ar.summary())
+print("scale=%.2f" % (gee_model0_results.scale))
+
+# There is warning -- "IterationLimitWarning: Iteration limit reached prior to convergence" even if I specify maxiter = 2000. So, in this case,
+# specific starting values are needed to get the estimating algorithm to converge.
+# First run with exchangeable dependence structure. We know from this model that the within-state correlation is roughly 0.077.
 fam = Poisson()
-ar = Autoregressive()
+ex = Exchangeable()
+ex_model = GEE.from_formula("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", groups="state", \
+    data=US_cases_long_demogr_week, cov_struct=ex, family=fam, offset=np.log(np.asarray(US_cases_long_demogr_week["pop_count_2019"])))
+ex_results = ex_model.fit()
+print(ex_results.summary())
+print(ex.summary())
+
+# use these results as the starting values for model with autoregressive dependence structure. but still we got the warning message...
+poi=Poisson()
+ar=Autoregressive()
+ar.dep_params = 0.077
 gee_model1 = GEE.from_formula("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", groups="state", \
-    data=US_cases_long_demogr_week, time='week_of_year', cov_struct=ar, family=fam, offset=np.log(np.asarray(US_cases_long_demogr_week["pop_count_2019"])))
-gee_model1_results = gee_model1.fit()
+    data=US_cases_long_demogr_week, time='week_of_year', cov_struct=ar, family=poi, offset=np.log(np.asarray(US_cases_long_demogr_week["pop_count_2019"])))
+gee_model1_results = gee_model1.fit(maxiter=200, start_params=ex_results.params)
 print(gee_model1_results.summary())
 print(ar.summary())
 print("scale=%.2f" % (gee_model1_results.scale))
@@ -195,7 +229,7 @@ plt.ylabel("Log Variance", size=13)
 plt.show()
 
 # model diagnostics
-fig, axs = plt.subplots(1, 2, squeeze=False, figsize=(6, 6))
+fig, axs = plt.subplots(2, 1, squeeze=False, figsize=(8, 8))
 fig.tight_layout()
 axs[0,0].scatter(x=gee_model1_results.fittedvalues,y=gee_model1_results.resid,edgecolor='k')
 xmin = min(gee_model1_results.fittedvalues)
@@ -203,14 +237,14 @@ xmax = max(gee_model1_results.fittedvalues)
 axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
 axs[0,0].set_xlabel("Fitted values",fontsize=10)
 axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+axs[0,0].set_title("Fitted vs. residuals plot",fontsize=10)
 
 stats.probplot(gee_model1_results.resid_pearson, plot=plt, fit=True)
-axs[0,1].set_xlim(0, 4)
-axs[0,1].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,1].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,1].set_title("Q-Q plot of normalized residuals",fontsize=12)
+axs[1,0].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[1,0].set_ylabel("Sample quantiles",fontsize=10)
+axs[1,0].set_title("Q-Q plot of normalized residuals",fontsize=10)
 
+plt.subplots_adjust(left=0.12, hspace=0.25)
 plt.show()
 
 # negative binomial model
@@ -219,13 +253,13 @@ ar = Autoregressive()
 size = np.log(np.asarray(US_cases_long_demogr_week["pop_count_2019"]))
 gee_model2 = GEE.from_formula("cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black", groups="state", \
     data=US_cases_long_demogr_week, time='week_of_year', cov_struct=ar, family=nb, offset=size)
-gee_model2_results = gee_model2.fit()
+gee_model2_results = gee_model2.fit(maxiter=2000)
 print(gee_model2_results.summary())
 print(ar.summary())
 print("scale=%.2f" % (gee_model2_results.scale))
 
 # model diagnostics
-fig, axs = plt.subplots(1, 2, squeeze=False, figsize=(6, 6))
+fig, axs = plt.subplots(2, 1, squeeze=False, figsize=(8, 8))
 fig.tight_layout()
 axs[0,0].scatter(x=gee_model2_results.fittedvalues,y=gee_model2_results.resid,edgecolor='k')
 xmin = min(gee_model2_results.fittedvalues)
@@ -233,13 +267,14 @@ xmax = max(gee_model2_results.fittedvalues)
 axs[0,0].hlines(y=0,xmin=xmin*0.9,xmax=xmax*1.1,color='red',linestyle='--',lw=3)
 axs[0,0].set_xlabel("Fitted values",fontsize=10)
 axs[0,0].set_ylabel("Residuals",fontsize=10)
-axs[0,0].set_title("Fitted vs. residuals plot",fontsize=12)
+axs[0,0].set_title("Fitted vs. residuals plot",fontsize=10)
 
 stats.probplot(gee_model2_results.resid_pearson, plot=plt, fit=True)
-axs[0,1].set_xlabel("Theoretical quantiles",fontsize=10)
-axs[0,1].set_ylabel("Sample quantiles",fontsize=10)
-axs[0,1].set_title("Q-Q plot of normalized residuals",fontsize=12)
+axs[1,0].set_xlabel("Theoretical quantiles",fontsize=10)
+axs[1,0].set_ylabel("Sample quantiles",fontsize=10)
+axs[1,0].set_title("Q-Q plot of normalized residuals",fontsize=10)
 
+plt.subplots_adjust(left=0.12, hspace=0.25)
 plt.show()
 
 # model comparison

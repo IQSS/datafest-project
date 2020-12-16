@@ -284,15 +284,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <p>For our example project, we’re going to use the data on cumulative COVID-19 cases at the state-level contained in the <code>us_state_confirmed_case.tab</code> file. We can use the <code>get_file()</code> function to extract these data into a raw vector:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co"># get data file for COVID-19 cases</span></a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">US_cases_file &lt;-<span class="st"> </span><span class="kw">get_file</span>(<span class="st">&quot;us_state_confirmed_case.tab&quot;</span>, <span class="dt">dataset =</span> DOI)</a></code></pre></div>
-<p>To convert the data from the raw vector into a more user friendly data frame, we have to jump through a few hoops:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co"># create a temporary file</span></a>
-<a class="sourceLine" id="cb10-2" data-line-number="2">tmp &lt;-<span class="st"> </span><span class="kw">tempfile</span>(<span class="dt">fileext =</span> <span class="st">&quot;.tab&quot;</span>)</a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co"># write the US_cases_file object to the temporary file</span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="kw">writeBin</span>(<span class="dt">object =</span> US_cases_file, <span class="dt">con =</span> tmp)</a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co"># read the data from the temporary file into a data frame</span></a>
-<a class="sourceLine" id="cb10-8" data-line-number="8">US_cases &lt;-<span class="st"> </span><span class="kw">read_csv</span>(tmp)</a></code></pre></div>
+<p>To convert the data from the raw vector into a more user friendly data frame, we can use the <code>read_csv()</code> function from the <code>readr</code> package:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co"># convert raw vector to dataframe</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">US_cases &lt;-<span class="st"> </span><span class="kw">read_csv</span>(US_cases_file)</a></code></pre></div>
 <p>We can now examine the structure of the data:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co"># inspect the data</span></a>
 <a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw">head</span>(US_cases) <span class="co"># 50 states plus DC by 314 days</span></a></code></pre></div>
