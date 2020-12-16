@@ -410,7 +410,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Model:                            OLS   Adj. R-squared:                  0.000
 ## Method:                 Least Squares   F-statistic:                       nan
 ## Date:                Tue, 15 Dec 2020   Prob (F-statistic):                nan
-## Time:                        21:35:05   Log-Likelihood:                -579.50
+## Time:                        23:10:45   Log-Likelihood:                -579.50
 ## No. Observations:                  51   AIC:                             1161.
 ## Df Residuals:                      50   BIC:                             1163.
 ## Df Model:                           0                                         
@@ -494,7 +494,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Model:                            OLS   Adj. R-squared:                  0.036
 ## Method:                 Least Squares   F-statistic:                     1.621
 ## Date:                Tue, 15 Dec 2020   Prob (F-statistic):              0.197
-## Time:                        21:35:06   Log-Likelihood:                -576.99
+## Time:                        23:10:45   Log-Likelihood:                -576.99
 ## No. Observations:                  51   AIC:                             1162.
 ## Df Residuals:                      47   BIC:                             1170.
 ## Df Model:                           3                                         
@@ -626,28 +626,50 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="figures/unnamed-chunk-96-1.png" width="768" /></p>
 <p>The model diagnostics look terrible here — why do you think that is? Now that we have a full year’s worth of data, for many states the earlier part of that year consisted of a very small number of cases — often zero cases.</p>
 <div class="sourceCode" id="cb197"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb197-1" data-line-number="1"><span class="co"># provides a summary of the number of zeros</span></a>
-<a class="sourceLine" id="cb197-2" data-line-number="2"><span class="bu">print</span>(US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].describe())</a>
-<a class="sourceLine" id="cb197-3" data-line-number="3"><span class="bu">print</span>(US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].value_counts())</a>
-<a class="sourceLine" id="cb197-4" data-line-number="4">count_total <span class="op">=</span> <span class="bu">sum</span>(US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].value_counts().to_dict().values())</a>
-<a class="sourceLine" id="cb197-5" data-line-number="5">count_zero <span class="op">=</span> US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].value_counts()[<span class="fl">0.0</span>]</a>
-<a class="sourceLine" id="cb197-6" data-line-number="6"><span class="bu">print</span>(<span class="st">&quot;Count of zero is </span><span class="sc">{}</span><span class="st">, about </span><span class="sc">{:.4f}</span><span class="st"> of the data.&quot;</span>.<span class="bu">format</span>(count_zero, count_zero <span class="op">/</span> count_total ))</a></code></pre></div>
+<a class="sourceLine" id="cb197-2" data-line-number="2"><span class="bu">print</span>(US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].describe())</a></code></pre></div>
+<pre><code>## count      2295.000000
+## mean       5822.301961
+## std       10866.637622
+## min           0.000000
+## 25%         207.000000
+## 50%        2058.000000
+## 75%        6230.000000
+## max      100844.000000
+## Name: cases_count_pos, dtype: float64</code></pre>
+<div class="sourceCode" id="cb199"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb199-1" data-line-number="1"><span class="bu">print</span>(US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].value_counts())</a></code></pre></div>
+<pre><code>## 0.0       302
+## 1.0        18
+## 2.0        14
+## 4.0         8
+## 164.0       6
+##          ... 
+## 6432.0      1
+## 1880.0      1
+## 330.0       1
+## 5088.0      1
+## 6628.0      1
+## Name: cases_count_pos, Length: 1703, dtype: int64</code></pre>
+<div class="sourceCode" id="cb201"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb201-1" data-line-number="1">count_total <span class="op">=</span> <span class="bu">sum</span>(US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].value_counts().to_dict().values())</a>
+<a class="sourceLine" id="cb201-2" data-line-number="2">count_zero <span class="op">=</span> US_cases_long_demogr_week[<span class="st">&#39;cases_count_pos&#39;</span>].value_counts()[<span class="fl">0.0</span>]</a>
+<a class="sourceLine" id="cb201-3" data-line-number="3"><span class="bu">print</span>(<span class="st">&quot;Count of zero is </span><span class="sc">{}</span><span class="st">, about </span><span class="sc">{:.4f}</span><span class="st"> of the data.&quot;</span>.<span class="bu">format</span>(count_zero, count_zero <span class="op">/</span> count_total ))</a></code></pre></div>
+<pre><code>## Count of zero is 302, about 0.1316 of the data.</code></pre>
 <p>About 15% of the data are zeros. This makes the linear model a poor fit for these data. Let’s try a model designed specifically for count data — the poisson. To account for the fact that states have different population levels, we can include an exposure term using the <code>offset</code> argument to get counts per population unit:</p>
-<div class="sourceCode" id="cb198"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb198-1" data-line-number="1"><span class="co"># Generalized Estimating Equations: poisson model</span></a>
-<a class="sourceLine" id="cb198-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb198-3" data-line-number="3">poi<span class="op">=</span>Poisson()</a>
-<a class="sourceLine" id="cb198-4" data-line-number="4">ar<span class="op">=</span>Autoregressive()</a>
-<a class="sourceLine" id="cb198-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb198-6" data-line-number="6">gee_model1 <span class="op">=</span> GEE.from_formula(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, groups<span class="op">=</span><span class="st">&quot;state&quot;</span>, <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-7" data-line-number="7">    data<span class="op">=</span>US_cases_long_demogr_week, <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-8" data-line-number="8">    time<span class="op">=</span><span class="st">&#39;week_of_year&#39;</span>, <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-9" data-line-number="9">    cov_struct<span class="op">=</span>ar, <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-10" data-line-number="10">    family<span class="op">=</span>poi, <span class="op">\</span></a>
-<a class="sourceLine" id="cb198-11" data-line-number="11">    offset<span class="op">=</span>np.log(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;pop_count_2019&quot;</span>])))</a>
-<a class="sourceLine" id="cb198-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb198-13" data-line-number="13">gee_model1_results <span class="op">=</span> gee_model1.fit(maxiter<span class="op">=</span><span class="dv">200</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb203-1" data-line-number="1"><span class="co"># Generalized Estimating Equations: poisson model</span></a>
+<a class="sourceLine" id="cb203-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb203-3" data-line-number="3">poi<span class="op">=</span>Poisson()</a>
+<a class="sourceLine" id="cb203-4" data-line-number="4">ar<span class="op">=</span>Autoregressive()</a>
+<a class="sourceLine" id="cb203-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb203-6" data-line-number="6">gee_model1 <span class="op">=</span> GEE.from_formula(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, groups<span class="op">=</span><span class="st">&quot;state&quot;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb203-7" data-line-number="7">    data<span class="op">=</span>US_cases_long_demogr_week, <span class="op">\</span></a>
+<a class="sourceLine" id="cb203-8" data-line-number="8">    time<span class="op">=</span><span class="st">&#39;week_of_year&#39;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb203-9" data-line-number="9">    cov_struct<span class="op">=</span>ar, <span class="op">\</span></a>
+<a class="sourceLine" id="cb203-10" data-line-number="10">    family<span class="op">=</span>poi, <span class="op">\</span></a>
+<a class="sourceLine" id="cb203-11" data-line-number="11">    offset<span class="op">=</span>np.log(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;pop_count_2019&quot;</span>])))</a>
+<a class="sourceLine" id="cb203-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb203-13" data-line-number="13">gee_model1_results <span class="op">=</span> gee_model1.fit(maxiter<span class="op">=</span><span class="dv">200</span>)</a></code></pre></div>
 <pre><code>## /opt/anaconda3/envs/datafest/lib/python3.7/site-packages/statsmodels/genmod/generalized_estimating_equations.py:1252: IterationLimitWarning: Iteration limit reached prior to convergence
 ##   IterationLimitWarning)</code></pre>
-<div class="sourceCode" id="cb200"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb200-1" data-line-number="1"><span class="bu">print</span>(gee_model1_results.summary())</a></code></pre></div>
+<div class="sourceCode" id="cb205"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb205-1" data-line-number="1"><span class="bu">print</span>(gee_model1_results.summary())</a></code></pre></div>
 <pre><code>##                                GEE Regression Results                              
 ## ===================================================================================
 ## Dep. Variable:             cases_count_pos   No. Observations:                 2295
@@ -657,7 +679,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Family:                            Poisson   Mean cluster size:                45.0
 ## Dependence structure:       Autoregressive   Num. iterations:                   200
 ## Date:                     Tue, 15 Dec 2020   Scale:                           1.000
-## Covariance type:                    robust   Time:                         21:35:59
+## Covariance type:                    robust   Time:                         23:11:39
 ## =====================================================================================
 ##                         coef    std err          z      P&gt;|z|      [0.025      0.975]
 ## -------------------------------------------------------------------------------------
@@ -670,44 +692,44 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Skew:                          1.9152   Kurtosis:                      23.2141
 ## Centered skew:                 2.4730   Centered kurtosis:             22.7322
 ## ==============================================================================</code></pre>
-<div class="sourceCode" id="cb202"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb202-1" data-line-number="1"><span class="bu">print</span>(ar.summary())</a></code></pre></div>
+<div class="sourceCode" id="cb207"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb207-1" data-line-number="1"><span class="bu">print</span>(ar.summary())</a></code></pre></div>
 <pre><code>## Autoregressive(1) dependence parameter: 0.768</code></pre>
-<div class="sourceCode" id="cb204"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb204-1" data-line-number="1"><span class="bu">print</span>(<span class="st">&quot;scale=</span><span class="sc">%.2f</span><span class="st">&quot;</span> <span class="op">%</span> (gee_model1_results.scale))</a></code></pre></div>
+<div class="sourceCode" id="cb209"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb209-1" data-line-number="1"><span class="bu">print</span>(<span class="st">&quot;scale=</span><span class="sc">%.2f</span><span class="st">&quot;</span> <span class="op">%</span> (gee_model1_results.scale))</a></code></pre></div>
 <pre><code>## scale=1.00</code></pre>
-<p>We get a warning message: “IterationLimitWarning: Iteration limit reached prior to convergence”, but even if we specify a large value for maxiter (e.g., 2000) we still don’t achieve convergence. We could try specifying starting values, estimated using a simpler covariance structure, to try to get the estimating algorithm to converge. But, the lack of convergence may be a symptom of a more fundamental problem — that the data may not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean). In which case, we may need a more flexible model.</p>
+<p>We detect quite a lot of autocorrelation (<span class="math inline">\(\rho\)</span> = 0.768), which we might expect given that COVID-19 cases tend to manifest in waves over time.</p>
+<p>We also get a warning message: <code>IterationLimitWarning: Iteration limit reached prior to convergence</code>, but even if we specify a large value for <code>maxiter</code> (e.g., 2000) we still don’t achieve convergence. We could try specifying starting values, estimated using a simpler covariance structure, to try to get the estimating algorithm to converge. But, the lack of convergence may be a symptom of a more fundamental problem — that the data do not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean). Based on the histogram we made of the marginal counts, this seems likely. In which case, we may need a more flexible model.</p>
 <p>Let’s look at some model diagnostics anyway:</p>
-<div class="sourceCode" id="cb206"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb206-1" data-line-number="1"><span class="co"># plot within-group residuals against time difference</span></a>
-<a class="sourceLine" id="cb206-2" data-line-number="2">fig <span class="op">=</span> gee_model1_results.plot_isotropic_dependence()</a>
-<a class="sourceLine" id="cb206-3" data-line-number="3">plt.grid(<span class="va">True</span>)</a>
-<a class="sourceLine" id="cb206-4" data-line-number="4">plt.show()</a>
-<a class="sourceLine" id="cb206-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb206-6" data-line-number="6"><span class="co"># plot mean-variance relationship without covariates</span></a></code></pre></div>
+<div class="sourceCode" id="cb211"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb211-1" data-line-number="1"><span class="co"># plot within-group residuals against time difference</span></a>
+<a class="sourceLine" id="cb211-2" data-line-number="2">fig <span class="op">=</span> gee_model1_results.plot_isotropic_dependence()</a>
+<a class="sourceLine" id="cb211-3" data-line-number="3">plt.grid(<span class="va">True</span>)</a>
+<a class="sourceLine" id="cb211-4" data-line-number="4">plt.show()</a></code></pre></div>
 <p><img src="figures/unnamed-chunk-99-1.png" width="768" /></p>
-<div class="sourceCode" id="cb207"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb207-1" data-line-number="1">yg <span class="op">=</span> gee_model1.cluster_list(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;cases_count_pos&quot;</span>]))</a>
-<a class="sourceLine" id="cb207-2" data-line-number="2">ymn <span class="op">=</span> [x.mean() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
-<a class="sourceLine" id="cb207-3" data-line-number="3">yva <span class="op">=</span> [x.var() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
-<a class="sourceLine" id="cb207-4" data-line-number="4">plt.grid(<span class="va">True</span>)</a>
-<a class="sourceLine" id="cb207-5" data-line-number="5">plt.plot(np.log(ymn), np.log(yva), <span class="st">&#39;o&#39;</span>)</a>
-<a class="sourceLine" id="cb207-6" data-line-number="6">plt.xlabel(<span class="st">&quot;Log Mean&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
-<a class="sourceLine" id="cb207-7" data-line-number="7">plt.ylabel(<span class="st">&quot;Log Variance&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
-<a class="sourceLine" id="cb207-8" data-line-number="8">plt.show()</a></code></pre></div>
-<p><img src="figures/unnamed-chunk-99-2.png" width="768" /></p>
+<div class="sourceCode" id="cb212"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb212-1" data-line-number="1"><span class="co"># plot mean-variance relationship without covariates</span></a>
+<a class="sourceLine" id="cb212-2" data-line-number="2">yg <span class="op">=</span> gee_model1.cluster_list(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;cases_count_pos&quot;</span>]))</a>
+<a class="sourceLine" id="cb212-3" data-line-number="3">ymn <span class="op">=</span> [x.mean() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
+<a class="sourceLine" id="cb212-4" data-line-number="4">yva <span class="op">=</span> [x.var() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
+<a class="sourceLine" id="cb212-5" data-line-number="5">plt.grid(<span class="va">True</span>)</a>
+<a class="sourceLine" id="cb212-6" data-line-number="6">plt.plot(np.log(ymn), np.log(yva), <span class="st">&#39;o&#39;</span>)</a>
+<a class="sourceLine" id="cb212-7" data-line-number="7">plt.xlabel(<span class="st">&quot;Log Mean&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
+<a class="sourceLine" id="cb212-8" data-line-number="8">plt.ylabel(<span class="st">&quot;Log Variance&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
+<a class="sourceLine" id="cb212-9" data-line-number="9">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-100-1.png" width="768" /></p>
 <p>Overall, the poisson model does a much better job of capturing the idiosyncrasies of our data than the linear model. We can go further, however, by fitting a negative binomial model that can account for over- or under-dispersion (variance greater than or less than the mean).</p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb208-1" data-line-number="1"><span class="co"># Generalized Estimating Equations: negative binomial model</span></a>
-<a class="sourceLine" id="cb208-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb208-3" data-line-number="3">nb <span class="op">=</span> NegativeBinomial(alpha<span class="op">=</span><span class="fl">1.</span>)</a>
-<a class="sourceLine" id="cb208-4" data-line-number="4">ar <span class="op">=</span> Autoregressive()</a>
-<a class="sourceLine" id="cb208-5" data-line-number="5"> </a>
-<a class="sourceLine" id="cb208-6" data-line-number="6">gee_model2 <span class="op">=</span> GEE.from_formula(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, groups<span class="op">=</span><span class="st">&quot;state&quot;</span>, <span class="op">\</span></a>
-<a class="sourceLine" id="cb208-7" data-line-number="7">    data<span class="op">=</span>US_cases_long_demogr_week, <span class="op">\</span></a>
-<a class="sourceLine" id="cb208-8" data-line-number="8">    time<span class="op">=</span><span class="st">&#39;week_of_year&#39;</span>, <span class="op">\</span></a>
-<a class="sourceLine" id="cb208-9" data-line-number="9">    cov_struct<span class="op">=</span>ar, <span class="op">\</span></a>
-<a class="sourceLine" id="cb208-10" data-line-number="10">    family<span class="op">=</span>nb, <span class="op">\</span></a>
-<a class="sourceLine" id="cb208-11" data-line-number="11">    offset<span class="op">=</span>np.log(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;pop_count_2019&quot;</span>])))</a>
-<a class="sourceLine" id="cb208-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb208-13" data-line-number="13">gee_model2_results <span class="op">=</span> gee_model2.fit(maxiter<span class="op">=</span><span class="dv">2000</span>)</a>
-<a class="sourceLine" id="cb208-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb208-15" data-line-number="15"><span class="bu">print</span>(gee_model2_results.summary())</a></code></pre></div>
+<div class="sourceCode" id="cb213"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb213-1" data-line-number="1"><span class="co"># Generalized Estimating Equations: negative binomial model</span></a>
+<a class="sourceLine" id="cb213-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb213-3" data-line-number="3">nb <span class="op">=</span> NegativeBinomial(alpha<span class="op">=</span><span class="fl">1.</span>)</a>
+<a class="sourceLine" id="cb213-4" data-line-number="4">ar <span class="op">=</span> Autoregressive()</a>
+<a class="sourceLine" id="cb213-5" data-line-number="5"> </a>
+<a class="sourceLine" id="cb213-6" data-line-number="6">gee_model2 <span class="op">=</span> GEE.from_formula(<span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span>, groups<span class="op">=</span><span class="st">&quot;state&quot;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-7" data-line-number="7">    data<span class="op">=</span>US_cases_long_demogr_week, <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-8" data-line-number="8">    time<span class="op">=</span><span class="st">&#39;week_of_year&#39;</span>, <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-9" data-line-number="9">    cov_struct<span class="op">=</span>ar, <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-10" data-line-number="10">    family<span class="op">=</span>nb, <span class="op">\</span></a>
+<a class="sourceLine" id="cb213-11" data-line-number="11">    offset<span class="op">=</span>np.log(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;pop_count_2019&quot;</span>])))</a>
+<a class="sourceLine" id="cb213-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb213-13" data-line-number="13">gee_model2_results <span class="op">=</span> gee_model2.fit(maxiter<span class="op">=</span><span class="dv">2000</span>)</a>
+<a class="sourceLine" id="cb213-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb213-15" data-line-number="15"><span class="bu">print</span>(gee_model2_results.summary())</a></code></pre></div>
 <pre><code>##                                GEE Regression Results                              
 ## ===================================================================================
 ## Dep. Variable:             cases_count_pos   No. Observations:                 2295
@@ -717,7 +739,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Family:                   NegativeBinomial   Mean cluster size:                45.0
 ## Dependence structure:       Autoregressive   Num. iterations:                    52
 ## Date:                     Tue, 15 Dec 2020   Scale:                           1.000
-## Covariance type:                    robust   Time:                         21:36:13
+## Covariance type:                    robust   Time:                         23:11:52
 ## =====================================================================================
 ##                         coef    std err          z      P&gt;|z|      [0.025      0.975]
 ## -------------------------------------------------------------------------------------
@@ -730,75 +752,76 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 ## Skew:                          1.3220   Kurtosis:                      23.3385
 ## Centered skew:                 2.1260   Centered kurtosis:             22.5005
 ## ==============================================================================</code></pre>
-<div class="sourceCode" id="cb210"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb210-1" data-line-number="1"><span class="bu">print</span>(ar.summary())</a></code></pre></div>
+<div class="sourceCode" id="cb215"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb215-1" data-line-number="1"><span class="bu">print</span>(ar.summary())</a></code></pre></div>
 <pre><code>## Autoregressive(1) dependence parameter: 0.761</code></pre>
-<div class="sourceCode" id="cb212"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb212-1" data-line-number="1"><span class="bu">print</span>(<span class="st">&quot;scale=</span><span class="sc">%.2f</span><span class="st">&quot;</span> <span class="op">%</span> (gee_model2_results.scale))</a></code></pre></div>
+<div class="sourceCode" id="cb217"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb217-1" data-line-number="1"><span class="bu">print</span>(<span class="st">&quot;scale=</span><span class="sc">%.2f</span><span class="st">&quot;</span> <span class="op">%</span> (gee_model2_results.scale))</a></code></pre></div>
 <pre><code>## scale=1.00</code></pre>
 <p>Let’s look at some model diagnostics:</p>
-<div class="sourceCode" id="cb214"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb214-1" data-line-number="1"><span class="co"># plot within-group residuals against time difference</span></a>
-<a class="sourceLine" id="cb214-2" data-line-number="2">fig <span class="op">=</span> gee_model2_results.plot_isotropic_dependence()</a>
-<a class="sourceLine" id="cb214-3" data-line-number="3">plt.grid(<span class="va">True</span>)</a>
-<a class="sourceLine" id="cb214-4" data-line-number="4">plt.show()</a>
-<a class="sourceLine" id="cb214-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb214-6" data-line-number="6"><span class="co"># plot mean-variance relationship without covariates</span></a></code></pre></div>
-<p><img src="figures/unnamed-chunk-101-1.png" width="768" /></p>
-<div class="sourceCode" id="cb215"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb215-1" data-line-number="1">yg <span class="op">=</span> gee_model2.cluster_list(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;cases_count_pos&quot;</span>]))</a>
-<a class="sourceLine" id="cb215-2" data-line-number="2">ymn <span class="op">=</span> [x.mean() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
-<a class="sourceLine" id="cb215-3" data-line-number="3">yva <span class="op">=</span> [x.var() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
-<a class="sourceLine" id="cb215-4" data-line-number="4">plt.grid(<span class="va">True</span>)</a>
-<a class="sourceLine" id="cb215-5" data-line-number="5">plt.plot(np.log(ymn), np.log(yva), <span class="st">&#39;o&#39;</span>)</a>
-<a class="sourceLine" id="cb215-6" data-line-number="6">plt.xlabel(<span class="st">&quot;Log Mean&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
-<a class="sourceLine" id="cb215-7" data-line-number="7">plt.ylabel(<span class="st">&quot;Log Variance&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
-<a class="sourceLine" id="cb215-8" data-line-number="8">plt.show()</a></code></pre></div>
-<p><img src="figures/unnamed-chunk-101-2.png" width="768" /></p>
-<p>Let’s compare our last two models:</p>
-<div class="sourceCode" id="cb216"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb216-1" data-line-number="1"><span class="co"># use quasi information criterion to compare poisson and negative binomial models</span></a>
-<a class="sourceLine" id="cb216-2" data-line-number="2"><span class="bu">print</span>(gee_model2_results.qic())    </a></code></pre></div>
-<pre><code>## (4709555305.822205, 6136.330127245823)</code></pre>
-<div class="sourceCode" id="cb218"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb218-1" data-line-number="1"><span class="bu">print</span>(gee_model1_results.qic())</a></code></pre></div>
+<div class="sourceCode" id="cb219"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb219-1" data-line-number="1"><span class="co"># plot within-group residuals against time difference</span></a>
+<a class="sourceLine" id="cb219-2" data-line-number="2">fig <span class="op">=</span> gee_model2_results.plot_isotropic_dependence()</a>
+<a class="sourceLine" id="cb219-3" data-line-number="3">plt.grid(<span class="va">True</span>)</a>
+<a class="sourceLine" id="cb219-4" data-line-number="4">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-102-1.png" width="768" /></p>
+<div class="sourceCode" id="cb220"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb220-1" data-line-number="1"><span class="co"># plot mean-variance relationship without covariates</span></a>
+<a class="sourceLine" id="cb220-2" data-line-number="2">yg <span class="op">=</span> gee_model2.cluster_list(np.asarray(US_cases_long_demogr_week[<span class="st">&quot;cases_count_pos&quot;</span>]))</a>
+<a class="sourceLine" id="cb220-3" data-line-number="3">ymn <span class="op">=</span> [x.mean() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
+<a class="sourceLine" id="cb220-4" data-line-number="4">yva <span class="op">=</span> [x.var() <span class="cf">for</span> x <span class="kw">in</span> yg]</a>
+<a class="sourceLine" id="cb220-5" data-line-number="5">plt.grid(<span class="va">True</span>)</a>
+<a class="sourceLine" id="cb220-6" data-line-number="6">plt.plot(np.log(ymn), np.log(yva), <span class="st">&#39;o&#39;</span>)</a>
+<a class="sourceLine" id="cb220-7" data-line-number="7">plt.xlabel(<span class="st">&quot;Log Mean&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
+<a class="sourceLine" id="cb220-8" data-line-number="8">plt.ylabel(<span class="st">&quot;Log Variance&quot;</span>, size<span class="op">=</span><span class="dv">13</span>)</a>
+<a class="sourceLine" id="cb220-9" data-line-number="9">plt.show()</a></code></pre></div>
+<p><img src="figures/unnamed-chunk-103-1.png" width="768" /></p>
+<p>Let’s compare our last two models using the quasi information criterion (QIC):</p>
+<div class="sourceCode" id="cb221"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb221-1" data-line-number="1"><span class="co"># use quasi information criterion to compare poisson and negative binomial models</span></a>
+<a class="sourceLine" id="cb221-2" data-line-number="2"><span class="bu">print</span>(gee_model1_results.qic())    </a></code></pre></div>
 <pre><code>## (6283477749.315451, 8011349.269636027)</code></pre>
-<p>Both count-based models improve upon the previous linear models, but are not satisfactory, probably because they cannot take account of the excessive zeros and they only use cluster-robust standard errors and thus cannot model how lower level coefficients vary across groups of the higher level. Python’s <code>statsmodels</code> has zero-inflated count model methods, but they cannot deal with panel/clustered data. However, we can fit generalized linear mixed effects models in a Bayesian framework using <code>statsmodels</code>. Initially, let’s try a model with random intercepts only:</p>
-<div class="sourceCode" id="cb220"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb220-1" data-line-number="1"><span class="co"># Bayesian poisson mixed effects model with random intercepts for states</span></a>
-<a class="sourceLine" id="cb220-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb220-3" data-line-number="3">formula <span class="op">=</span> <span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span></a>
-<a class="sourceLine" id="cb220-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb220-5" data-line-number="5">po_bay_panel1 <span class="op">=</span> PoissonBayesMixedGLM.from_formula(formula, {<span class="st">&#39;state&#39;</span>: <span class="st">&#39;0 + C(state)&#39;</span>}, US_cases_long_demogr_week)</a>
-<a class="sourceLine" id="cb220-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb220-7" data-line-number="7">po_bay_panel1_results <span class="op">=</span> po_bay_panel1.fit_map()</a>
-<a class="sourceLine" id="cb220-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb220-9" data-line-number="9"><span class="bu">print</span>(po_bay_panel1_results.summary()) </a></code></pre></div>
-<pre><code>##                     Poisson Mixed GLM Results
-## =================================================================
-##                   Type Post. Mean Post. SD   SD   SD (LB) SD (UB)
-## -----------------------------------------------------------------
-## Intercept            M     0.4348   1.2489                       
-## week_of_year         M     0.0991   0.0000                       
-## percent_age65over    M    -0.5636   0.3065                       
-## percent_female       M     0.2499      nan                       
-## percent_black        M    -0.0271   0.1359                       
-## state                V     2.4516   0.1852 11.606   8.014  16.810
-## =================================================================
-## Parameter types are mean structure (M) and variance structure (V)
-## Variance parameters are modeled as log standard deviations</code></pre>
-<p>We can also add random slopes for time to allow for different trajectories of case rates across states:</p>
-<div class="sourceCode" id="cb222"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb222-1" data-line-number="1"><span class="co"># Bayesian poisson mixed effects model with independent random intercepts and slopes</span></a>
-<a class="sourceLine" id="cb222-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb222-3" data-line-number="3">formula <span class="op">=</span> <span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span></a>
-<a class="sourceLine" id="cb222-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb222-5" data-line-number="5">po_bay_panel2 <span class="op">=</span> PoissonBayesMixedGLM.from_formula(formula, {<span class="st">&#39;state&#39;</span>: <span class="st">&#39;0 + C(state)&#39;</span>, <span class="st">&quot;week_of_year&quot;</span>: <span class="st">&#39;0 + C(week_of_year)&#39;</span>}, US_cases_long_demogr_week)</a>
-<a class="sourceLine" id="cb222-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb222-7" data-line-number="7">po_bay_panel2_results <span class="op">=</span> po_bay_panel2.fit_map()</a>
-<a class="sourceLine" id="cb222-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb222-9" data-line-number="9"><span class="bu">print</span>(po_bay_panel2_results.summary()) </a></code></pre></div>
+<div class="sourceCode" id="cb223"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb223-1" data-line-number="1"><span class="bu">print</span>(gee_model2_results.qic())</a></code></pre></div>
+<pre><code>## (4709555305.822205, 6136.330127245823)</code></pre>
+<p>Both count-based models improve upon the previous linear models, but the negative binomial model has the edge slightly with a lower QIC value. However, neither model is really satisfactory, probably because they cannot take account of the excessive zeros in the data and they only use cluster-robust standard errors and thus cannot model how lower level coefficients vary across groups of the higher level.</p>
+<p>Python’s <code>statsmodels</code> has zero-inflated count model methods, but they cannot deal with panel/clustered data. However, we can fit generalized linear mixed effects models in a Bayesian framework using <code>statsmodels</code>. Initially, let’s try a model with random intercepts only:</p>
+<div class="sourceCode" id="cb225"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb225-1" data-line-number="1"><span class="co"># Bayesian poisson mixed effects model with random intercepts for states</span></a>
+<a class="sourceLine" id="cb225-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb225-3" data-line-number="3">formula <span class="op">=</span> <span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span></a>
+<a class="sourceLine" id="cb225-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb225-5" data-line-number="5">po_bay_panel1 <span class="op">=</span> PoissonBayesMixedGLM.from_formula(formula, {<span class="st">&#39;state&#39;</span>: <span class="st">&#39;0 + C(state)&#39;</span>}, US_cases_long_demogr_week)</a>
+<a class="sourceLine" id="cb225-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb225-7" data-line-number="7">po_bay_panel1_results <span class="op">=</span> po_bay_panel1.fit_map()</a>
+<a class="sourceLine" id="cb225-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb225-9" data-line-number="9"><span class="bu">print</span>(po_bay_panel1_results.summary()) </a></code></pre></div>
 <pre><code>##                    Poisson Mixed GLM Results
 ## ================================================================
 ##                   Type Post. Mean Post. SD   SD  SD (LB) SD (UB)
 ## ----------------------------------------------------------------
-## Intercept            M    -0.2772   1.9277                      
-## week_of_year         M     0.2134   0.0287                      
-## percent_age65over    M    -0.1699   0.0848                      
-## percent_female       M     0.0765   0.0530                      
-## percent_black        M     0.0158   0.0160                      
+## Intercept            M    -0.2003   2.2065                      
+## week_of_year         M     0.0674   0.0000                      
+## percent_age65over    M    -0.1853   0.0846                      
+## percent_female       M     0.1826   0.0562                      
+## percent_black        M     0.0090   0.0161                      
+## state                V     0.0925   0.0985 1.097   0.901   1.336
+## ================================================================
+## Parameter types are mean structure (M) and variance structure
+## (V)
+## Variance parameters are modeled as log standard deviations</code></pre>
+<p>We can also add random slopes for time to allow for different trajectories of case rates across states:</p>
+<div class="sourceCode" id="cb227"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb227-1" data-line-number="1"><span class="co"># Bayesian poisson mixed effects model with independent random intercepts and slopes</span></a>
+<a class="sourceLine" id="cb227-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb227-3" data-line-number="3">formula <span class="op">=</span> <span class="st">&quot;cases_count_pos ~ week_of_year + percent_age65over + percent_female + percent_black&quot;</span></a>
+<a class="sourceLine" id="cb227-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb227-5" data-line-number="5">po_bay_panel2 <span class="op">=</span> PoissonBayesMixedGLM.from_formula(formula, {<span class="st">&#39;state&#39;</span>: <span class="st">&#39;0 + C(state)&#39;</span>, <span class="st">&quot;week_of_year&quot;</span>: <span class="st">&#39;0 + C(week_of_year)&#39;</span>}, US_cases_long_demogr_week)</a>
+<a class="sourceLine" id="cb227-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb227-7" data-line-number="7">po_bay_panel2_results <span class="op">=</span> po_bay_panel2.fit_map()</a>
+<a class="sourceLine" id="cb227-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb227-9" data-line-number="9"><span class="bu">print</span>(po_bay_panel2_results.summary()) </a></code></pre></div>
+<pre><code>##                    Poisson Mixed GLM Results
+## ================================================================
+##                   Type Post. Mean Post. SD   SD  SD (LB) SD (UB)
+## ----------------------------------------------------------------
+## Intercept            M    -0.2772   1.9565                      
+## week_of_year         M     0.2134   0.0286                      
+## percent_age65over    M    -0.1699   0.0846                      
+## percent_female       M     0.0765   0.0540                      
+## percent_black        M     0.0158   0.0161                      
 ## state                V     0.0984   0.0985 1.103   0.906   1.344
 ## week_of_year         V     0.8998   0.1059 2.459   1.990   3.039
 ## ================================================================
@@ -871,6 +894,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

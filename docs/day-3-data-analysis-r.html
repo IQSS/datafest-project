@@ -610,6 +610,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb92-3" data-line-number="3"><span class="kw">plot</span>(eff_panel4, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>)</a></code></pre></div>
 <p><img src="figures/unnamed-chunk-48-1.png" width="672" /></p>
 <p>So far, we’ve only been modeling a linear trend for time. From our visualizations we know that this is unrealistic. How could we incorporate non-linear time elements in the model (e.g., splines, polynomials)?</p>
+<p>In addition, we haven’t accounted for autocorrelation in the case rates over time, which is something we might expect given that COVID-19 cases tend to manifest in waves over time. One possible modeling strategy here would be to use generalized estimating equations (GEE), which can incorporate autoregressive terms even for count-based (poisson) models. The GEEs can be solved using the package <code>geepack</code>, which may be an excellent next step to explore.</p>
 </div>
 </div>
 </div>
@@ -670,6 +671,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

@@ -642,7 +642,7 @@ p.add_tools(my_hover)
 # save the map
 output_file("data_py/covid-19_map_hover.html")
 save(p)
-# show the map
+# show the map in a browser
 show(p)
 ```
 
@@ -807,7 +807,7 @@ print(model_panel1_results.conf_int(alpha=0.05, cols=None))
 ```
 
 Let's look at the model diagnostics:
-```{python, fig.height=4, fig.width=10}
+```{python, fig.height=4, fig.width=8}
 # model diagnostics
 fig, axs = plt.subplots(2, 1, squeeze=False, figsize=(8, 8))
 fig.tight_layout()
@@ -829,7 +829,7 @@ plt.show()
 ```
 
 The model diagnostics look terrible here --- why do you think that is? Now that we have a full year's worth of data, for many states the earlier part of that year consisted of a very small number of cases --- often zero cases. 
-```{python, eval=FALSE}
+```{python}
 # provides a summary of the number of zeros
 print(US_cases_long_demogr_week['cases_count_pos'].describe())
 print(US_cases_long_demogr_week['cases_count_pos'].value_counts())
@@ -859,7 +859,9 @@ print(ar.summary())
 print("scale=%.2f" % (gee_model1_results.scale))
 ```
 
-We get a warning message: "IterationLimitWarning: Iteration limit reached prior to convergence", but even if we specify a large value for maxiter (e.g., 2000) we still don't achieve convergence. We could try specifying starting values, estimated using a simpler covariance structure, to try to get the estimating algorithm to converge. But, the lack of convergence may be a symptom of a more fundamental problem --- that the data may not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean). In which case, we may need a more flexible model.   
+We detect quite a lot of autocorrelation ($\rho$ = 0.768), which we might expect given that COVID-19 cases tend to manifest in waves over time.
+
+We also get a warning message: `IterationLimitWarning: Iteration limit reached prior to convergence`, but even if we specify a large value for `maxiter` (e.g., 2000) we still don't achieve convergence. We could try specifying starting values, estimated using a simpler covariance structure, to try to get the estimating algorithm to converge. But, the lack of convergence may be a symptom of a more fundamental problem --- that the data do not meet the restrictive assumptions of the poisson model (that the variance is equal to the mean). Based on the histogram we made of the marginal counts, this seems likely. In which case, we may need a more flexible model.   
 
 Let's look at some model diagnostics anyway:
 ```{python, fig.height=5, fig.width=8}
@@ -867,7 +869,9 @@ Let's look at some model diagnostics anyway:
 fig = gee_model1_results.plot_isotropic_dependence()
 plt.grid(True)
 plt.show()
+```
 
+```{python}
 # plot mean-variance relationship without covariates
 yg = gee_model1.cluster_list(np.asarray(US_cases_long_demogr_week["cases_count_pos"]))
 ymn = [x.mean() for x in yg]
@@ -906,7 +910,9 @@ Let's look at some model diagnostics:
 fig = gee_model2_results.plot_isotropic_dependence()
 plt.grid(True)
 plt.show()
+```
 
+```{python}
 # plot mean-variance relationship without covariates
 yg = gee_model2.cluster_list(np.asarray(US_cases_long_demogr_week["cases_count_pos"]))
 ymn = [x.mean() for x in yg]
@@ -918,14 +924,16 @@ plt.ylabel("Log Variance", size=13)
 plt.show()
 ```
 
-Let's compare our last two models:
+Let's compare our last two models using the quasi information criterion (QIC):
 ```{python}
 # use quasi information criterion to compare poisson and negative binomial models
-print(gee_model2_results.qic())    
-print(gee_model1_results.qic())
+print(gee_model1_results.qic())    
+print(gee_model2_results.qic())
 ```
 
-Both count-based models improve upon the previous linear models, but are not satisfactory, probably because they cannot take account of the excessive zeros and they only use cluster-robust standard errors and thus cannot model how lower level coefficients vary across groups of the higher level. Python's `statsmodels` has zero-inflated count model methods, but they cannot deal with panel/clustered data. However, we can fit generalized linear mixed effects models in a Bayesian framework using `statsmodels`. Initially, let's try a model with random intercepts only:
+Both count-based models improve upon the previous linear models, but the negative binomial model has the edge slightly with a lower QIC value. However, neither model is really satisfactory, probably because they cannot take account of the excessive zeros in the data and they only use cluster-robust standard errors and thus cannot model how lower level coefficients vary across groups of the higher level. 
+
+Python's `statsmodels` has zero-inflated count model methods, but they cannot deal with panel/clustered data. However, we can fit generalized linear mixed effects models in a Bayesian framework using `statsmodels`. Initially, let's try a model with random intercepts only:
 ```{python}
 # Bayesian poisson mixed effects model with random intercepts for states
 

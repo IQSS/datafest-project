@@ -658,6 +658,8 @@ plot(eff_panel4, type = "response")
 
 So far, we've only been modeling a linear trend for time. From our visualizations we know that this is unrealistic. How could we incorporate non-linear time elements in the model (e.g., splines, polynomials)?
 
+In addition, we haven't accounted for autocorrelation in the case rates over time, which is something we might expect given that COVID-19 cases tend to manifest in waves over time. One possible modeling strategy here would be to use generalized estimating equations (GEE), which can incorporate autoregressive terms even for count-based (poisson) models. The GEEs can be solved using the package `geepack`, which may be an excellent next step to explore. 
+
 
 # DAY 4: Data archiving (R)
 
